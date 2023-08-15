@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace GameZone.Domain.Contracts.Base
 {
-    public interface IGenericCRUD<T, Y, R>
+    public interface IGenericCRUD<T, Y, R, S>
     {
-        Task<R?> Create(T entity);
-        Task<R?> GetById(Y id);
-        Task<IEnumerable<R>> GetAll();
-        Task<R?> Update(R entity);
+        Task<S?> Create(T entity, string? idUsuarioClaim);
+        Task<S?> GetById(Y id);
+        Task<IEnumerable<S>> GetAll();
+        Task<S?> Update(R entity);
         Task Delete(Y id);
     }
 }

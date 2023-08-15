@@ -1,0 +1,28 @@
+﻿@model ErrorViewModel
+@using GameZone.News.WebApp.Extensions
+@using GameZone.WebAPI.Core.Usuario
+@inject IAspNetUser AppUser
+@{
+    ViewData["Title"] = "Ocorreu um erro";
+}
+
+@{
+    if (!AppUser.EstaAutenticado())
+        Layout = null;
+
+    if (Model == null)
+    {
+        <div>
+            <h2>Ooops! Ocorreu um erro, mas não se preocupe. Nosso time será avisado e iremos corrigir em breve!</h2>
+        </div>
+    }
+    else
+    {
+        ViewData["Title"] = Model.Titulo;
+
+        <div>
+            <h2>@Html.Raw(Model.Mensagem)</h2>
+        </div>
+
+    }
+}

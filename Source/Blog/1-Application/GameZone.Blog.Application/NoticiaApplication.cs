@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
-using GameZone.Blog.Application.DTOs;
+using GameZone.Blog.Application.DTOs.Response;
+using GameZone.Blog.Application.DTOs.Request;
 using GameZone.Blog.Application.Interfaces;
 using GameZone.Blog.Domain.Entities;
 using GameZone.Blog.Services.Interfaces;
+using GameZone.Domain.Contracts.Base;
+using System;
+using Microsoft.Extensions.Configuration;
 
 namespace GameZone.Blog.Application
 {
@@ -10,16 +14,31 @@ namespace GameZone.Blog.Application
     {
         private readonly INoticiaService _noticiaService;
         private IMapper _mapper;
+        private static bool _local_execution = false;
+        private readonly IConfiguration _configuration;
+        private static string containerBlobStorage = string.Empty;
 
-        public NoticiaApplication(INoticiaService noticiaService, IMapper mapper)
+
+        public NoticiaApplication(INoticiaService noticiaService, IMapper mapper, IConfiguration configuration)
         {
             _noticiaService = noticiaService;
             _mapper = mapper;
+            _configuration = configuration;
+            _local_execution = Boolean.Parse(_configuration.GetSection("EnableLocalExecution").Value);
+            containerBlobStorage = _configuration.GetSection("ConfigsAzure:ContainerBlobStorage").Value;
         }
 
-        public async Task<NoticiaDTO?> Create(CreateNoticiaDTO createNoticiaDTO)
+        public async Task<NoticiaDTO?> Create(CreateNoticiaDTO createNoticiaDTO, string? idUsuarioClaim)
         {
+            if (!_local_execution && !string.IsNullOrEmpty(createNoticiaDTO.UrlImagem))
+            {
+                createNoticiaDTO.UrlBlobStorage = _noticiaService.UploadBase64ImageBlobStorage(createNoticiaDTO.Database64Content, containerBlobStorage, createNoticiaDTO.UrlImagem);
+                createNoticiaDTO.UrlImagem = createNoticiaDTO.UrlBlobStorage;
+            }
+
             var noticia = _mapper.Map<Noticia>(createNoticiaDTO);
+
+            noticia.AspNetUsersId = idUsuarioClaim;
 
             await _noticiaService.Create(noticia);
 
@@ -29,6 +48,17 @@ namespace GameZone.Blog.Application
 
         public async Task Delete(int id)
         {
+            var noticia = await _noticiaService.GetById(id);
+            bool deletedImageBlobStorage = false;
+            if (noticia != null)
+            {
+                if(!string.IsNullOrEmpty(noticia.UrlImagem))
+                {
+                    var uri = new Uri(noticia.UrlImagem);
+                    deletedImageBlobStorage = _noticiaService.DeleteImageBlobStorage(uri, containerBlobStorage);
+                }
+            }
+
             await _noticiaService.Delete(id);
         }
 
@@ -42,7 +72,7 @@ namespace GameZone.Blog.Application
             return _mapper.Map<NoticiaDTO?>(await _noticiaService.GetById(id));
         }
 
-        public async Task<NoticiaDTO?> Update(NoticiaDTO updateNoticiaDTO)
+        public async Task<NoticiaDTO?> Update(UpdateNoticiaDTO updateNoticiaDTO)
         {
             var noticia = _mapper.Map<Noticia>(updateNoticiaDTO);
 

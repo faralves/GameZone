@@ -63,5 +63,33 @@ namespace GameZone.WebAPI.Core
             response.EnsureSuccessStatusCode();
             return true;
         }
+
+        public static byte[] GetDataStream(string url)
+        {
+            byte[] dataStream = null;
+
+            if (!string.IsNullOrEmpty(url) && File.Exists(url))
+            {
+                using (FileStream fileStream = new FileStream(url, FileMode.Open))
+                {
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        fileStream.CopyTo(memoryStream);
+                        dataStream = memoryStream.ToArray();
+                    }
+                }
+            }
+
+            return dataStream;
+        }
+        public static string GetDatabase64(byte[] content)
+        {
+            string base64 = null;
+
+            if (content is not null)
+                base64 = Convert.ToBase64String(content);
+
+            return base64;
+        }
     }
 }

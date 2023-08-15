@@ -1,0 +1,13 @@
+﻿@using GameZone.News.WebApp.Models.DTO.Request;
+@model CreateCommentDTO
+
+<h3>Adicionar um comentário</h3>
+<form action="Create" method="post" asp-route-NoticiaId="@Model.NoticiaId" asp-controller="Comment">
+    <input type="hidden" name="noticiaId" value="@Model.NoticiaId" />
+    <div>
+        <label asp-for="Comentario" class="control-label"></label>
+        <textarea asp-for="Comentario" class="form-control" />
+        <span asp-validation-for="Comentario" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Criar Comentário</button>
+</form>

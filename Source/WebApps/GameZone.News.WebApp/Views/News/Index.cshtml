@@ -1,0 +1,89 @@
+﻿@using GameZone.News.WebApp.Models.DTO.Response;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+@using X.PagedList;
+@model IPagedList<CreateNewsDTO>
+
+@{
+    // Configurações do PagedListRenderOptions
+    var renderOptions = new PagedListRenderOptions
+            {
+                DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                DisplayLinkToIndividualPages = false,
+                DisplayPageCountAndCurrentLocation = true,
+                MaximumPageNumbersToDisplay = 5,
+                PageCountAndCurrentLocationFormat = "  Página {0} de {1}.  ",
+                ItemSliceAndTotalFormat = "Exibindo {0} - {1} de {2} itens.",
+                LinkToPreviousPageFormat = "« Anterior  ",
+                LinkToNextPageFormat = "  Próxima »",
+                LinkToFirstPageFormat = "«« Primeira  ",
+                LinkToLastPageFormat = "  Última »»",
+                EllipsesFormat = "[...]",
+                ClassToApplyToFirstListItemInPager = null,
+                ClassToApplyToLastListItemInPager = null,
+                ContainerDivClasses = new[] { "pagination" },
+                UlElementClasses = new[] { "pagination" },
+                LiElementClasses = Enumerable.Empty<string>()
+            };
+}
+
+<h2>Gerenciamento das Postagens</h2>
+
+<form asp-action="Index" asp-controller="News" method="get" role="form" asp-route-returnurl="@ViewData["ReturnUrl"]" class="m-t">
+    <p><a class="btn btn-success" asp-action="Create">Criar um novo Post</a></p>
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Id</th>
+                        <th>Título</th>
+                        <th>Descrição</th>
+                        <th>Autor</th>
+                        <th>Data Publicação</th>
+                        <th>Data Atualização</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var post in Model)
+                    {
+                        <tr>
+                            <td>@post.Id</td>
+                            <td>@post.Titulo</td>
+                            <td>@post.Descricao</td>
+                            <td>@post.Autor</td>
+                            <td>@post.DataPublicacao.ToString("dd/MM/yyyy HH:mm")</td>
+                            @if (@post.DataAtualizacao.HasValue)
+                            {
+                                <td>@post.DataAtualizacao.Value.ToString("dd/MM/yyyy HH:mm")</td>
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+
+                            <td>
+                                <a class="btn btn-warning" asp-action="Edit" asp-route-id="@post.Id">Edit</a> |
+                                <a class="btn btn-danger" asp-action="Delete" asp-route-id="@post.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center">
+            @*@Html.PagedListPager(Model, page => Url.Action("Index", new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)*@
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page }), renderOptions)
+        </div>
+    }
+    else
+    {
+        <p>Não foram encontrados notícias.</p>
+    }
+</form>

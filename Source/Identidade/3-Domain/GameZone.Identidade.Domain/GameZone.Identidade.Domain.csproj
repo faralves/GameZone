@@ -8,4 +8,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="6.0.19" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\00-Building Blocks\Core\GameZone.Core\GameZone.Core.csproj" />
+  </ItemGroup>
 </Project>

@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.17.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\3-Domain\GameZone.Blog.Domain\GameZone.Blog.Domain.csproj" />
     <ProjectReference Include="..\..\4-Infra\GameZone.Blog.Infra\GameZone.Blog.Infra.csproj" />
   </ItemGroup>

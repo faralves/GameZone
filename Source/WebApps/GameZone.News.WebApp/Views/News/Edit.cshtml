@@ -1,0 +1,37 @@
+﻿@model GameZone.News.WebApp.Models.DTO.Request.UpdateNewsDTO
+
+<h2>Editar a Postagem</h2>
+
+<form asp-action="Edit" asp-route-id="@Model.Id" asp-controller="News" method="post" role="form" asp-route-returnurl="@ViewData["ReturnUrl"]" class="m-t" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="Titulo">Título</label>
+        <input asp-for="Titulo" class="form-control" />
+        <span asp-validation-for="Titulo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Descricao">Descrição</label>
+        <textarea asp-for="Descricao" class="form-control"></textarea>
+        <span asp-validation-for="Descricao" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Chapeu">Chapéu</label>
+        <input asp-for="Chapeu" class="form-control" />
+        <span asp-validation-for="Chapeu" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DataPublicacao">Data Publicação</label>
+        <input asp-for="DataPublicacao" class="form-control" readonly/>
+    </div>
+    <div class="form-group">
+        <label asp-for="UrlImagem" class="control-label"></label>
+        <input asp-for="UrlImagem" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <label asp-for="Arquivo" class="control-label"></label>
+        <input asp-for="Arquivo" type="file" class="form-control" />
+    </div>
+    <br />
+    <br />
+    <button type="submit" class="btn btn-primary">Salvar</button> &emsp;
+    <a class="btn btn-secondary" asp-action="Index">Voltar para a Lista de Postagens</a>
+</form>

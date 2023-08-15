@@ -1,0 +1,27 @@
+﻿@using Microsoft.AspNetCore.Http
+@using GameZone.News.WebApp.Extensions
+@using GameZone.WebAPI.Core.Usuario
+@inject IAspNetUser AppUser
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+
+<ul class="navbar-nav">
+    @if (AppUser.EstaAutenticado())
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" title="Manage">Olá @HttpContextAccessor.HttpContext.Session.GetString("SessionNome")</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Login" asp-action="Logout" asp-route-returnUrl="@Url.Action("Index", "Home")">Sair</a>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item" style="padding-right: 30px;">
+            <a class="btn btn-toolbar" asp-controller="Login" asp-action="CadastrarUsuario" asp-route-returnUrl="@Context.Request.Path">Crie sua conta</a>
+        </li>
+        <li class="nav-item">
+            <a class="btn btn-toolbar" asp-controller="Login" asp-action="Logar" asp-route-returnUrl="@Context.Request.Path">Login</a>
+        </li>
+    }
+</ul>

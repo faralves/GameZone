@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace GameZone.Identidade.Domain.Entidades
+namespace GameZone.Identidade.Domain.Entities
 {
     public class Usuario : IdentityUser
     {

@@ -15,4 +15,8 @@
     <ProjectReference Include="..\..\2-Services\GameZone.Identidade.Services\GameZone.Identidade.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\Response\" />
+  </ItemGroup>
+
 </Project>

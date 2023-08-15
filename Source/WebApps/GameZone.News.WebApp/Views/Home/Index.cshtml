@@ -1,0 +1,17 @@
+﻿@using GameZone.News.WebApp.Models.DTO.Response;
+@model List<CreateNewsDTO>
+
+
+<h1>Bem-vindo ao GameZone!</h1>
+
+<form class="m-t" role="form" asp-route-returnurl="@ViewData["ReturnUrl"]" method="get">
+    @foreach (var newsItem in Model)
+    {
+        <div>
+            <h2>@newsItem.Titulo</h2>
+            <p>@newsItem.DataPublicacao.ToString("dd/MM/yyyy hh:mm")</p>
+            <p>@newsItem.Descricao</p>
+            <a asp-action="GetById" asp-controller="News" asp-route-id="@newsItem.Id">Leia mais</a>
+        </div>
+    }
+</form>

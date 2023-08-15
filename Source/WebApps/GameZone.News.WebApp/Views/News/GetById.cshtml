@@ -1,0 +1,46 @@
+﻿@using GameZone.News.WebApp.Models.DTO.Response;
+@model NewsDto;
+
+<h2>@Model.Titulo</h2>
+<p>@Model.Chapeu</p>
+<p>@Model.Conteudo</p>
+<p>Autor: @Model.Autor</p>
+@if (Model.DataAtualizacao.HasValue)
+{
+    <p>Data: @Model.DataAtualizacao.Value.ToShortDateString()</p>
+}
+else
+{
+    <p>Data: @Model.DataPublicacao.Value.ToShortDateString()</p>
+}
+
+<h4>Commentários</h4>
+@if (Model.Comentarios != null && Model.Comentarios.Any())
+{
+    @foreach (var comment in Model.Comentarios)
+    {
+        <div>
+            <p>@comment.NomeUsuario: @comment.Comentario</p>
+            @if (comment.DataAtualizacao.HasValue)
+            {
+                <p>Data: @comment.DataAtualizacao.Value.ToShortDateString()</p>
+            }
+            else
+            {
+                <p>Data: @comment.DataCriacao.ToShortDateString()</p>
+            }
+        </div>
+    }
+}
+
+<form asp-action="CreateComment" method="post" asp-route-NoticiaId="@Model.Id" asp-controller="News" role="form" asp-route-returnurl="@ViewData["ReturnUrl"]" class="m-t" enctype="multipart/form-data">
+    <h5>Adicionar um comentário</h5>
+    <div class="form-group">
+        <label asp-for="CreateComentario.Comentario" class="control-label"></label>
+        <textarea name="Comentario" class="form-control"></textarea>
+        <span asp-validation-for="CreateComentario.Comentario" class="text-danger"></span>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Criar Comentário</button>  &emsp;
+    <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Voltar</a>
+</form>
