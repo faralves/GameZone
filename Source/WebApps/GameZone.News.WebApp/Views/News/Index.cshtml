@@ -3,6 +3,11 @@
 @using X.PagedList.Web.Common;
 @using X.PagedList;
 @model IPagedList<CreateNewsDTO>
+@using Microsoft.AspNetCore.Http
+@using GameZone.News.WebApp.Extensions
+@using GameZone.WebAPI.Core.Usuario
+@inject IAspNetUser AppUser
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 @{
     // Configurações do PagedListRenderOptions
@@ -33,7 +38,11 @@
 <h2>Gerenciamento das Postagens</h2>
 
 <form asp-action="Index" asp-controller="News" method="get" role="form" asp-route-returnurl="@ViewData["ReturnUrl"]" class="m-t">
-    <p><a class="btn btn-success" asp-action="Create">Criar um novo Post</a></p>
+
+    @if (HttpContextAccessor?.HttpContext?.User.Identity?.IsAuthenticated == true && HttpContextAccessor.HttpContext.User.HasClaim(c => c.Type == "PodeInserirNoticia" && c.Value == "true"))
+    {
+        <p><a class="btn btn-success" asp-action="Create">Criar um novo Post</a></p>
+    }
 
     @if (Model.Any())
     {
@@ -47,7 +56,11 @@
                         <th>Autor</th>
                         <th>Data Publicação</th>
                         <th>Data Atualização</th>
-                        <th></th>
+                        @if (HttpContextAccessor?.HttpContext?.User.Identity?.IsAuthenticated == true && (HttpContextAccessor.HttpContext.User.HasClaim(c => c.Type == "PodeEditarNoticia" && c.Value == "true") || HttpContextAccessor.HttpContext.User.HasClaim(c => c.Type == "PodeExcluirNoticia" && c.Value == "true")))
+                        {
+
+                            <th></th>
+                        }
                     </tr>
                 </thead>
                 <tbody>
@@ -68,10 +81,19 @@
                                 <td></td>
                             }
 
-                            <td>
-                                <a class="btn btn-warning" asp-action="Edit" asp-route-id="@post.Id">Edit</a> |
-                                <a class="btn btn-danger" asp-action="Delete" asp-route-id="@post.Id">Delete</a>
-                            </td>
+                            @if (HttpContextAccessor?.HttpContext?.User.Identity?.IsAuthenticated == true && (HttpContextAccessor.HttpContext.User.HasClaim(c => c.Type == "PodeEditarNoticia" && c.Value == "true") || HttpContextAccessor.HttpContext.User.HasClaim(c => c.Type == "PodeExcluirNoticia" && c.Value == "true")))
+                            {
+                                <td>
+                                    @if (HttpContextAccessor?.HttpContext?.User.Identity?.IsAuthenticated == true && HttpContextAccessor.HttpContext.User.HasClaim(c => c.Type == "PodeEditarNoticia" && c.Value == "true"))
+                                    {
+                                        <a class="btn btn-warning" asp-action="Edit" asp-route-id="@post.Id">Edit</a> <label> | </label>
+                                    }
+                                    @if (HttpContextAccessor?.HttpContext?.User.Identity?.IsAuthenticated == true && HttpContextAccessor.HttpContext.User.HasClaim(c => c.Type == "PodeExcluirNoticia" && c.Value == "true"))
+                                    {
+                                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@post.Id">Delete</a>
+                                    }
+                                </td>
+                            }
                         </tr>
                     }
                 </tbody>

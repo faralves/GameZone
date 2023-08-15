@@ -7,6 +7,7 @@ using Polly.Retry;
 using Polly;
 using GameZone.WebAPI.Core;
 using GameZone.WebAPI.Core.Usuario;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace GameZone.News.WebApp.Configurations
 {
@@ -14,19 +15,17 @@ namespace GameZone.News.WebApp.Configurations
     {
         public static WebApplicationBuilder ResolveDependencies(this WebApplicationBuilder builder)
         {
+            IdentityConfig.AddIdentityConfiguration(builder);
+
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddDistributedMemoryCache();
 
-            //services.AddDataProtection()
-            //.PersistKeysToFileSystem(new System.IO.DirectoryInfo(@"/var/data_protection_keys/"))
-            //.SetApplicationName("GameZone");
-
-            //builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<IAspNetUser, AspNetUser>();
 
             builder.Services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
 
             builder.Services.AddHttpClient<INewsService, NewsService>()
+                .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                 .AddPolicyHandler(PollyExtensions.EsperarTentar())
                 .AllowSelfSignedCertificate()
                 .AddTransientHttpErrorPolicy(
@@ -45,9 +44,7 @@ namespace GameZone.News.WebApp.Configurations
                 options.Cookie.IsEssential = true;
             });
 
-            JwtConfig.AddJwtConfiguration(builder);
-
-            //IdentityConfig.AddIdentityConfiguration(builder);
+            //JwtConfig.AddJwtConfiguration(builder);
 
             builder.Services.AddControllersWithViews();
 

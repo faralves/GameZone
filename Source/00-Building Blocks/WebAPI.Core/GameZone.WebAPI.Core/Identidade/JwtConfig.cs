@@ -60,15 +60,15 @@ namespace GameZone.WebAPI.Core
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
-            .AddCookie(options =>
-            {
-                //options.LoginPath = "/logar";
-                //options.AccessDeniedPath = "/erro/403";
-                //options.Cookie.Name = "GameZone";
-                //options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromHours(8); ; // Configure o tempo de expiração adequado
-                options.SlidingExpiration = true;
-            })
+            //.AddCookie(options =>
+            //{
+            //    //options.LoginPath = "/logar";
+            //    //options.AccessDeniedPath = "/erro/403";
+            //    //options.Cookie.Name = "GameZone";
+            //    //options.Cookie.HttpOnly = true;
+            //    options.ExpireTimeSpan = TimeSpan.FromHours(8); ; // Configure o tempo de expiração adequado
+            //    options.SlidingExpiration = true;
+            //})
             .AddJwtBearer(x =>
             {
                 x.RequireHttpsMetadata = true;

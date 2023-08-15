@@ -3,6 +3,7 @@ using GameZone.Blog.API.Authorization;
 using GameZone.Blog.Application.DTOs.Request;
 using GameZone.Blog.Application.Interfaces;
 using GameZone.Blog.Domain.Entities;
+using GameZone.WebAPI.Core.Usuario;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -52,7 +53,7 @@ namespace GameZone.Blog.API.Controllers
             {
                 //var claims = User.Claims.ToList();
 
-                var idUsuarioClaim = User.FindFirst("id")?.Value;
+                var idUsuarioClaim = User.GetUserId();
 
                 var noticia = await _noticiaApplication.Create(createNoticia, idUsuarioClaim);
                 return CreatedAtAction(nameof(Create), new { id = noticia.Id }, noticia);

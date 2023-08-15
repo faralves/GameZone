@@ -25,7 +25,7 @@ namespace GameZone.News.WebApp.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (_appUser.EstaAutenticado())
             {
-                if (string.IsNullOrEmpty(returnUrl)) 
+                if (string.IsNullOrEmpty(returnUrl))
                     return RedirectToAction("Index", "Home");
 
                 return LocalRedirect(returnUrl);
@@ -47,18 +47,10 @@ namespace GameZone.News.WebApp.Controllers
             if (resposta != null)
                 await _autenticacaoService.RealizarLogin(resposta);
 
-            if (_appUser.EstaAutenticado())
-            {
-                if (string.IsNullOrEmpty(returnUrl)) 
-                    return RedirectToAction("Index", "Home");
+            if (string.IsNullOrEmpty(returnUrl))
+                return RedirectToAction("Index", "Home");
 
-                return LocalRedirect(returnUrl);
-            }
-            else
-            {
-                ModelState.AddModelError("", "Credenciais inválidas");
-                return View();
-            }
+            return LocalRedirect(returnUrl);
         }
 
         [HttpGet]
@@ -87,23 +79,17 @@ namespace GameZone.News.WebApp.Controllers
             if (!ModelState.IsValid)
                 return View(createUserDto);
 
+            if(User.Identity.IsAuthenticated)
+                createUserDto.IdUsuarioInclusao = User.GetUserId();
+
             var resposta = await _autenticacaoService.CadastrarUsuario(createUserDto);
 
             if (resposta != null)
                 await _autenticacaoService.RealizarLogin(resposta);
 
-            if (_appUser.EstaAutenticado())
-            {
-                if (string.IsNullOrEmpty(returnUrl)) 
-                    return RedirectToAction("Index", "Home");
-
-                return LocalRedirect(returnUrl);
-            }
-            else
-            {
-                ModelState.AddModelError("", "Credenciais inválidas");
-                return View();
-            }
+            if (string.IsNullOrEmpty(returnUrl))
+                return RedirectToAction("Index", "Home");
+            return LocalRedirect(returnUrl);
         }
     }
 }
