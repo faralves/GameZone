@@ -6,11 +6,18 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
-COPY ["Source/0-Presentation/APIs/GameZone.Identidade.API/GameZone.Identidade.API.csproj", "Source/0-Presentation/APIs/GameZone.Identidade.API/"]
-RUN dotnet restore "Source/0-Presentation/APIs/GameZone.Identidade.API/GameZone.Identidade.API.csproj"
+WORKDIR /Source
+COPY ["./00-Building Blocks/Core/GameZone.Core/GameZone.Core.csproj", "00-Building Blocks/Core/GameZone.Core/"]
+COPY ["./00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/GameZone.WebAPI.Core.csproj", "00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/"]
+COPY ["./Identidade/0-Presentation/API/GameZone.Identidade.API/GameZone.Identidade.API.csproj", "Identidade/0-Presentation/API/GameZone.Identidade.API/"]
+COPY ["./Identidade/1-Application/GameZone.Identidade.Application/GameZone.Identidade.Application.csproj", "Identidade/1-Application/GameZone.Identidade.Application/"]
+COPY ["./Identidade/2-Services/GameZone.Identidade.Services/GameZone.Identidade.Services.csproj", "Identidade/2-Services/GameZone.Identidade.Services/"]
+COPY ["./Identidade/3-Domain/GameZone.Identidade.Domain/GameZone.Identidade.Domain.csproj", "Identidade/3-Domain/GameZone.Identidade.Domain/"]
+COPY ["./Identidade/4-Infra/GameZone.Identidade.Infra/GameZone.Identidade.Infra.csproj", "Identidade/4-Infra/GameZone.Identidade.Infra/"]
+
+RUN dotnet restore "Identidade/0-Presentation/API/GameZone.Identidade.API/GameZone.Identidade.API.csproj"
 COPY . .
-WORKDIR "/src/Source/0-Presentation/APIs/GameZone.Identidade.API"
+WORKDIR "Identidade/0-Presentation/API/GameZone.Identidade.API"
 RUN dotnet build "GameZone.Identidade.API.csproj" -c Release -o /app/build
 
 FROM build AS publish

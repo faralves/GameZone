@@ -6,11 +6,13 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
-COPY ["Source/0-Presentation/WebApps/GameZone.News.WebApp/GameZone.News.WebApp.csproj", "Source/0-Presentation/WebApps/GameZone.News.WebApp/"]
-RUN dotnet restore "Source/0-Presentation/WebApps/GameZone.News.WebApp/GameZone.News.WebApp.csproj"
+WORKDIR /Source
+COPY ["./WebApps/GameZone.News.WebApp/GameZone.News.WebApp.csproj", "WebApps/GameZone.News.WebApp/"]
+COPY ["./00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/GameZone.WebAPI.Core.csproj", "00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/"]
+
+RUN dotnet restore "WebApps/GameZone.News.WebApp/GameZone.News.WebApp.csproj"
 COPY . .
-WORKDIR "/src/Source/0-Presentation/WebApps/GameZone.News.WebApp"
+WORKDIR "WebApps/GameZone.News.WebApp"
 RUN dotnet build "GameZone.News.WebApp.csproj" -c Release -o /app/build
 
 FROM build AS publish

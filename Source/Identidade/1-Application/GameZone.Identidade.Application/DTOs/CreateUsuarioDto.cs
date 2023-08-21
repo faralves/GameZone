@@ -16,7 +16,7 @@ namespace GameZone.Identidade.Application.DTOs
         [Required(ErrorMessage = "O campo {0} é obrigatório.")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        [Range(typeof(DateTime), "01/01/1900", "31/12/9999", ErrorMessage = "A data de nascimento deve estar entre 01/01/1900 e 31/12/9999.")]
+        [Range(typeof(DateTime), "1900-01-01", "9999-12-31", ErrorMessage = "A data de nascimento deve estar entre 01/01/1900 e 31/12/9999.")]
         public DateTime DataNascimento { get; set; }
 
         [Required(ErrorMessage = "O Campo '{0}' é Obrigatório.")]
