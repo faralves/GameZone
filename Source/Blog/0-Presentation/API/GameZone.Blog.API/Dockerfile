@@ -6,11 +6,17 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
-COPY ["Source/0-Presentation/APIs/GameZone.Blog.API/GameZone.Blog.API.csproj", "Source/0-Presentation/APIs/GameZone.Blog.API/"]
-RUN dotnet restore "Source/0-Presentation/APIs/GameZone.Blog.API/GameZone.Blog.API.csproj"
+WORKDIR /Source
+COPY ["./00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/GameZone.WebAPI.Core.csproj", "00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/"]
+COPY ["./Blog/0-Presentation/API/GameZone.Blog.API/GameZone.Blog.API.csproj", "Blog/0-Presentation/API/GameZone.Blog.API/"]
+COPY ["./Blog/1-Application/GameZone.Blog.Application/GameZone.Blog.Application.csproj", "Blog/1-Application/GameZone.Blog.Application/"]
+COPY ["./Blog/2-Services/GameZone.Blog.Services/GameZone.Blog.Services.csproj", "Blog/2-Services/GameZone.Blog.Services/"]
+COPY ["./Blog/3-Domain/GameZone.Blog.Domain/GameZone.Blog.Domain.csproj", "Blog/3-Domain/GameZone.Blog.Domain/"]
+COPY ["./Blog/4-Infra/GameZone.Blog.Infra/GameZone.Blog.Infra.csproj", "Blog/4-Infra/GameZone.Blog.Infra/"]
+
+RUN dotnet restore "Blog/0-Presentation/API/GameZone.Blog.API/GameZone.Blog.API.csproj"
 COPY . .
-WORKDIR "/src/Source/0-Presentation/APIs/GameZone.Blog.API"
+WORKDIR "Blog/0-Presentation/API/GameZone.Blog.API"
 RUN dotnet build "GameZone.Blog.API.csproj" -c Release -o /app/build
 
 FROM build AS publish

@@ -20,6 +20,10 @@ namespace GameZone.News.WebApp.Configurations
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddDistributedMemoryCache();
 
+            //builder.Services.AddDataProtection()
+            //    .PersistKeysToFileSystem(new System.IO.DirectoryInfo(@"/var/data_protection_keys/"))
+            //    .SetApplicationName("GameZone");
+
             builder.Services.AddScoped<IAspNetUser, AspNetUser>();
 
             builder.Services.AddTransient<HttpClientAuthorizationDelegatingHandler>();

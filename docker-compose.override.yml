@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+  gamezone.news.webapp:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://*:7043
+    volumes:
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

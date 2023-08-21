@@ -1,0 +1,93 @@
+version: '3.4'
+
+services:
+    gamezone.news.webapp:
+        image: ${DOCKER_REGISTRY-}gamezonenewswebapp
+        build:
+            context: .
+            dockerfile: Source/WebApps/GameZone.News.WebApp/Dockerfile
+        restart: always
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=http://*:7043
+        networks:
+            - gamezone
+        depends_on:
+            - gamezone.identidade.api
+            - gameZone.blog.api
+
+    gamezone.identidade.api:
+        image: ${DOCKER_REGISTRY-}gamezoneidentidadeapi
+        container_name: gamezone-api-identidade    
+        build: 
+            context: .
+            dockerfile: Source/Identidade/0-Presentation/API/gamezone.Identidade.API/Dockerfile
+        restart: always    
+        ports:
+            - "5501:5501"
+        environment: 
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=https://+:5501;http://+5502
+            - ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-certificate.pfx
+        volumes:
+            - ./certs:/https:ro
+        networks:
+            - gamezone
+        depends_on:
+            - gamezone.sqlserver
+
+    gameZone.blog.api:
+        image:  ${DOCKER_REGISTRY-}gamezoneblogapi
+        container_name: gamezone-api-blog    
+        build: 
+            context: .
+            dockerfile: Source/Blog/0-Presentation/API/gamezone.Blog.API/Dockerfile
+        restart: always    
+        ports:
+            - "5401:5401"
+        environment: 
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=https://+:5401;http://+5402
+            - ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-certificate.pfx
+        volumes:
+            - ./certs:/https:ro
+        networks:
+            - gamezone
+        depends_on:
+            - gamezone.identidade.api
+            - gamezone.sqlserver
+
+    gamezone.sqlserver:
+        image: ${DOCKER_REGISTRY-}gamezonesqlserver
+        container_name: gamezone-sql-server
+        build: 
+            context: ./sql
+            dockerfile: Dockerfile
+        ports:
+            - "1435:1433"
+        environment:
+            SA_PASSWORD: "Mudar123intrA"
+            ACCEPT_EULA: "Y"
+        networks:
+            - gamezone
+
+    gamezone.gamezoneserver:
+        image:  ${DOCKER_REGISTRY-}gamezonegamezoneserver
+        container_name: gamezone-server    
+        build: 
+            context: ./docker
+            dockerfile: nginx/Dockerfile
+        restart: always 
+        ports:
+            - "80:80"
+            - "443:443"
+        networks:
+            - gamezone
+        depends_on:
+            - gamezone.news.webapp
+
+networks:
+    gamezone:
+        driver: bridge
