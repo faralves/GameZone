@@ -7,6 +7,7 @@
     <UserSecretsId>0483fbca-33c3-4e9c-9b85-5fa871a5f853</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..\..\..</DockerfileContext>
+    <DockerfileFastModeStage>debug</DockerfileFastModeStage>
   </PropertyGroup>
 
   <ItemGroup>

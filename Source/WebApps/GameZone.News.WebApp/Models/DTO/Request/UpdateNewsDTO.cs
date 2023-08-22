@@ -18,9 +18,9 @@ namespace GameZone.News.WebApp.Models.DTO.Request
         [MaxLength(255, ErrorMessage = "{1} é o tamanho máximo para o campo '{0}'")]
         public string Chapeu { get; set; } = string.Empty;
 
+        //[DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        //[Range(typeof(DateTime), "1900-01-01", "9999-12-31", ErrorMessage = "A data de publicação deve estar entre 01/01/1900 e 31/12/9999.")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        [Range(typeof(DateTime), "1900-01-01", "9999-12-31", ErrorMessage = "A data de nascimento deve estar entre 01/01/1900 e 31/12/9999.")]
         public DateTime DataPublicacao { get; set; }
 
         [MaxLength(255, ErrorMessage = "{1} é o tamanho máximo para o campo '{0}'")]
@@ -28,7 +28,7 @@ namespace GameZone.News.WebApp.Models.DTO.Request
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime? DataAtualizacao { get; set; }
+        public DateTime? DataAtualizacao { get; set; } = DateTime.Now;
 
         [Display(Name = "Arquivo")]
         public IFormFile? Arquivo { get; set; }

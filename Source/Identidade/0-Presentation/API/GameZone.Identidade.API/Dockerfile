@@ -5,6 +5,9 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+FROM base AS debug
+RUN tdnf install procps-ng -y
+
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /Source
 COPY ["./00-Building Blocks/Core/GameZone.Core/GameZone.Core.csproj", "00-Building Blocks/Core/GameZone.Core/"]
