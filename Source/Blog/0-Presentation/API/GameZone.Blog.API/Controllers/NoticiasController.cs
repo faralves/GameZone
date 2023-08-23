@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GameZone.Blog.API.Controllers
 {
     [ApiController]
+    [Produces("application/json")]
     [Route("api/[controller]")]
     public class NoticiasController : ControllerBase, IGenericControllerActions<CreateNoticiaDTO, int, UpdateNoticiaDTO>
     {
@@ -82,7 +83,13 @@ namespace GameZone.Blog.API.Controllers
 
             try
             {
-                var noticiaAtualizada = await _noticiaApplication.Update(noticia);
+                var idUsuario = string.Empty;
+                if (User.Identity.IsAuthenticated)
+                    idUsuario = User.GetUserId();
+                else
+                    return Unauthorized();
+
+                var noticiaAtualizada = await _noticiaApplication.Update(noticia, idUsuario);
                 return NoContent();
             }
             catch (Exception ex)

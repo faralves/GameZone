@@ -46,6 +46,11 @@ namespace GameZone.News.WebApp.Controllers
 
             if (resposta != null)
                 await _autenticacaoService.RealizarLogin(resposta);
+            else
+            {
+                ModelState.AddModelError("Login", "As Credenciais não conferem ou não existem.");
+                return View(loginDTO);
+            }
 
             if (string.IsNullOrEmpty(returnUrl))
                 return RedirectToAction("Index", "Home");

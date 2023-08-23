@@ -46,7 +46,7 @@ namespace GameZone.Blog.Application
             return _mapper.Map<ComentarioDTO?>(await _comentarioService.GetById(id));
         }
 
-        public async Task<ComentarioDTO?> Update(UpdateComentarioDTO updateComentarioDTO)
+        public async Task<ComentarioDTO?> Update(UpdateComentarioDTO updateComentarioDTO, string idUsuario= "")
         {
             var comentario = _mapper.Map<Comentarios>(updateComentarioDTO);
 

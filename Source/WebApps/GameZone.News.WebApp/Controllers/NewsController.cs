@@ -1,5 +1,6 @@
 ﻿using GameZone.News.WebApp.Models.DTO.Request;
 using GameZone.News.WebApp.Models.Interfaces;
+using GameZone.WebAPI.Core.Usuario;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -9,10 +10,14 @@ namespace GameZone.News.WebApp.Controllers
     public class NewsController : Controller
     {
         private readonly INewsService _newsService;
+        private readonly IConfiguration _configuration;
+        private static bool _local_execution = false;
 
-        public NewsController(INewsService newsService)
+        public NewsController(INewsService newsService, IConfiguration configuration)
         {
             _newsService = newsService;
+            _configuration = configuration;
+            _local_execution = bool.Parse(_configuration.GetSection("EnableLocalExecution").Value);
         }
 
         [HttpGet]
@@ -36,6 +41,8 @@ namespace GameZone.News.WebApp.Controllers
                 return NotFound();
             }
             noticia.CreateComentario = new Models.DTO.Response.CreateCommentDTO() {Comentario = string.Empty};
+            ViewBag.LocalExecution = _local_execution;
+
             return View(noticia);
         }
 
@@ -83,6 +90,9 @@ namespace GameZone.News.WebApp.Controllers
                 return View(updateNewsDto);
             }
 
+            if (User.Identity.IsAuthenticated)
+                updateNewsDto.UsuarioId = new Guid(User.GetUserId());
+
             await _newsService.UpdateNewsAsync(updateNewsDto);
             return RedirectToAction("Index");
         }
@@ -98,7 +108,7 @@ namespace GameZone.News.WebApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                if(createCommentDto?.NoticiaId != 0)
+                if (createCommentDto?.NoticiaId != 0)
                     return RedirectToAction("GetById", new { id = createCommentDto.NoticiaId });
                 else
                     return RedirectToAction("Index", "Home");

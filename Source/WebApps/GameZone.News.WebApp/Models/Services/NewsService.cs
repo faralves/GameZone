@@ -13,28 +13,28 @@ namespace GameZone.News.WebApp.Models.Services
     {
         private readonly IConfiguration _configuration;
         private HttpClient _httpClient;
-        private HttpClient _httpClientComentario;
+        //private HttpClient _httpClientComentario;
         private IAutenticacaoService _autenticacaoService;
         private readonly IAspNetUser _user;
         private static bool _local_execution = false;
         private static string _local_path_file_images = "";
 
-        private string _url_base_address = string.Empty;
-        private string _url_base_comentario_address = string.Empty;
+        private string _url_address = string.Empty;
+        private string _endPointNoticia = string.Empty;
+        private string _endPointComentario = string.Empty;
 
-        public NewsService(IConfiguration configuration, IAspNetUser user, HttpClient httpClient, HttpClient httpClientComentario, IAutenticacaoService autenticacaoService)
+        public NewsService(IConfiguration configuration, IAspNetUser user, HttpClient httpClient, IAutenticacaoService autenticacaoService)
         {
             _configuration = configuration;
-            _url_base_address = _configuration.GetSection("BlogUrl").Value;
-            _url_base_address += "/api/Noticias";
-
-            httpClient.BaseAddress = new Uri(_url_base_address);
+            _url_address = _configuration.GetSection("BlogUrl").Value;
+            httpClient.BaseAddress = new Uri(_url_address);
             _httpClient = httpClient;
+            
+            _endPointNoticia = _url_address + "/api/Noticias";
+            _endPointComentario = _url_address + "/api/Comentario";
 
-            _url_base_comentario_address = _configuration.GetSection("BlogUrl").Value;
-            _url_base_comentario_address += "/api/Comentario";
-            httpClientComentario.BaseAddress = new Uri(_url_base_comentario_address);
-            _httpClientComentario = httpClientComentario;
+            //httpClientComentario.BaseAddress = new Uri(_url_base_comentario_address);
+            //_httpClientComentario = httpClientComentario;
 
             _user = user;
 
@@ -45,12 +45,19 @@ namespace GameZone.News.WebApp.Models.Services
 
         public async Task<IEnumerable<DTO.Response.CreateNewsDTO>> GetAllNewsAsync()
         {
-            string endpoint = $"{_url_base_address}";
+            //_url_base_address = _url_base_address.Replace("/api/Comentario", "");
+            //_url_base_address += "/api/Noticias";
+            string endpoint = $"{_endPointNoticia}";
             var response = await _httpClient.GetAsync(endpoint);
             if (response.IsSuccessStatusCode)
             {
                 var newsJson = await response.Content.ReadAsStringAsync();
                 var news = JsonConvert.DeserializeObject<List<DTO.Response.CreateNewsDTO>>(newsJson);
+                foreach (var noticia in news)
+                {
+                    var usuarioAutor = await _autenticacaoService.GetUserDto(noticia.AspNetUsersId);
+                    noticia.Autor = usuarioAutor.Name;
+                }
                 return news;
             }
             else
@@ -63,7 +70,10 @@ namespace GameZone.News.WebApp.Models.Services
             createNewsDto = AtualizarInfosImagem(createNewsDto);
 
             var newsContent = ObterConteudo(createNewsDto);
-            string endpoint = $"{_url_base_address}";
+
+            //_url_base_address = _url_base_address.Replace("/api/Comentario", "");
+            //_url_base_address += "/api/Noticias";
+            string endpoint = $"{_endPointNoticia}";
 
             var response = await _httpClient.PostAsync(endpoint, newsContent);
         }
@@ -103,8 +113,9 @@ namespace GameZone.News.WebApp.Models.Services
 
         public async Task<DTO.Request.UpdateNewsDTO?> GetNewsByIdAsync(int id)
         {
-            //var client = await GetHttpClientAsync(false);
-            string endpoint = $"{_url_base_address}/{id}";
+            //_url_base_address = _url_base_address.Replace("/api/Comentario", "");
+            //_url_base_address += "/api/Noticias";
+            string endpoint = $"{_endPointNoticia}/{id}";
             var response = await _httpClient.GetAsync(endpoint);
             if (response.IsSuccessStatusCode)
             {
@@ -120,21 +131,31 @@ namespace GameZone.News.WebApp.Models.Services
 
         public async Task UpdateNewsAsync(DTO.Request.UpdateNewsDTO updateNewsDto)
         {
+            var usuarioAutor = await _autenticacaoService.GetUserDto(updateNewsDto.UsuarioId);
+            updateNewsDto.Autor = usuarioAutor.Name;
+
             var newsContent = ObterConteudo(updateNewsDto);
-            string endpoint = $"{_url_base_address}";
+
+            //_url_base_address = _url_base_address.Replace("/api/Comentario", "");
+            //_url_base_address += "/api/Noticias";
+            string endpoint = $"{_endPointNoticia}/{updateNewsDto.Id}";
 
             var response = await _httpClient.PutAsync(endpoint, newsContent);
         }
 
         public async Task DeleteNewsAsync(int id)
         {
-            string endpoint = $"{_url_base_address}/{id}";
+            //_url_base_address = _url_base_address.Replace("/api/Comentario", "");
+            //_url_base_address += "/api/Noticias";
+            string endpoint = $"{_endPointNoticia}/{id}";
             var response = await _httpClient.DeleteAsync(endpoint);
         }
 
         public async Task<DTO.Response.NewsDto> GetById(int id)
         {
-            string endpoint = $"{_url_base_address}/{id}";
+            //_url_base_address = _url_base_address.Replace("/api/Comentario", "");
+            //_url_base_address += "/api/Noticias";
+            string endpoint = $"{_endPointNoticia}/{id}";
             var response = await _httpClient.GetAsync(endpoint);
             if (response.IsSuccessStatusCode)
             {
@@ -142,6 +163,9 @@ namespace GameZone.News.WebApp.Models.Services
                 var consulta = JsonConvert.DeserializeObject<DTO.Response.NewsDto>(consultaJson);
                 if(consulta != null)
                 {
+                    var usuarioAutor = await _autenticacaoService.GetUserDto(consulta.AspNetUsersId);
+                    consulta.Autor = usuarioAutor.Name;
+
                     consulta.Comentarios = await GetCommentByNoticiaId(id);
 
                     if(consulta.Comentarios != null)
@@ -164,10 +188,12 @@ namespace GameZone.News.WebApp.Models.Services
         }
         public async Task<ICollection<CommentDTO>> GetCommentByNoticiaId(int id)
         {
-            _url_base_comentario_address += "/GetByNoticiaId";
+            ////_url_base_comentario_address += "/GetByNoticiaId";
+            //_url_base_address = _url_base_address.Replace("/api/Noticias", "");
+            //_url_base_address += "/api/Comentario";
 
-            string endpoint = $"{_url_base_comentario_address}/{id}";
-            var response = await _httpClientComentario.GetAsync(endpoint);
+            string endpoint = $"{_endPointComentario}/GetByNoticiaId/{id}";
+            var response = await _httpClient.GetAsync(endpoint);
             if (response.IsSuccessStatusCode)
             {
                 var consultaJson = await response.Content.ReadAsStringAsync();
@@ -183,10 +209,12 @@ namespace GameZone.News.WebApp.Models.Services
 
         public async Task CreateCommentAsync(DTO.Request.CreateCommentDTO createCommentDto)
         {
-            _httpClient.BaseAddress = new Uri(_url_base_comentario_address); 
+            //_httpClient.BaseAddress = new Uri(_url_base_comentario_address);
+            //_url_base_address = _url_base_address.Replace("/api/Noticias", "");
+            //_url_base_address += "/api/Comentario";
 
             var newsContent = ObterConteudo(createCommentDto);
-            string endpoint = $"{_url_base_comentario_address}";
+            string endpoint = $"{_endPointComentario}";
 
             var response = await _httpClient.PostAsync(endpoint, newsContent);
         }

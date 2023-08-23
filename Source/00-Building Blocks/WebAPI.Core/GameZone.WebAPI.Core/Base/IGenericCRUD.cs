@@ -11,7 +11,7 @@ namespace GameZone.Domain.Contracts.Base
         Task<S?> Create(T entity, string? idUsuarioClaim);
         Task<S?> GetById(Y id);
         Task<IEnumerable<S>> GetAll();
-        Task<S?> Update(R entity);
+        Task<S?> Update(R entity, string idUsuario);
         Task Delete(Y id);
     }
 }

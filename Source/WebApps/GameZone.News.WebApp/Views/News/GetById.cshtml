@@ -1,17 +1,37 @@
-﻿@using GameZone.News.WebApp.Models.DTO.Response;
+﻿@using Microsoft.AspNetCore.Http
+@using GameZone.News.WebApp.Extensions
+@using GameZone.WebAPI.Core.Usuario
+@inject IAspNetUser AppUser
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@using GameZone.News.WebApp.Models.DTO.Response;
 @model NewsDto;
 
+@{
+    ViewData["Title"] = "Postagem";
+    var localExecution = ViewBag.LocalExecution as bool?;
+}
+
 <h2>@Model.Titulo</h2>
-<p>@Model.Chapeu</p>
-<p>@Model.Conteudo</p>
-<p>Autor: @Model.Autor</p>
-@if (Model.DataAtualizacao.HasValue)
+@if (localExecution.HasValue && localExecution.Value)
 {
-    <p>Data: @Model.DataAtualizacao.Value.ToShortDateString()</p>
+    <img src="data:image/png;base64,@Model.Database64Content" alt="@Model.Titulo" class="card-img-top  image-noticia-id" />
 }
 else
 {
-    <p>Data: @Model.DataPublicacao.Value.ToShortDateString()</p>
+    <img src="@Model.UrlImagem" class="card-img-top  image-noticia-id" alt="@Model.Titulo">
+}
+
+<p><b>@Model.Chapeu</b></p>
+<p>@Model.Conteudo</p>
+<p><b>Autor:</b> @Model.Autor</p>
+@if (Model.DataAtualizacao.HasValue)
+{
+    <p><b>Data:</b> @Model.DataAtualizacao.Value.ToString("dd/MM/yyyy HH:mm")</p>
+}
+else
+{
+    <p><b>Data:</b>: @Model.DataPublicacao.Value.ToString("dd/MM/yyyy HH:mm")</p>
 }
 
 <h4>Commentários</h4>
@@ -19,15 +39,15 @@ else
 {
     @foreach (var comment in Model.Comentarios)
     {
-        <div>
-            <p>@comment.NomeUsuario: @comment.Comentario</p>
+        <div class="comment-container">
+            <p><b>@comment.NomeUsuario:</b> @comment.Comentario</p>
             @if (comment.DataAtualizacao.HasValue)
             {
-                <p>Data: @comment.DataAtualizacao.Value.ToShortDateString()</p>
+                <p><b>Data:</b> @comment.DataAtualizacao.Value.ToString("dd/MM/yyyy HH:mm")</p>
             }
             else
             {
-                <p>Data: @comment.DataCriacao.ToShortDateString()</p>
+                <p><b>Data:</b> @comment.DataCriacao.ToString("dd/MM/yyyy HH:mm")</p>
             }
         </div>
     }
@@ -37,10 +57,21 @@ else
     <h5>Adicionar um comentário</h5>
     <div class="form-group">
         <label asp-for="CreateComentario.Comentario" class="control-label"></label>
-        <textarea name="Comentario" class="form-control"></textarea>
+        <textarea name="Comentario" class="form-control" required></textarea>
         <span asp-validation-for="CreateComentario.Comentario" class="text-danger"></span>
     </div>
     <br />
-    <button type="submit" class="btn btn-primary">Criar Comentário</button>  &emsp;
-    <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Voltar</a>
+    @if (AppUser.EstaAutenticado())
+    {
+        <button type="submit" class="btn btn-primary">Criar Comentário</button>
+    }
+    else
+    {
+        <div class="row">
+            <label class="control-label">Para fazer envio de um comentário é necessário estar logado.</label>
+        </div>
+        <a class="btn btn-primary" asp-controller="Login" asp-action="Logar" asp-route-returnUrl="@Context.Request.Path">Login</a>
+    }
+    &emsp;<a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Voltar</a>
 </form>
+

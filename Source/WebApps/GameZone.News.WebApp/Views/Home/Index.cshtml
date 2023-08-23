@@ -1,17 +1,31 @@
 ﻿@using GameZone.News.WebApp.Models.DTO.Response;
 @model List<CreateNewsDTO>
 
+@{
+    var localExecution = ViewBag.LocalExecution as bool?;
+}
 
-<h1>Bem-vindo ao GameZone!</h1>
+
+<h1 style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);">Bem-vindo ao Blog de notícias de Games!</h1>
 
 <form class="m-t" role="form" asp-route-returnurl="@ViewData["ReturnUrl"]" method="get">
     @foreach (var newsItem in Model)
     {
         <div>
-            <h2>@newsItem.Titulo</h2>
+            <br />
+            <h2 style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">@newsItem.Titulo</h2>
+            @if (localExecution.HasValue && localExecution.Value)
+            {
+                <img src="data:image/png;base64,@newsItem.Database64Content" alt="@newsItem.Titulo" class="card-img-top  image-noticia-id" />
+            }
+            else
+            {
+                <img src="@newsItem.UrlImagem" class="card-img-top  image-noticia-id" alt="@newsItem.Titulo">
+            }
             <p>@newsItem.DataPublicacao.ToString("dd/MM/yyyy hh:mm")</p>
-            <p>@newsItem.Descricao</p>
+            <p>@newsItem.Chapeu</p>
             <a asp-action="GetById" asp-controller="News" asp-route-id="@newsItem.Id">Leia mais</a>
+            <br />
         </div>
     }
 </form>

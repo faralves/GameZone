@@ -8,6 +8,7 @@ namespace GameZone.News.WebApp.Models.DTO.Request
         public int NoticiaId { get; set; } = 0;
 
         [MaxLength(800)]
+        [Required(ErrorMessage = "O Campo '{0}' é Obrigatório.")]
         public string Comentario { get; set; } = string.Empty;
 
         [DataType(DataType.Date)]

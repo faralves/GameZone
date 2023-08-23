@@ -40,7 +40,7 @@ namespace GameZone.News.WebApp.Models.DTO.Request
             set
             {
                 urlImagem = value;
-                if(!string.IsNullOrEmpty(urlImagem))
+                if(!string.IsNullOrEmpty(urlImagem) && !urlImagem.Contains("http"))
                 {
                     DataStream = Service.GetDataStream(urlImagem);
                     Database64Content = DataStream != null ? Service.GetDatabase64(DataStream) : !string.IsNullOrEmpty(Database64Content) ? Database64Content : string.Empty;

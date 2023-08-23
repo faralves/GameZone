@@ -21,11 +21,16 @@ namespace GameZone.Blog.Application.DTOs.Request
         [MaxLength(255, ErrorMessage = "{1} é o tamanho máximo para o campo '{0}'")]
         public string Chapeu { get; set; } = string.Empty;
 
+        //[DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         [Required(ErrorMessage = "O campo {0} é obrigatório.")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.DateTime)]
         [Range(typeof(DateTime), "1900-01-01", "9999-12-31", ErrorMessage = "A data de nascimento deve estar entre 01/01/1900 e 31/12/9999.")]
         public DateTime DataPublicacao { get; set; }
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório.")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? DataAtualizacao { get; set; } 
 
         private string urlImagem;
 
@@ -44,15 +49,15 @@ namespace GameZone.Blog.Application.DTOs.Request
         [Required(ErrorMessage = "O Campo '{0}' é Obrigatório.")]
         [MaxLength(255, ErrorMessage = "{1} é o tamanho máximo para o campo '{0}'")]
         public string Autor { get; set; } = string.Empty;
+        
+
+        public string Database64Content { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public byte[] DataStream { get; set; }
+        public byte[] DataStream { get; set; } = new byte[0];
 
         [JsonIgnore]
-        public string Database64Content { get; set; }
-
-        [JsonIgnore]
-        public string UrlBlobStorage { get; set; }
+        public string UrlBlobStorage { get; set; } = string.Empty;
 
     }
 }

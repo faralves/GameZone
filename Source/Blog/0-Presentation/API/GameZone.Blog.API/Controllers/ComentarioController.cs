@@ -45,7 +45,7 @@ namespace GameZone.Blog.API.Controllers
         public async Task<IActionResult> GetByNoticiaId(int id)
         {
             var comentario = await _comentarioApplication.GetByNoticiaId(id);
-            if (comentario == null)
+            if (!comentario.Any())
                 return NotFound();
 
             return Ok(comentario);
@@ -101,7 +101,7 @@ namespace GameZone.Blog.API.Controllers
 
                 comentario.Id = comentarioDb.Id;
 
-                var comentarioAtualizado = await _comentarioApplication.Update(comentario);
+                var comentarioAtualizado = await _comentarioApplication.Update(comentario, comentario.AspNetUsersId.ToString());
                 return NoContent();
             }
             catch (Exception ex)

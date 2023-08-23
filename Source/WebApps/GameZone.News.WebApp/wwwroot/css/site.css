@@ -69,3 +69,16 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+.image-noticia-id {
+    width: 100%;
+    height: 500px; /* Ajuste o valor de acordo com o tamanho desejado */
+    object-fit: fill;
+}
+
+.comment-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    /* Outros estilos que você desejar */
+}

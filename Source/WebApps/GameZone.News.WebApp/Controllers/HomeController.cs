@@ -9,16 +9,23 @@ namespace GameZone.News.WebApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly INewsService _newsService;
+        private readonly IConfiguration _configuration;
+        private static bool _local_execution = false;
 
-        public HomeController(ILogger<HomeController> logger, INewsService newsService)
+
+        public HomeController(ILogger<HomeController> logger, INewsService newsService, IConfiguration configuration)
         {
             _logger = logger;
             _newsService = newsService;
+            _configuration = configuration;
+            _local_execution = bool.Parse(_configuration.GetSection("EnableLocalExecution").Value);
         }
 
         public async Task<IActionResult> Index()
         {
             var news = await _newsService.GetAllNewsAsync();
+            ViewBag.LocalExecution = _local_execution;
+
             return View(news);
         }
 

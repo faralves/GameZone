@@ -72,9 +72,10 @@ namespace GameZone.Blog.Application
             return _mapper.Map<NoticiaDTO?>(await _noticiaService.GetById(id));
         }
 
-        public async Task<NoticiaDTO?> Update(UpdateNoticiaDTO updateNoticiaDTO)
+        public async Task<NoticiaDTO?> Update(UpdateNoticiaDTO updateNoticiaDTO, string idUsuario)
         {
             var noticia = _mapper.Map<Noticia>(updateNoticiaDTO);
+            noticia.AspNetUsersId = idUsuario;
 
             await _noticiaService.Update(noticia);
 

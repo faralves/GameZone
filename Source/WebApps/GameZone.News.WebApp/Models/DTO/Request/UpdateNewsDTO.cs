@@ -1,4 +1,5 @@
 ﻿using GameZone.WebAPI.Core;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace GameZone.News.WebApp.Models.DTO.Request
@@ -7,6 +8,7 @@ namespace GameZone.News.WebApp.Models.DTO.Request
     {
         public int Id { get; set; }
 
+        [JsonIgnore]
         public Guid UsuarioId { get; set; }
 
         [MaxLength(255, ErrorMessage = "{1} é o tamanho máximo para o campo '{0}'")]
@@ -20,21 +22,23 @@ namespace GameZone.News.WebApp.Models.DTO.Request
 
         //[DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         //[Range(typeof(DateTime), "1900-01-01", "9999-12-31", ErrorMessage = "A data de publicação deve estar entre 01/01/1900 e 31/12/9999.")]
-        [DataType(DataType.Date)]
+        [DataType(DataType.DateTime)]
         public DateTime DataPublicacao { get; set; }
 
         [MaxLength(255, ErrorMessage = "{1} é o tamanho máximo para o campo '{0}'")]
         public string Autor { get; set; } = string.Empty;
 
-        [DataType(DataType.Date)]
+        [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? DataAtualizacao { get; set; } = DateTime.Now;
 
+        [JsonIgnore]
         [Display(Name = "Arquivo")]
         public IFormFile? Arquivo { get; set; }
 
         public string Database64Content { get; set; }
 
+        [JsonIgnore]
         public byte[] DataStream { get; set; }
 
         private string urlImagem;

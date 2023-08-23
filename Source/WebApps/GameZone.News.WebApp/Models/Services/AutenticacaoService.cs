@@ -16,7 +16,7 @@ namespace GameZone.News.WebApp.Models.Services
     public class AutenticacaoService : Service, IAutenticacaoService
     {
         private readonly HttpClient _httpClient;
-        private readonly HttpClient _httpClientUsuario;
+        //private readonly HttpClient _httpClientUsuario;
 
         private readonly IAuthenticationService _authenticationService;
         private readonly IAspNetUser _user;
@@ -25,28 +25,31 @@ namespace GameZone.News.WebApp.Models.Services
 
         private readonly IConfiguration _configuration;
 
+        private string _url_address = string.Empty;
         private string _url_login_address = string.Empty;
         private string _url_usuario_address = string.Empty;
         private string _url_refresh_token_address = string.Empty;
 
-        public AutenticacaoService(IAuthenticationService authenticationService, IConfiguration configuration, IAspNetUser user, HttpClient httpClient, HttpClient httpClientUsuario, IHttpContextAccessor httpContextAccessor)
+        public AutenticacaoService(IAuthenticationService authenticationService, IConfiguration configuration, IAspNetUser user, HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _authenticationService = authenticationService;
 
             _configuration = configuration;
-            _url_login_address = _configuration.GetSection("AutenticacaoUrl").Value;
-            _url_login_address += "/Usuario/login";
-            _url_refresh_token_address += "/Usuario/refresh-token";
+            //_url_login_address = _configuration.GetSection("AutenticacaoUrl").Value;
 
-            httpClient.BaseAddress = new Uri(_url_login_address);
+            _url_address = _configuration.GetSection("AutenticacaoUrl").Value;
+            httpClient.BaseAddress = new Uri(_url_address);
             _httpClient = httpClient;
+
+            _url_login_address = _url_address + "/Usuario/login";
+            _url_refresh_token_address = _url_address + "/Usuario/refresh-token";
+            _url_usuario_address += "/Usuario";
 
             _user = user;
 
-            _url_usuario_address = _configuration.GetSection("AutenticacaoUrl").Value;
-            _url_usuario_address += "/Usuario";
-            httpClientUsuario.BaseAddress = new Uri(_url_usuario_address);
-            _httpClientUsuario = httpClientUsuario;
+            //_url_usuario_address = _configuration.GetSection("AutenticacaoUrl").Value;
+            //httpClientUsuario.BaseAddress = new Uri(_url_usuario_address);
+            //_httpClientUsuario = httpClientUsuario;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -133,7 +136,7 @@ namespace GameZone.News.WebApp.Models.Services
             var userContent = ObterConteudo(createUserDto);
             string endpoint = $"{_url_usuario_address}/cadastrar";
 
-            var response = await _httpClientUsuario.PostAsync(endpoint, userContent);
+            var response = await _httpClient.PostAsync(endpoint, userContent);
             if (response.IsSuccessStatusCode)
             {
                 var loginDto = new DTO.Request.LoginDTO() { Email = createUserDto.Email, Password = createUserDto.Password };
@@ -189,7 +192,7 @@ namespace GameZone.News.WebApp.Models.Services
         public async Task<UsuarioDto> GetUserDto(Guid idUsuario)
         {
             string endpoint = $"{_url_usuario_address}/{idUsuario.ToString()}";
-            var response = await _httpClientUsuario.GetAsync(endpoint);
+            var response = await _httpClient.GetAsync(endpoint);
             if (response.IsSuccessStatusCode)
             {
                 var usuarioJson = await response.Content.ReadAsStringAsync();

@@ -3,6 +3,7 @@
 <h2>Editar a Postagem</h2>
 
 <form asp-action="Edit" asp-route-id="@Model.Id" asp-controller="News" method="post" role="form" asp-route-returnurl="@ViewData["ReturnUrl"]" class="m-t" enctype="multipart/form-data">
+    <vc:Summary></vc:Summary>
     <div class="form-group">
         <label asp-for="Titulo">Título</label>
         <input asp-for="Titulo" class="form-control" />
@@ -20,7 +21,7 @@
     </div>
     <div class="form-group">
         <label asp-for="DataPublicacao">Data Publicação</label>
-        <input asp-for="DataPublicacao" class="form-control" readonly asp-format="{0:dd/MM/yyyy HH:mm}" />
+        <input asp-for="@Model.DataPublicacao" class="form-control" readonly/>
     </div>
     <div class="form-group">
         <label asp-for="UrlImagem" class="control-label"></label>

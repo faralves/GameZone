@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GameZone.WebAPI.Core;
+using System.ComponentModel.DataAnnotations;
 
 namespace GameZone.News.WebApp.Models.DTO.Response
 {
@@ -32,6 +33,19 @@ namespace GameZone.News.WebApp.Models.DTO.Response
         public string Database64Content { get; set; }
         public byte[] DataStream { get; set; }
 
-        public string UrlImagem { get; set; }
+        private string urlImagem = string.Empty;
+        public string UrlImagem
+        {
+            get { return urlImagem; }
+            set
+            {
+                urlImagem = value;
+                if (!string.IsNullOrEmpty(urlImagem) && !urlImagem.Contains("http"))
+                {
+                    DataStream = Service.GetDataStream(urlImagem);
+                    Database64Content = DataStream != null ? Service.GetDatabase64(DataStream) : !string.IsNullOrEmpty(Database64Content) ? Database64Content : string.Empty;
+                }
+            }
+        }
     }
 }

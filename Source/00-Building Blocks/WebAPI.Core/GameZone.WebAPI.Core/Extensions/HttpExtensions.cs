@@ -15,8 +15,9 @@ namespace GameZone.WebAPI.Core.Extensions
 
             return builder.ConfigureHttpMessageHandlerBuilder(b =>
             {
-                b.PrimaryHandler = 
+                b.PrimaryHandler =
                     new HttpClientHandler { ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator };
+                //new HttpClientHandler { ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true };
             });
         }
     }
