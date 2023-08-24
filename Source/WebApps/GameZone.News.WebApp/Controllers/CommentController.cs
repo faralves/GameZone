@@ -1,8 +1,6 @@
-﻿using GameZone.News.WebApp.Models;
-using GameZone.News.WebApp.Models.DTO.Request;
+﻿using GameZone.News.WebApp.Models.DTO.Request;
 using GameZone.News.WebApp.Models.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace GameZone.News.WebApp.Controllers
 {

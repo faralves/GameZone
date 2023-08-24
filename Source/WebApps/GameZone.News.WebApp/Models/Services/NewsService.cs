@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using GameZone.News.WebApp.Models.DTO.Request;
-using GameZone.News.WebApp.Models.DTO.Response;
+﻿using GameZone.News.WebApp.Models.DTO.Response;
 using GameZone.News.WebApp.Models.Interfaces;
 using GameZone.WebAPI.Core.Usuario;
 using Newtonsoft.Json;
@@ -13,7 +9,6 @@ namespace GameZone.News.WebApp.Models.Services
     {
         private readonly IConfiguration _configuration;
         private HttpClient _httpClient;
-        //private HttpClient _httpClientComentario;
         private IAutenticacaoService _autenticacaoService;
         private readonly IAspNetUser _user;
         private static bool _local_execution = false;
@@ -33,9 +28,6 @@ namespace GameZone.News.WebApp.Models.Services
             _endPointNoticia = _url_address + "/api/Noticias";
             _endPointComentario = _url_address + "/api/Comentario";
 
-            //httpClientComentario.BaseAddress = new Uri(_url_base_comentario_address);
-            //_httpClientComentario = httpClientComentario;
-
             _user = user;
 
             _local_execution = Boolean.Parse(configuration.GetSection("EnableLocalExecution").Value);
@@ -45,8 +37,6 @@ namespace GameZone.News.WebApp.Models.Services
 
         public async Task<IEnumerable<DTO.Response.CreateNewsDTO>> GetAllNewsAsync()
         {
-            //_url_base_address = _url_base_address.Replace("/api/Comentario", "");
-            //_url_base_address += "/api/Noticias";
             string endpoint = $"{_endPointNoticia}";
             var response = await _httpClient.GetAsync(endpoint);
             if (response.IsSuccessStatusCode)
@@ -67,26 +57,26 @@ namespace GameZone.News.WebApp.Models.Services
         }
         public async Task CreateNewsAsync(DTO.Request.CreateNewsDTO createNewsDto)
         {
-            createNewsDto = AtualizarInfosImagem(createNewsDto);
+            createNewsDto.UrlImagem = GetUrlImagemServidor(createNewsDto.Arquivo);
 
             var newsContent = ObterConteudo(createNewsDto);
 
-            //_url_base_address = _url_base_address.Replace("/api/Comentario", "");
-            //_url_base_address += "/api/Noticias";
             string endpoint = $"{_endPointNoticia}";
 
             var response = await _httpClient.PostAsync(endpoint, newsContent);
         }
 
 
-        private DTO.Request.CreateNewsDTO AtualizarInfosImagem(DTO.Request.CreateNewsDTO createNewsDto)
+        private string GetUrlImagemServidor(IFormFile? arquivo)
         {
+            string urlImagem = string.Empty;
+
             string path = Path.Combine(Directory.GetCurrentDirectory(), "ArquivosRecebidos");
 
-            if (createNewsDto.Arquivo != null)
+            if (arquivo != null)
             {
-                FileInfo fileInfo = new FileInfo(createNewsDto.Arquivo.FileName);
-                string fileName = createNewsDto.Arquivo.FileName;
+                FileInfo fileInfo = new FileInfo(arquivo.FileName);
+                string fileName = arquivo.FileName;
 
                 string fileNameWithPath = string.Empty;
 
@@ -102,19 +92,17 @@ namespace GameZone.News.WebApp.Models.Services
                 {
                     using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
                     {
-                        createNewsDto.Arquivo.CopyTo(stream);
+                        arquivo.CopyTo(stream);
                     }
                 }
 
-                createNewsDto.UrlImagem = fileNameWithPath;
+                urlImagem = fileNameWithPath;
             }
-            return createNewsDto;
+            return urlImagem;
         }
 
         public async Task<DTO.Request.UpdateNewsDTO?> GetNewsByIdAsync(int id)
         {
-            //_url_base_address = _url_base_address.Replace("/api/Comentario", "");
-            //_url_base_address += "/api/Noticias";
             string endpoint = $"{_endPointNoticia}/{id}";
             var response = await _httpClient.GetAsync(endpoint);
             if (response.IsSuccessStatusCode)
@@ -134,10 +122,12 @@ namespace GameZone.News.WebApp.Models.Services
             var usuarioAutor = await _autenticacaoService.GetUserDto(updateNewsDto.UsuarioId);
             updateNewsDto.Autor = usuarioAutor.Name;
 
+            string urlImagem = GetUrlImagemServidor(updateNewsDto.Arquivo);
+            if(!string.IsNullOrEmpty(urlImagem))
+                updateNewsDto.UrlImagem = urlImagem;
+
             var newsContent = ObterConteudo(updateNewsDto);
 
-            //_url_base_address = _url_base_address.Replace("/api/Comentario", "");
-            //_url_base_address += "/api/Noticias";
             string endpoint = $"{_endPointNoticia}/{updateNewsDto.Id}";
 
             var response = await _httpClient.PutAsync(endpoint, newsContent);
@@ -145,16 +135,12 @@ namespace GameZone.News.WebApp.Models.Services
 
         public async Task DeleteNewsAsync(int id)
         {
-            //_url_base_address = _url_base_address.Replace("/api/Comentario", "");
-            //_url_base_address += "/api/Noticias";
             string endpoint = $"{_endPointNoticia}/{id}";
             var response = await _httpClient.DeleteAsync(endpoint);
         }
 
         public async Task<DTO.Response.NewsDto> GetById(int id)
         {
-            //_url_base_address = _url_base_address.Replace("/api/Comentario", "");
-            //_url_base_address += "/api/Noticias";
             string endpoint = $"{_endPointNoticia}/{id}";
             var response = await _httpClient.GetAsync(endpoint);
             if (response.IsSuccessStatusCode)
@@ -188,10 +174,6 @@ namespace GameZone.News.WebApp.Models.Services
         }
         public async Task<ICollection<CommentDTO>> GetCommentByNoticiaId(int id)
         {
-            ////_url_base_comentario_address += "/GetByNoticiaId";
-            //_url_base_address = _url_base_address.Replace("/api/Noticias", "");
-            //_url_base_address += "/api/Comentario";
-
             string endpoint = $"{_endPointComentario}/GetByNoticiaId/{id}";
             var response = await _httpClient.GetAsync(endpoint);
             if (response.IsSuccessStatusCode)
@@ -209,10 +191,6 @@ namespace GameZone.News.WebApp.Models.Services
 
         public async Task CreateCommentAsync(DTO.Request.CreateCommentDTO createCommentDto)
         {
-            //_httpClient.BaseAddress = new Uri(_url_base_comentario_address);
-            //_url_base_address = _url_base_address.Replace("/api/Noticias", "");
-            //_url_base_address += "/api/Comentario";
-
             var newsContent = ObterConteudo(createCommentDto);
             string endpoint = $"{_endPointComentario}";
 

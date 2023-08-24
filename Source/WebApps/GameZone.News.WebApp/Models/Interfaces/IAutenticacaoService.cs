@@ -1,6 +1,5 @@
 ﻿using GameZone.News.WebApp.Models.DTO.Request;
 using GameZone.News.WebApp.Models.DTO.Response;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace GameZone.News.WebApp.Models.Interfaces
 {

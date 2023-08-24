@@ -47,12 +47,6 @@ namespace GameZone.News.WebApp.Controllers
             return View("Error", modelErro);
         }
 
-        //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        //public IActionResult Error()
-        //{
-        //    return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        //}
-
         [Route("erro/{id:length(3,3)}")]
         public IActionResult Error(int id)
         {

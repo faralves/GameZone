@@ -64,8 +64,6 @@ namespace GameZone.Blog.API.Controllers
             // Verifica se o usuário está autenticado
             if (User.Identity.IsAuthenticated)
             {
-                //var claims = User.Claims.ToList();
-
                 var idUsuarioClaim = User.GetUserId();
 
                 var comentario = await _comentarioApplication.Create(createComentario, idUsuarioClaim);

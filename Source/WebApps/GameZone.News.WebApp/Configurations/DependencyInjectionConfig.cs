@@ -5,9 +5,7 @@ using GameZone.WebAPI.Core.Extensions;
 using Polly.Extensions.Http;
 using Polly.Retry;
 using Polly;
-using GameZone.WebAPI.Core;
 using GameZone.WebAPI.Core.Usuario;
-using Microsoft.AspNetCore.DataProtection;
 
 namespace GameZone.News.WebApp.Configurations
 {
@@ -43,12 +41,9 @@ namespace GameZone.News.WebApp.Configurations
 
             builder.Services.AddSession(options =>
             {
-                //options.IdleTimeout = TimeSpan.FromSeconds(10);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-
-            //JwtConfig.AddJwtConfiguration(builder);
 
             builder.Services.AddControllersWithViews();
 

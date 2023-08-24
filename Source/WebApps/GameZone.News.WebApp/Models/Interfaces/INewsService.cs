@@ -1,5 +1,4 @@
-﻿using GameZone.News.WebApp.Models.DTO.Request;
-using GameZone.News.WebApp.Models.DTO.Response;
+﻿using GameZone.News.WebApp.Models.DTO.Response;
 
 namespace GameZone.News.WebApp.Models.Interfaces
 {

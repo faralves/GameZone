@@ -2,7 +2,6 @@
 using GameZone.News.WebApp.Models.Interfaces;
 using GameZone.WebAPI.Core.Usuario;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using X.PagedList;
 
 namespace GameZone.News.WebApp.Controllers

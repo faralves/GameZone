@@ -100,7 +100,6 @@
             </table>
         </div>
         <div class="text-center">
-            @*@Html.PagedListPager(Model, page => Url.Action("Index", new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)*@
             @Html.PagedListPager(Model, page => Url.Action("Index", new { page }), renderOptions)
         </div>
     }

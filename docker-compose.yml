@@ -47,7 +47,7 @@ services:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_URLS=https://+:5501;http://+5502
             - ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
-            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-identidade-certificate.pfx
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-certificate.pfx
         volumes:
             - ./certs:/https:ro
         networks:

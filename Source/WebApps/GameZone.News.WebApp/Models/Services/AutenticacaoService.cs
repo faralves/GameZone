@@ -1,5 +1,4 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 using GameZone.Core.Communication;
 using GameZone.News.WebApp.Models.DTO.Request;
@@ -9,14 +8,12 @@ using GameZone.WebAPI.Core.Usuario;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http;
 
 namespace GameZone.News.WebApp.Models.Services
 {
     public class AutenticacaoService : Service, IAutenticacaoService
     {
         private readonly HttpClient _httpClient;
-        //private readonly HttpClient _httpClientUsuario;
 
         private readonly IAuthenticationService _authenticationService;
         private readonly IAspNetUser _user;
@@ -35,7 +32,6 @@ namespace GameZone.News.WebApp.Models.Services
             _authenticationService = authenticationService;
 
             _configuration = configuration;
-            //_url_login_address = _configuration.GetSection("AutenticacaoUrl").Value;
 
             _url_address = _configuration.GetSection("AutenticacaoUrl").Value;
             httpClient.BaseAddress = new Uri(_url_address);
@@ -47,21 +43,8 @@ namespace GameZone.News.WebApp.Models.Services
 
             _user = user;
 
-            //_url_usuario_address = _configuration.GetSection("AutenticacaoUrl").Value;
-            //httpClientUsuario.BaseAddress = new Uri(_url_usuario_address);
-            //_httpClientUsuario = httpClientUsuario;
             _httpContextAccessor = httpContextAccessor;
         }
-
-        //private async Task<HttpClient> GetHttpClientAsync(bool PrecisaToken)
-        //{
-        //    var token = _user.ObterUserToken();
-
-        //    if (PrecisaToken)
-        //        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-        //    return _httpClient;
-        //}
 
         public async Task Logout()
         {
@@ -73,7 +56,6 @@ namespace GameZone.News.WebApp.Models.Services
 
         public async Task<UsuarioLoginDTO> Logar(DTO.Request.LoginDTO loginDto)
         {
-            //var client = await GetHttpClientAsync(false);
             var loginContent = ObterConteudo(loginDto);
             string endpoint = $"{_url_login_address}";
 
@@ -113,17 +95,6 @@ namespace GameZone.News.WebApp.Models.Services
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 principal,
                 authProperties);
-
-            //await httpContext.SignInAsync(
-            //    CookieAuthenticationDefaults.AuthenticationScheme,
-            //    principal,
-            //    authProperties);
-
-            //var httpContext = _httpContextAccessor.HttpContext;
-            //await httpContext.SignInAsync(
-            //    CookieAuthenticationDefaults.AuthenticationScheme,
-            //    new ClaimsPrincipal(claimsIdentity),
-            //    authProperties);
         }
 
         private static JwtSecurityToken ObterTokenFormatado(string jwtToken)
@@ -170,7 +141,6 @@ namespace GameZone.News.WebApp.Models.Services
 
         public async Task<UsuarioLoginDTO> UtilizarRefreshToken(string refreshToken)
         {
-            //var client = await GetHttpClientAsync(false);
             var refreshTokenContent = ObterConteudo(refreshToken);
             string endpoint = $"{_url_refresh_token_address}";
 

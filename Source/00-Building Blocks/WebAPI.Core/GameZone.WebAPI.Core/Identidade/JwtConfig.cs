@@ -13,39 +13,6 @@ namespace GameZone.WebAPI.Core
 {
     public static class JwtConfig
     {
-        public static void ConfigureAuthorize(WebApplicationBuilder builder)
-        {
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["SymmetricSecurityKey"])),
-                    ValidateAudience = false,
-                    ValidateIssuer = false,
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
-
-            // Configurar a autenticação com cookies
-            //builder.Services.AddAuthentication(options =>
-            //{
-            //    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //}).AddCookie();
-
-            //builder.Services.AddAuthorization(options =>
-            //{
-            //    options.AddPolicy("IdadeMinima", policy =>
-            //         policy.AddRequirements(new IdadeMinima(Convert.ToInt32(builder.Configuration["idadeMinima"])))
-            //    );
-            //});
-        }
-
         public static void AddJwtConfiguration(WebApplicationBuilder builder)
         {
             var appSettingsSection = builder.Configuration.GetSection("AppSettings");
@@ -60,15 +27,6 @@ namespace GameZone.WebAPI.Core
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
-            //.AddCookie(options =>
-            //{
-            //    //options.LoginPath = "/logar";
-            //    //options.AccessDeniedPath = "/erro/403";
-            //    //options.Cookie.Name = "GameZone";
-            //    //options.Cookie.HttpOnly = true;
-            //    options.ExpireTimeSpan = TimeSpan.FromHours(8); ; // Configure o tempo de expiração adequado
-            //    options.SlidingExpiration = true;
-            //})
             .AddJwtBearer(x =>
             {
                 x.RequireHttpsMetadata = true;
@@ -81,12 +39,6 @@ namespace GameZone.WebAPI.Core
                     ValidateAudience = false // Defina como true se quiser validar a audiência (audience) do token
                 };
             });
-        }
-
-        public static void UseAuthConfiguration(this IApplicationBuilder app)
-        {
-            app.UseAuthentication();
-            app.UseAuthorization();
         }
     }
 }

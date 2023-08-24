@@ -25,7 +25,6 @@ namespace GameZone.Blog.API.Configurations
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            //JwtConfig.ConfigureAuthorize(builder);
             JwtConfig.AddJwtConfiguration(builder);
 
             SwaggerConfig.ConfigureSwagger(builder);

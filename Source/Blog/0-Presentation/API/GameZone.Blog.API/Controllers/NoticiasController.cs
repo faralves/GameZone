@@ -52,8 +52,6 @@ namespace GameZone.Blog.API.Controllers
             // Verifica se o usuário está autenticado
             if (User.Identity.IsAuthenticated)
             {
-                //var claims = User.Claims.ToList();
-
                 var idUsuarioClaim = User.GetUserId();
 
                 var noticia = await _noticiaApplication.Create(createNoticia, idUsuarioClaim);
@@ -72,10 +70,16 @@ namespace GameZone.Blog.API.Controllers
         public async Task<IActionResult> Update(int id, UpdateNoticiaDTO noticia)
         {
             if (id != noticia.Id)
-                return BadRequest();
+                return BadRequest("O Id informado não corresponde com o corpo da requisição");
 
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            {
+                var errors = ModelState.ToDictionary(
+                                                        kvp => kvp.Key,
+                                                        kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                                                    );
+                return BadRequest(new { Errors = errors });
+            }
 
             var noticiaDb = await _noticiaApplication.GetById(id);
             if (noticiaDb == null)

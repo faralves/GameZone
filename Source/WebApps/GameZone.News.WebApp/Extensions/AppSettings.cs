@@ -4,8 +4,6 @@
     {
         public string AutenticacaoUrl { get; set; }
 
-        //public string UsuarioUrl { get; set; }
-
         public string BlogUrl { get; set; }
     }
 }

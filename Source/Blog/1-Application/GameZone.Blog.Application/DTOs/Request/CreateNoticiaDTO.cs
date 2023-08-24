@@ -41,7 +41,6 @@ namespace GameZone.Blog.Application.DTOs.Request
             }
         }
 
-        //[Required(ErrorMessage = "O Campo '{0}' é Obrigatório.")]
         [MaxLength(255, ErrorMessage = "{1} é o tamanho máximo para o campo '{0}'")]
         public string Autor { get; set; } = string.Empty;
 

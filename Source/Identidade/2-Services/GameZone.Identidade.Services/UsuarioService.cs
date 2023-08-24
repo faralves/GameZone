@@ -10,8 +10,6 @@ namespace GameZone.Identidade.Services
 {
     public class UsuarioService : IUsuarioService
     {
-        //private TokenService _tokenService;
-
         private readonly ILogger<UsuarioService> _logger;
         private IIdentidadeRepository _identidadeRepository;
         private IAuthenticationRepository _authenticationRepository;

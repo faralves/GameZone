@@ -21,10 +21,8 @@ namespace GameZone.Identidade.API.Configurations
             builder.Services.AddScoped<IIdentidadeRepository, IdentidadeRepository>();
             builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             builder.Services.AddScoped<IAspNetUser, AspNetUser>();
-            //builder.Services.AddScoped<IJwtService>();
 
             builder.Services.AddScoped<ISeed, Seed>();
-            //builder.Services.AddScoped<TokenService>();
 
             builder.Services.AddSingleton<IAuthorizationHandler, IdadeAuthorization>();
 

@@ -32,7 +32,6 @@ namespace GameZone.Identidade.API.Configurations
                             Reference = new OpenApiReference
                             {
                                 Type = ReferenceType.SecurityScheme,
-                                //Id = "Bearer"
                                 Id = JwtBearerDefaults.AuthenticationScheme
                             }
                         },

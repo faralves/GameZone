@@ -56,12 +56,6 @@ namespace GameZone.Identidade.API.Configurations
                             .AddEntityFrameworkStores<UsuarioDbContext>()
                             .AddDefaultTokenProviders();
 
-            //builder.Services.AddDefaultIdentity<IdentityUser>()
-            //    .AddRoles<IdentityRole>()
-            //    .AddErrorDescriber<IdentityMensagensPortugues>()
-            //    .AddEntityFrameworkStores<UsuarioDbContext>()
-            //    .AddDefaultTokenProviders();
-
             return builder;
         }
     }
