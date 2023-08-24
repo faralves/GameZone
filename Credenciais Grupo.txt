@@ -48,3 +48,23 @@ docker-compose -f GameZone_Homologacao.yml up
 cd C:/Projetos/Fiap/Grupo31/TechChalenge/Fase2/GameZone/docker
 docker-compose -f GameZone_Desenvolvimento.yml up
 
+--------------------------------Enviar Imagens Docker para o Docker-hub---------------------------------------------------
+
+docker login -u techchallengefiapgroup31
+password = group31@Fiap
+
+
+docker push techchallengefiapgroup31/gamezone-sql-server:development-v1
+docker push techchallengefiapgroup31/gamezone-news-webapp:development-v1
+docker push techchallengefiapgroup31/gamezone-api-identidade:development-v1
+docker push techchallengefiapgroup31/gamezone-api-blog:development-v1
+docker push techchallengefiapgroup31/gamezone-server:development-v1
+
+
+--------------------------------Baixar Imagens Docker para o Docker-hub---------------------------------------------------
+docker pull techchallengefiapgroup31/gamezone-sql-server:development-v1
+docker pull techchallengefiapgroup31/gamezone-news-webapp:development-v1
+docker pull techchallengefiapgroup31/gamezone-api-identidade:development-v1
+docker pull techchallengefiapgroup31/gamezone-api-blog:development-v1
+docker pull techchallengefiapgroup31/gamezone-server:development-v1
+

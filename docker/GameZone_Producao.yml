@@ -1,174 +1,87 @@
-version: "3"
+version: "3.4"
 
 services:
-
-    rabbitmq:
-        image: rabbitmq:3-management
-        container_name: rabbit-motorconsulta
-        networks:
-          - motorconsulta
+    gamezone.sqlserver:
+        image: techchallengefiapgroup31/gamezone-sql-server:production-v1
+        container_name: gamezone-sql-server
+        build: 
+            context: ../sql
+            dockerfile: ./Dockerfile
         ports:
-            - "15672:15672"
+            - "1433:1433"
         environment:
-            RABBITMQ_DEFAULT_USER: "motorconsulta"
-            RABBITMQ_DEFAULT_PASS: "motorconsulta"
+            SA_PASSWORD: "Mudar123intrA"
+            ACCEPT_EULA: "Y"     
+        networks:
+          - gamezone            
 
-
-    # sql-server:
-        # image: motorconsulta/motorconsulta-sql-server:production-v1
-        # container_name: motorconsulta-sql-server
-        # build: 
-            # context: ../sql
-            # dockerfile: ./Dockerfile
-        # ports:
-            # - "1433:1433"
-        # environment:
-            # SA_PASSWORD: "Mudar123intrA"
-            # ACCEPT_EULA: "Y"     
-
-    web-mvc:
-        image: motorconsulta/motorconsulta-web-mvc-consultas:production-v1
-        #container_name: motorconsulta-web-mvc-consultas
+    gamezone.news.webapp:
+        image: techchallengefiapgroup31/gamezone-news-webapp:production-v1
+        #container_name: gamezone-news-webapp
         build:
             context: ../Source
-            dockerfile: ./0-Presentation/MotorConsulta.WebApp.MVC/Dockerfile
+            dockerfile: ./WebApps/GameZone.News.WebApp/Dockerfile
         restart: always 
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=http://*:5001
-        volumes: 
-            - dpkeys:/var/data_protection_keys/   
+            - ASPNETCORE_URLS=http://*:7043
+            - ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-certificate.pfx
+        volumes:
+            - ./certs:/https:ro
         networks:
-          - motorconsulta
+          - gamezone
         depends_on:
-            - api-identidade
-            - api-usuario
-            - api-bff-consultas
+            - gamezone.identidade.api
+            - gamezone.blog.api
 
-    api-identidade:
-        image: motorconsulta/motorconsulta-api-identidade:production-v1
-        container_name: motorconsulta-api-identidade    
+    gamezone.identidade.api:
+        image: techchallengefiapgroup31/gamezone-api-identidade:production-v1
+        container_name: gamezone-api-identidade    
         build: 
             context: ../Source
-            dockerfile: ./1-Services/MotorConsulta.Services.Identidade.Api/Dockerfile  
+            dockerfile: ./Identidade/0-Presentation/API/gamezone.Identidade.API/Dockerfile  
         restart: always    
-        ports:
-            - "5101:5101"
-        environment: 
-            - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=https://+:5101;http://+5102
-            - ASPNETCORE_Kestrel__Certificates__Default__Password=motorconsulta
-            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/motorconsulta-certificate.pfx
-        volumes:
-            - ./certs:/https:ro
-            - dpkeys:/var/data_protection_keys/
-        networks:
-          - motorconsulta
-        depends_on:
-            - rabbitmq
-            # - sql-server
-            
-    api-usuario:
-        image: motorconsulta/motorconsulta-api-usuario:production-v1
-        container_name: motorconsulta-api-usuario    
-        build: 
-            context: ../Source
-            dockerfile: ./1-Services/MotorConsulta.Services.Usuario.Api/Dockerfile
-        restart: always 
-        ports:
-            - "5401:5401"
-        environment: 
-            - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=https://+:5401;http://+5402
-            - ASPNETCORE_Kestrel__Certificates__Default__Password=motorconsulta
-            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/motorconsulta-certificate.pfx
-        volumes:
-            - ./certs:/https:ro
-            - dpkeys:/var/data_protection_keys/   
-        networks:
-          - motorconsulta
-        depends_on:
-            - rabbitmq
-            - api-identidade
-            # - sql-server  
-
-    api-consulta-veicular:
-        image: motorconsulta/motorconsulta-api-consulta-veicular:production-v1
-        container_name: motorconsulta-api-consulta-veicular
-        build: 
-            context: ../Source
-            dockerfile: ./1-Services/MotorConsulta.Services.Consultas.Veicular.Api/Dockerfile  
-        restart: always 
-        ports:
-            - "5601:5601"
-        environment: 
-            - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=https://+:5601;http://+5602
-            - ASPNETCORE_Kestrel__Certificates__Default__Password=motorconsulta
-            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/motorconsulta-certificate.pfx
-        volumes:
-            - ./certs:/https:ro
-            - dpkeys:/var/data_protection_keys/   
-        networks:
-          - motorconsulta
-        depends_on:
-            - rabbitmq
-            - api-identidade
-            - api-usuario
-            
-    api-consulta-mc_auto:
-        image: motorconsulta/motorconsulta-api-consultas-mc_auto:production-v1
-        container_name: motorconsulta-api-consultas-mc_auto
-        build: 
-            context: ../Source
-            dockerfile: ./1-Services/MotorConsulta.Services.Consultas.MC_Auto.Api/Dockerfile  
-        restart: always 
-        ports:
-            - "5603:5603"
-        environment: 
-            - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=https://+:5603;http://+5604
-            - ASPNETCORE_Kestrel__Certificates__Default__Password=motorconsulta
-            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/motorconsulta-certificate.pfx
-        volumes:
-            - ./certs:/https:ro
-            - dpkeys:/var/data_protection_keys/   
-        networks:
-          - motorconsulta
-        depends_on:
-            - rabbitmq
-            - api-identidade
-            - api-usuario
-            
-    api-bff-consultas:
-        image: motorconsulta/motorconsulta-api-bff-consultas:production-v1
-        container_name: motorconsulta-api-bff-consultas
-        build: 
-            context: ../Source
-            dockerfile: ./1-Services/MotorConsulta.Services.Bff.Consultas.Api/Dockerfile  
-        restart: always 
         ports:
             - "5501:5501"
         environment: 
             - ASPNETCORE_ENVIRONMENT=Production
             - ASPNETCORE_URLS=https://+:5501;http://+5502
-            - ASPNETCORE_Kestrel__Certificates__Default__Password=motorconsulta
-            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/motorconsulta-certificate.pfx
+            - ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-certificate.pfx
         volumes:
             - ./certs:/https:ro
-            - dpkeys:/var/data_protection_keys/   
         networks:
-          - motorconsulta
+          - gamezone
         depends_on:
-            - rabbitmq
-            - api-identidade
-            - api-usuario
-            - api-consulta-veicular
-            - api-consulta-mc_auto
+            - gamezone.sqlserver
+            
+    gamezone.blog.api:
+        image: techchallengefiapgroup31/gamezone-api-blog:production-v1
+        container_name: gamezone-api-blog    
+        build: 
+            context: ../Source
+            dockerfile: ./Blog/0-Presentation/API/gamezone.Blog.API/Dockerfile
+        restart: always    
+        ports:
+            - "5401:5401"
+        environment: 
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=https://+:5401;http://+5402
+            - ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-certificate.pfx
+        volumes:
+            - ./certs:/https:ro
+        networks:
+          - gamezone
+        depends_on:
+            - gamezone.identidade.api
+            - gamezone.sqlserver  
 
-    motorconsulta-server:
-        image: motorconsulta/motorconsulta-server:production-v1
-        container_name: motorconsulta-server    
+
+    gamezone.gamezoneserver:
+        image: techchallengefiapgroup31/gamezone-server:production-v1
+        container_name: gamezone-server    
         build: 
             context: ./
             dockerfile: ./nginx/Dockerfile 
@@ -177,14 +90,11 @@ services:
             - "80:80"
             - "443:443"
         networks:
-          - motorconsulta
+          - gamezone
         depends_on:
-            - web-mvc
+            - gamezone.news.webapp
 
 networks:
-  motorconsulta:
+  gamezone:
     driver: bridge
     
-
-volumes:
-    dpkeys:     
