@@ -1,6 +1,7 @@
 using GameZone.Identidade.API.Configurations;
 using GameZone.Identidade.API.Configurations.Interfaces;
 using GameZone.Identidade.Infra;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,16 +18,16 @@ ConfigureServices.Configure(builder);
 
 var app = builder.Build();
 
+// Create database
+using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+var db = scope.ServiceProvider.GetRequiredService<UsuarioDbContext>();
+await db.Database.MigrateAsync();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
-    // Create database
-    using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
-    var db = scope.ServiceProvider.GetRequiredService<UsuarioDbContext>();
-    await db.Database.EnsureCreatedAsync();
 }
 else
 {
@@ -48,9 +49,9 @@ var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOp
 app.UseRequestLocalization(localizationOptions.Value);
 
 
-using (var scope = app.Services.CreateScope())
+using (var scop = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
+    var services = scop.ServiceProvider;
 
     var seed = services.GetRequiredService<ISeed>();
     await seed.UsuarioAdm();

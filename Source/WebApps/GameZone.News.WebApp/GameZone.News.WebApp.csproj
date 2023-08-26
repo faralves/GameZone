@@ -42,6 +42,10 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ArquivosRecebidos\" />
+  </ItemGroup>
+
 
 
 </Project>

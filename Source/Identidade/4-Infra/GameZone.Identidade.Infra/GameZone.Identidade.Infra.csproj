@@ -27,6 +27,12 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\00-Building Blocks\WebAPI.Core\GameZone.WebAPI.Core\GameZone.WebAPI.Core.csproj" />
     <ProjectReference Include="..\..\3-Domain\GameZone.Identidade.Domain\GameZone.Identidade.Domain.csproj" />
+  </ItemGroup>  
+  
+  <ItemGroup>
+    <None Update="Configurations\InitialSetup-azure.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -21,7 +21,7 @@
     <PackageReference Include="NetDevPack.Security.Jwt.Store.EntityFrameworkCore" Version="7.1.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
-
+ 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\00-Building Blocks\Core\GameZone.Core\GameZone.Core.csproj" />
     <ProjectReference Include="..\..\..\..\00-Building Blocks\WebAPI.Core\GameZone.WebAPI.Core\GameZone.WebAPI.Core.csproj" />

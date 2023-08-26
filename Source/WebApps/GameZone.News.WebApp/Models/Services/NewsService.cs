@@ -1,4 +1,5 @@
-﻿using GameZone.News.WebApp.Models.DTO.Response;
+﻿using GameZone.News.WebApp.Models.DTO.Request;
+using GameZone.News.WebApp.Models.DTO.Response;
 using GameZone.News.WebApp.Models.Interfaces;
 using GameZone.WebAPI.Core.Usuario;
 using Newtonsoft.Json;
@@ -125,6 +126,8 @@ namespace GameZone.News.WebApp.Models.Services
             string urlImagem = GetUrlImagemServidor(updateNewsDto.Arquivo);
             if(!string.IsNullOrEmpty(urlImagem))
                 updateNewsDto.UrlImagem = urlImagem;
+
+            updateNewsDto = new UpdateNewsDTO().AtualizarInfosImagem(updateNewsDto);
 
             var newsContent = ObterConteudo(updateNewsDto);
 

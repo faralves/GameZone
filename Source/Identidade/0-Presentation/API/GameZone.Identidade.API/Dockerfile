@@ -17,6 +17,7 @@ COPY ["./Identidade/1-Application/GameZone.Identidade.Application/GameZone.Ident
 COPY ["./Identidade/2-Services/GameZone.Identidade.Services/GameZone.Identidade.Services.csproj", "Identidade/2-Services/GameZone.Identidade.Services/"]
 COPY ["./Identidade/3-Domain/GameZone.Identidade.Domain/GameZone.Identidade.Domain.csproj", "Identidade/3-Domain/GameZone.Identidade.Domain/"]
 COPY ["./Identidade/4-Infra/GameZone.Identidade.Infra/GameZone.Identidade.Infra.csproj", "Identidade/4-Infra/GameZone.Identidade.Infra/"]
+COPY ["./Identidade/4-Infra/GameZone.Identidade.Infra/Configurations/InitialSetup-azure.sql", "/app/Configurations/InitialSetup-azure.sql"]
 
 RUN dotnet restore "Identidade/0-Presentation/API/GameZone.Identidade.API/GameZone.Identidade.API.csproj"
 COPY . .

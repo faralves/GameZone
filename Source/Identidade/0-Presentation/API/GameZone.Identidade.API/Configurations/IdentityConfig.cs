@@ -4,6 +4,7 @@ using GameZone.Identidade.Domain;
 using GameZone.Identidade.Domain.Entities;
 using GameZone.Identidade.Infra;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NetDevPack.Security.Jwt.Core.Jwa;
 
@@ -11,6 +12,11 @@ namespace GameZone.Identidade.API.Configurations
 {
     public static class IdentityConfig
     {
+        public static void IniciarDatabase(this WebApplicationBuilder builder, string connectionString) 
+        {
+            Infra.Repository.DatabaseInitializerRepository.Initialize(connectionString);
+        }
+
         public static WebApplicationBuilder AddIdentityConfiguration(this WebApplicationBuilder builder)
         {
             var appSettingsSection = builder.Configuration.GetSection("AppTokenSettings");
@@ -27,6 +33,10 @@ namespace GameZone.Identidade.API.Configurations
 
             if (GeneralConfigApp.ENABLE_CONNECTION_LOCAL_DB)
                 conectionString = builder.Configuration.GetConnectionString("ConnectionLocal");
+
+            //builder.Services.AddScoped(_ => new SqlConnection(conectionString));
+
+            //IniciarDatabase(builder, conectionString);
 
             builder.Services.AddDbContext<UsuarioDbContext>(options => options.UseSqlServer(conectionString, b => b.MigrationsAssembly("GameZone.Identidade.Infra")));
 

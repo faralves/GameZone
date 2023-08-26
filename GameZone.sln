@@ -83,6 +83,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{33471442-F30
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{ACF9C90F-79A6-4364-8DEA-7002358C4340}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{A7C8C89B-6CDF-47CC-BE88-977A096C81B0}"
+	ProjectSection(SolutionItems) = preProject
+		sql\criacao-banco-docker.sql = sql\criacao-banco-docker.sql
+		sql\Dockerfile = sql\Dockerfile
+		sql\entrypoint.sh = sql\entrypoint.sh
+		sql\import-data.sh = sql\import-data.sh
+		sql\InitialSetup-azure.sql = sql\InitialSetup-azure.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

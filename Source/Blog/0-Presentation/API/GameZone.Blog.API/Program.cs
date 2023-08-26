@@ -1,4 +1,6 @@
 using GameZone.Blog.API.Configurations;
+using GameZone.Blog.Infra.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,11 @@ builder.Services.AddSwaggerGen();
 ConfigureServices.Configure(builder);
 
 var app = builder.Build();
+
+// Create database
+using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+await db.Database.MigrateAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

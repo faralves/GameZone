@@ -20,7 +20,7 @@ namespace GameZone.Blog.Services
             _noticiaRepository = noticiaRepository;
             _configuration = configuration;
             _local_execution = Boolean.Parse(_configuration.GetSection("EnableLocalExecution").Value);
-            conectionStorageAccount = _configuration.GetSection("ConnectionStorageAccount").Value;
+            conectionStorageAccount = _configuration.GetSection("ConfigsAzure:ConnectionStorageAccount").Value;
         }
 
         public async Task Create(Noticia noticia)

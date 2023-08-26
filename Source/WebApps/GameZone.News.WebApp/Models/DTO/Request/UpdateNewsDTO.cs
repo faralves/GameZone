@@ -30,12 +30,14 @@ namespace GameZone.News.WebApp.Models.DTO.Request
         public string UrlImagem
         {
             get { return urlImagem; }
-            set
-            {
-                urlImagem = value;
-                DataStream = Service.GetDataStream(UrlImagem);
-                Database64Content = DataStream != null ? Service.GetDatabase64(DataStream) : !string.IsNullOrEmpty(Database64Content) ? Database64Content : string.Empty;
-            }
+            set { urlImagem = value; }
+        }
+
+        public UpdateNewsDTO AtualizarInfosImagem(UpdateNewsDTO updateNewsDTO)
+        {
+            updateNewsDTO.DataStream = Service.GetDataStream(updateNewsDTO.urlImagem);
+            updateNewsDTO.Database64Content = updateNewsDTO.DataStream != null ? Service.GetDatabase64(updateNewsDTO.DataStream) : !string.IsNullOrEmpty(updateNewsDTO.Database64Content) ? updateNewsDTO.Database64Content : string.Empty;
+            return updateNewsDTO;
         }
 
         [MaxLength(255, ErrorMessage = "{1} é o tamanho máximo para o campo '{0}'")]

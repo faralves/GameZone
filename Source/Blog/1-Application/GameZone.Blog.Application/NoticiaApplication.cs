@@ -74,6 +74,14 @@ namespace GameZone.Blog.Application
 
         public async Task<NoticiaDTO?> Update(UpdateNoticiaDTO updateNoticiaDTO, string idUsuario)
         {
+            var noticiaDb = await GetById(updateNoticiaDTO.Id);
+
+            if (!_local_execution && !string.IsNullOrEmpty(updateNoticiaDTO.UrlImagem) && updateNoticiaDTO.UrlImagem != noticiaDb.UrlImagem)
+            {
+                updateNoticiaDTO.UrlBlobStorage = _noticiaService.UploadBase64ImageBlobStorage(updateNoticiaDTO.Database64Content, containerBlobStorage, updateNoticiaDTO.UrlImagem);
+                updateNoticiaDTO.UrlImagem = updateNoticiaDTO.UrlBlobStorage;
+            }
+
             var noticia = _mapper.Map<Noticia>(updateNoticiaDTO);
             noticia.AspNetUsersId = idUsuario;
 

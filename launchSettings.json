@@ -10,7 +10,6 @@
         "gamezone.news.webapp": "StartDebugging",
         "gamezone.blog.api": "StartDebugging",
         "gamezone.identidade.api": "StartDebugging",
-        "gamezone.sqlserver": "StartWithoutDebugging",
         "gamezone.gamezoneserver": "StartWithoutDebugging"
       }
     }

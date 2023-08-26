@@ -1,22 +1,22 @@
 version: "3.4"
 
 services:
-    gamezone.sqlserver:
-        image: techchallengefiapgroup31/gamezone-sql-server:development-v1
-        container_name: gamezone-sql-server
-        build: 
-            context: ../sql
-            dockerfile: ./Dockerfile
-        ports:
-            - "1433:1433"
-        environment:
-            SA_PASSWORD: "Mudar123intrA"
-            ACCEPT_EULA: "Y"     
-        networks:
-          - gamezone            
+    #gamezone.sqlserver:
+        #image: techchallengefiapgroup31/gamezone-sql-server:development-v1
+        #container_name: gamezone-sql-server
+        #build: 
+            #context: ../sql
+            #dockerfile: ./Dockerfile
+        #ports:
+            #- "1433:1433"
+        #environment:
+            #SA_PASSWORD: "Mudar123intrA"
+            #ACCEPT_EULA: "Y"     
+        #networks:
+          #- gamezone            
 
     gamezone.news.webapp:
-        image: techchallengefiapgroup31/gamezone-news-webapp:development-v1
+        image: techchallengefiapgroup31/gamezone-news-webapp:development-v2
         #container_name: gamezone-news-webapp
         build:
             context: ../Source
@@ -36,7 +36,7 @@ services:
             - gamezone.blog.api
 
     gamezone.identidade.api:
-        image: techchallengefiapgroup31/gamezone-api-identidade:development-v1
+        image: techchallengefiapgroup31/gamezone-api-identidade:development-v2
         container_name: gamezone-api-identidade    
         build: 
             context: ../Source
@@ -53,11 +53,11 @@ services:
             - ./certs:/https:ro
         networks:
           - gamezone
-        depends_on:
-            - gamezone.sqlserver
+        #depends_on:
+            #- gamezone.sqlserver
             
     gamezone.blog.api:
-        image: techchallengefiapgroup31/gamezone-api-blog:development-v1
+        image: techchallengefiapgroup31/gamezone-api-blog:development-v2
         container_name: gamezone-api-blog    
         build: 
             context: ../Source
@@ -76,11 +76,11 @@ services:
           - gamezone
         depends_on:
             - gamezone.identidade.api
-            - gamezone.sqlserver  
+            #- gamezone.sqlserver  
 
 
     gamezone.gamezoneserver:
-        image: techchallengefiapgroup31/gamezone-server:development-v1
+        image: techchallengefiapgroup31/gamezone-server:development-v2
         container_name: gamezone-server    
         build: 
             context: ./
