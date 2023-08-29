@@ -1,6 +1,8 @@
 ﻿using GameZone.News.WebApp.Models.DTO.Request;
 using GameZone.News.WebApp.Models.Interfaces;
+using GameZone.News.WebApp.Models.Services;
 using GameZone.WebAPI.Core.Usuario;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using X.PagedList;
 
@@ -9,14 +11,16 @@ namespace GameZone.News.WebApp.Controllers
     public class NewsController : Controller
     {
         private readonly INewsService _newsService;
+        private IAutenticacaoService _autenticacaoService;
         private readonly IConfiguration _configuration;
         private static bool _local_execution = false;
 
-        public NewsController(INewsService newsService, IConfiguration configuration)
+        public NewsController(INewsService newsService, IConfiguration configuration, IAutenticacaoService autenticacaoService)
         {
             _newsService = newsService;
             _configuration = configuration;
             _local_execution = bool.Parse(_configuration.GetSection("EnableLocalExecution").Value);
+            _autenticacaoService = autenticacaoService;
         }
 
         [HttpGet]
@@ -28,6 +32,15 @@ namespace GameZone.News.WebApp.Controllers
                 int pageNumber = page ?? 1;
 
                 var news = await _newsService.GetAllNewsAsync();
+                if (news.Any())
+                {
+                    foreach (var noticia in news)
+                    {
+                        var usuarioAutor = await _autenticacaoService.GetUserDto(noticia.AspNetUsersId);
+                        noticia.Autor = usuarioAutor.Name;
+                    }
+                }
+
                 var pagedNews = news.ToPagedList(pageNumber, pageSize);
 
                 return View(pagedNews);
@@ -128,6 +141,9 @@ namespace GameZone.News.WebApp.Controllers
 
                 if (User.Identity.IsAuthenticated)
                     updateNewsDto.UsuarioId = new Guid(User.GetUserId());
+
+                var usuarioAutor = await _autenticacaoService.GetUserDto(updateNewsDto.UsuarioId);
+                updateNewsDto.Autor = usuarioAutor.Name;
 
                 await _newsService.UpdateNewsAsync(updateNewsDto);
                 return RedirectToAction("Index");

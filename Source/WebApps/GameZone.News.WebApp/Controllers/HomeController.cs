@@ -1,5 +1,6 @@
 ﻿using GameZone.News.WebApp.Models;
 using GameZone.News.WebApp.Models.Interfaces;
+using GameZone.News.WebApp.Models.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -9,34 +10,45 @@ namespace GameZone.News.WebApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly INewsService _newsService;
+        private IAutenticacaoService _autenticacaoService;
         private readonly IConfiguration _configuration;
         private static bool _local_execution = false;
 
 
-        public HomeController(ILogger<HomeController> logger, INewsService newsService, IConfiguration configuration)
+        public HomeController(ILogger<HomeController> logger, INewsService newsService, IConfiguration configuration, IAutenticacaoService autenticacaoService)
         {
             _logger = logger;
             _newsService = newsService;
             _configuration = configuration;
             _local_execution = bool.Parse(_configuration.GetSection("EnableLocalExecution").Value);
+            _autenticacaoService = autenticacaoService;
         }
 
         public async Task<IActionResult> Index()
         {
-            try
-            {
+            //try
+            //{
                 // Simulando um erro de programação
                 //throw new System.Exception("Esta é uma simulação de erro.");
 
                 var news = await _newsService.GetAllNewsAsync();
+                if (news.Any())
+                {
+                    foreach (var noticia in news)
+                    {
+                        var usuarioAutor = await _autenticacaoService.GetUserDto(noticia.AspNetUsersId);
+                        noticia.Autor = usuarioAutor.Name;
+                    }
+                }
+
                 ViewBag.LocalExecution = _local_execution;
 
                 return View(news);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public IActionResult Privacy()

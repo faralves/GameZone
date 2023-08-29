@@ -17,7 +17,7 @@ namespace GameZone.News.WebApp.Models.Services
         private string _endPointNoticia = string.Empty;
         private string _endPointComentario = string.Empty;
 
-        public NewsService(IConfiguration configuration, IAspNetUser user, HttpClient httpClient, IAutenticacaoService autenticacaoService)
+        public NewsService(IConfiguration configuration, HttpClient httpClient, IAutenticacaoService autenticacaoService)
         {
             try
             {
@@ -53,19 +53,9 @@ namespace GameZone.News.WebApp.Models.Services
                     news = JsonConvert.DeserializeObject<List<DTO.Response.CreateNewsDTO>>(newsJson);
                 }
             }
-
-            if(news.Any())
-            {
-                foreach (var noticia in news)
-                {
-                    var usuarioAutor = await _autenticacaoService.GetUserDto(noticia.AspNetUsersId);
-                    noticia.Autor = usuarioAutor.Name;
-                }
-                return news;
-            }
-
-            return new List<DTO.Response.CreateNewsDTO>();
+            return news;
         }
+
         public async Task CreateNewsAsync(DTO.Request.CreateNewsDTO createNewsDto)
         {
             try
@@ -154,9 +144,6 @@ namespace GameZone.News.WebApp.Models.Services
         {
             try
             {
-                var usuarioAutor = await _autenticacaoService.GetUserDto(updateNewsDto.UsuarioId);
-                updateNewsDto.Autor = usuarioAutor.Name;
-
                 string urlImagem = GetUrlImagemServidor(updateNewsDto.Arquivo);
                 if (!string.IsNullOrEmpty(urlImagem))
                     updateNewsDto.UrlImagem = urlImagem;

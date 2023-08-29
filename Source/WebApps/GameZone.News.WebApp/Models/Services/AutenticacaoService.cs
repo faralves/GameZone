@@ -225,8 +225,8 @@ namespace GameZone.News.WebApp.Models.Services
 
         public async Task<UsuarioDto> GetUserDto(Guid idUsuario)
         {
-            try
-            {
+            //try
+            //{
                 UsuarioDto usuarioDto = new UsuarioDto(); 
                 string endpoint = $"{_url_usuario_address}/{idUsuario.ToString()}";
 
@@ -240,11 +240,11 @@ namespace GameZone.News.WebApp.Models.Services
                 }
 
                 return usuarioDto;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
     }
 }

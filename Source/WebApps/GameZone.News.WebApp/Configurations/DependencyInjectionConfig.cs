@@ -34,6 +34,7 @@ namespace GameZone.News.WebApp.Configurations
                 //    p => p.CircuitBreakerAsync(8, TimeSpan.FromSeconds(60)));
 
             builder.Services.AddHttpClient<IAutenticacaoService, AutenticacaoService>()
+                .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                 .AllowSelfSignedCertificate();
                 //.AddPolicyHandler(PollyExtensions.EsperarTentar())
                 //.AddTransientHttpErrorPolicy(
