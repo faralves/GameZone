@@ -8,19 +8,26 @@ namespace GameZone.News.WebApp.Extensions
     {
         public static async Task SignInWithTokenAsync(this HttpContext httpContext, string token)
         {
-            var claims = new List<Claim>
+            try
             {
-                new Claim("JWT", token)
-                // Adicione outras claims necessárias para o usuário, se houver
-            };
+                var claims = new List<Claim>
+                {
+                    new Claim("JWT", token)
+                    // Adicione outras claims necessárias para o usuário, se houver
+                };
 
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var authProperties = new AuthenticationProperties
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties
+                {
+                    // Configurar as propriedades do cookie de autenticação, se necessário
+                };
+
+                await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+            }
+            catch (Exception)
             {
-                // Configurar as propriedades do cookie de autenticação, se necessário
-            };
-
-            await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+                throw;
+            }
         }
     }
 

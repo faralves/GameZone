@@ -8,30 +8,51 @@ namespace GameZone.News.WebApp.Models.Services
     {
         protected HttpContent ObterConteudo(object dado)
         {
-            if (dado == null)
-                throw new Exception("Objeto Informado Nulo, não é possível realizar a conversão de tipo de dados");
+            try
+            {
+                if (dado == null)
+                    throw new Exception("Objeto Informado Nulo, não é possível realizar a conversão de tipo de dados");
 
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(dado);
-            byte[] data = Encoding.UTF8.GetBytes(json);
-            ByteArrayContent byteContent = new ByteArrayContent(data);
-            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            HttpContent content = byteContent;
-            return content;
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(dado);
+                byte[] data = Encoding.UTF8.GetBytes(json);
+                ByteArrayContent byteContent = new ByteArrayContent(data);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                HttpContent content = byteContent;
+                return content;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         protected async Task<T> DeserializarObjetoResponse<T>(HttpResponseMessage responseMessage)
         {
-            var options = new JsonSerializerOptions
+            try
             {
-                PropertyNameCaseInsensitive = true
-            };
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
 
-            return JsonSerializer.Deserialize<T>(await responseMessage.Content.ReadAsStringAsync(), options);
+                return JsonSerializer.Deserialize<T>(await responseMessage.Content.ReadAsStringAsync(), options);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         protected async Task<T> DeserializarObjetoResponseNewtonsoft<T>(HttpResponseMessage responseMessage)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(await responseMessage.Content.ReadAsStringAsync());
+            try
+            {
+                return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(await responseMessage.Content.ReadAsStringAsync());
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

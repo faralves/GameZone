@@ -22,99 +22,155 @@ namespace GameZone.News.WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int? page)
         {
-            int pageSize = 10;
-            int pageNumber = page ?? 1;
+            try
+            {
+                int pageSize = 10;
+                int pageNumber = page ?? 1;
 
-            var news = await _newsService.GetAllNewsAsync();
-            var pagedNews = news.ToPagedList(pageNumber, pageSize);
+                var news = await _newsService.GetAllNewsAsync();
+                var pagedNews = news.ToPagedList(pageNumber, pageSize);
 
-            return View(pagedNews);
+                return View(pagedNews);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var noticia = await _newsService.GetById(id);
-            if (noticia == null)
+            try
             {
-                return NotFound();
-            }
-            noticia.CreateComentario = new Models.DTO.Response.CreateCommentDTO() {Comentario = string.Empty};
-            ViewBag.LocalExecution = _local_execution;
+                var noticia = await _newsService.GetById(id);
+                if (noticia == null)
+                {
+                    return NotFound();
+                }
+                noticia.CreateComentario = new Models.DTO.Response.CreateCommentDTO() { Comentario = string.Empty };
+                ViewBag.LocalExecution = _local_execution;
 
-            return View(noticia);
+                return View(noticia);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
 
         public IActionResult Create()
         {
-            return View();
+            try
+            {
+                return View();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateNewsDTO newsDto)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return View(newsDto);
-            }
+                if (!ModelState.IsValid)
+                {
+                    return View(newsDto);
+                }
 
-            await _newsService.CreateNewsAsync(newsDto);
-            return RedirectToAction("Index");
+                await _newsService.CreateNewsAsync(newsDto);
+                return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-            var news = await _newsService.GetNewsByIdAsync(id);
-            if (news == null)
+            try
             {
-                return NotFound();
-            }
+                var news = await _newsService.GetNewsByIdAsync(id);
+                if (news == null)
+                {
+                    return NotFound();
+                }
 
-            return View(news);
+                return View(news);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(int id, Models.DTO.Request.UpdateNewsDTO? updateNewsDto)
         {
-            if (updateNewsDto == null || id != updateNewsDto.Id)
+            try
             {
-                return BadRequest();
+                if (updateNewsDto == null || id != updateNewsDto.Id)
+                {
+                    return BadRequest();
+                }
+
+                var updateNews = await _newsService.GetNewsByIdAsync(updateNewsDto.Id);
+
+                if (!ModelState.IsValid)
+                {
+                    return View(updateNewsDto);
+                }
+
+                if (User.Identity.IsAuthenticated)
+                    updateNewsDto.UsuarioId = new Guid(User.GetUserId());
+
+                await _newsService.UpdateNewsAsync(updateNewsDto);
+                return RedirectToAction("Index");
             }
-
-            var updateNews = await _newsService.GetNewsByIdAsync(updateNewsDto.Id);
-
-            if (!ModelState.IsValid)
+            catch (Exception)
             {
-                return View(updateNewsDto);
+                throw;
             }
-
-            if (User.Identity.IsAuthenticated)
-                updateNewsDto.UsuarioId = new Guid(User.GetUserId());
-
-            await _newsService.UpdateNewsAsync(updateNewsDto);
-            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Delete(int id)
         {
-            await _newsService.DeleteNewsAsync(id);
-            return RedirectToAction("Index");
+            try
+            {
+                await _newsService.DeleteNewsAsync(id);
+                return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpPost("CreateComment")]
         public async Task<IActionResult> CreateComment(CreateCommentDTO createCommentDto)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                if (createCommentDto?.NoticiaId != 0)
-                    return RedirectToAction("GetById", new { id = createCommentDto.NoticiaId });
-                else
-                    return RedirectToAction("Index", "Home");
-            }
+                if (!ModelState.IsValid)
+                {
+                    if (createCommentDto?.NoticiaId != 0)
+                        return RedirectToAction("GetById", new { id = createCommentDto.NoticiaId });
+                    else
+                        return RedirectToAction("Index", "Home");
+                }
 
-            await _newsService.CreateCommentAsync(createCommentDto);
-            return RedirectToAction("GetById", new { id = createCommentDto.NoticiaId });
+                await _newsService.CreateCommentAsync(createCommentDto);
+                return RedirectToAction("GetById", new { id = createCommentDto.NoticiaId });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

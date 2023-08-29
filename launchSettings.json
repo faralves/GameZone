@@ -3,14 +3,11 @@
     "Docker Compose": {
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
-      "composeLaunchAction": "LaunchBrowser",
-      "composeLaunchServiceName": "gamezone.news.webapp",
-      "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}",
       "serviceActions": {
-        "gamezone.news.webapp": "StartDebugging",
-        "gamezone.blog.api": "StartDebugging",
-        "gamezone.identidade.api": "StartDebugging",
-        "gamezone.gamezoneserver": "StartWithoutDebugging"
+        "gamezone-news-webapp": "StartDebugging",
+        "gamezone-identidade-api": "StartDebugging",
+        "gamezone-gamezoneserver": "StartWithoutDebugging",
+        "gamezone-blog-api": "StartDebugging"
       }
     }
   }

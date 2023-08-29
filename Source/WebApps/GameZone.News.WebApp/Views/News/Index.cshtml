@@ -50,16 +50,16 @@
             <table class="table table-striped table-bordered table-hover">
                 <thead class="table-light">
                     <tr>
-                        <th>Id</th>
-                        <th>Título</th>
-                        <th>Descrição</th>
-                        <th>Autor</th>
-                        <th>Data Publicação</th>
-                        <th>Data Atualização</th>
+                        <th class="AlinhamentoCentralizado">Id</th>
+                        <th class="AlinhamentoCentralizado" style="width: 165px !important">Título</th>
+                        <th class="AlinhamentoCentralizado">Descrição</th>
+                        <th class="AlinhamentoCentralizado" style="width: 135px !important">Autor</th>
+                        <th class="AlinhamentoCentralizado" style="width: 145px !important">Data Publicação</th>
+                        <th class="AlinhamentoCentralizado" style="width: 145px !important">Data Atualização</th>
                         @if (HttpContextAccessor?.HttpContext?.User.Identity?.IsAuthenticated == true && (HttpContextAccessor.HttpContext.User.HasClaim(c => c.Type == "PodeEditarNoticia" && c.Value == "true") || HttpContextAccessor.HttpContext.User.HasClaim(c => c.Type == "PodeExcluirNoticia" && c.Value == "true")))
                         {
 
-                            <th></th>
+                            <th style="width: 153px !important;"></th>
                         }
                     </tr>
                 </thead>
@@ -67,14 +67,14 @@
                     @foreach (var post in Model)
                     {
                         <tr>
-                            <td>@post.Id</td>
-                            <td>@post.Titulo</td>
-                            <td>@post.Descricao</td>
-                            <td>@post.Autor</td>
-                            <td>@post.DataPublicacao.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="AlinhamentoCentralizado">@post.Id</td>
+                            <td style="vertical-align: middle">@post.Titulo</td>
+                            <td style="vertical-align: middle">@post.Descricao</td>
+                            <td style="vertical-align: middle">@post.Autor</td>
+                            <td style="vertical-align: middle">@post.DataPublicacao.ToString("dd/MM/yyyy HH:mm")</td>
                             @if (@post.DataAtualizacao.HasValue)
                             {
-                                <td>@post.DataAtualizacao.Value.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td style="vertical-align: middle">@post.DataAtualizacao.Value.ToString("dd/MM/yyyy HH:mm")</td>
                             }
                             else
                             {
@@ -83,7 +83,7 @@
 
                             @if (HttpContextAccessor?.HttpContext?.User.Identity?.IsAuthenticated == true && (HttpContextAccessor.HttpContext.User.HasClaim(c => c.Type == "PodeEditarNoticia" && c.Value == "true") || HttpContextAccessor.HttpContext.User.HasClaim(c => c.Type == "PodeExcluirNoticia" && c.Value == "true")))
                             {
-                                <td>
+                                <td class="AlinhamentoCentralizado">
                                     @if (HttpContextAccessor?.HttpContext?.User.Identity?.IsAuthenticated == true && HttpContextAccessor.HttpContext.User.HasClaim(c => c.Type == "PodeEditarNoticia" && c.Value == "true"))
                                     {
                                         <a class="btn btn-warning" asp-action="Edit" asp-route-id="@post.Id">Edit</a> <label> | </label>

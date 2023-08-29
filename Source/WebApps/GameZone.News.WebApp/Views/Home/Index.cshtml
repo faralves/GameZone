@@ -13,7 +13,8 @@
     {
         <div>
             <br />
-            <h2 style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">@newsItem.Titulo</h2>
+            <p class="chapeu">@newsItem.Chapeu</p>
+            <h2 class="titulo">@newsItem.Titulo</h2>
             @if (localExecution.HasValue && localExecution.Value)
             {
                 <img src="data:image/png;base64,@newsItem.Database64Content" alt="@newsItem.Titulo" class="card-img-top  image-noticia-id" />
@@ -23,9 +24,21 @@
                 <img src="@newsItem.UrlImagem" class="card-img-top  image-noticia-id" alt="@newsItem.Titulo">
             }
             <p>@newsItem.DataPublicacao.ToString("dd/MM/yyyy hh:mm")</p>
-            <p>@newsItem.Chapeu</p>
-            <a asp-action="GetById" asp-controller="News" asp-route-id="@newsItem.Id">Leia mais</a>
+            <p>@TruncateString(newsItem.Descricao, 100)<a asp-action="GetById" asp-controller="News" asp-route-id="@newsItem.Id">  Leia mais</a></p>
             <br />
         </div>
     }
 </form>
+@functions {
+    public string TruncateString(string input, int maxLength)
+    {
+        if (input.Length <= maxLength)
+        {
+            return input;
+        }
+        else
+        {
+            return input.Substring(0, maxLength) + "...";
+        }
+    }
+}

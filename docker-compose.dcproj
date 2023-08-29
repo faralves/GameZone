@@ -6,7 +6,7 @@
     <ProjectGuid>acf9c90f-79a6-4364-8dea-7002358c4340</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
-    <DockerServiceName>gamezone.news.webapp</DockerServiceName>
+    <DockerServiceName>gamezone-news-webapp</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

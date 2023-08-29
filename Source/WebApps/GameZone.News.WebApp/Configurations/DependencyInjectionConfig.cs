@@ -28,16 +28,16 @@ namespace GameZone.News.WebApp.Configurations
 
             builder.Services.AddHttpClient<INewsService, NewsService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
-                .AddPolicyHandler(PollyExtensions.EsperarTentar())
-                .AllowSelfSignedCertificate()
-                .AddTransientHttpErrorPolicy(
-                    p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
+                .AllowSelfSignedCertificate();
+                //.AddPolicyHandler(PollyExtensions.EsperarTentar())
+                //.AddTransientHttpErrorPolicy(
+                //    p => p.CircuitBreakerAsync(8, TimeSpan.FromSeconds(60)));
 
             builder.Services.AddHttpClient<IAutenticacaoService, AutenticacaoService>()
-                .AddPolicyHandler(PollyExtensions.EsperarTentar())
-                .AllowSelfSignedCertificate()
-                .AddTransientHttpErrorPolicy(
-                    p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
+                .AllowSelfSignedCertificate();
+                //.AddPolicyHandler(PollyExtensions.EsperarTentar())
+                //.AddTransientHttpErrorPolicy(
+                //    p => p.CircuitBreakerAsync(8, TimeSpan.FromSeconds(60)));
 
             builder.Services.AddSession(options =>
             {

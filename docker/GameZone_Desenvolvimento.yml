@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
     #gamezone.sqlserver:
-        #image: techchallengefiapgroup31/gamezone-sql-server:development-v1
+        #image: gamezoneacr.azurecr.io/gamezone-sql-server:development-v1
         #container_name: gamezone-sql-server
         #build: 
             #context: ../sql
@@ -15,8 +15,8 @@ services:
         #networks:
           #- gamezone            
 
-    gamezone.news.webapp:
-        image: techchallengefiapgroup31/gamezone-news-webapp:development-v2
+    gamezone-news-webapp:
+        image: gamezoneacr.azurecr.io/gamezone-news-webapp:development-v2
         #container_name: gamezone-news-webapp
         build:
             context: ../Source
@@ -28,15 +28,15 @@ services:
             - ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-certificate.pfx
         volumes:
-            - ./certs:/https:ro
+            - certs:/https:ro
         networks:
           - gamezone
         depends_on:
-            - gamezone.identidade.api
-            - gamezone.blog.api
+            - gamezone-identidade-api
+            - gamezone-blog-api
 
-    gamezone.identidade.api:
-        image: techchallengefiapgroup31/gamezone-api-identidade:development-v2
+    gamezone-identidade-api:
+        image: gamezoneacr.azurecr.io/gamezone-api-identidade:development-v2
         container_name: gamezone-api-identidade    
         build: 
             context: ../Source
@@ -50,14 +50,14 @@ services:
             - ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-certificate.pfx
         volumes:
-            - ./certs:/https:ro
+            - certs:/https:ro
         networks:
           - gamezone
         #depends_on:
             #- gamezone.sqlserver
             
-    gamezone.blog.api:
-        image: techchallengefiapgroup31/gamezone-api-blog:development-v2
+    gamezone-blog-api:
+        image: gamezoneacr.azurecr.io/gamezone-api-blog:development-v2
         container_name: gamezone-api-blog    
         build: 
             context: ../Source
@@ -71,16 +71,16 @@ services:
             - ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-certificate.pfx
         volumes:
-            - ./certs:/https:ro
+            - certs:/https:ro
         networks:
           - gamezone
         depends_on:
-            - gamezone.identidade.api
+            - gamezone-identidade-api
             #- gamezone.sqlserver  
 
 
-    gamezone.gamezoneserver:
-        image: techchallengefiapgroup31/gamezone-server:development-v2
+    gamezone-gamezoneserver:
+        image: gamezoneacr.azurecr.io/gamezone-server:development-v2
         container_name: gamezone-server    
         build: 
             context: ./
@@ -92,9 +92,16 @@ services:
         networks:
           - gamezone
         depends_on:
-            - gamezone.news.webapp
+            - gamezone-news-webapp
 
 networks:
   gamezone:
     driver: bridge
     
+
+volumes:
+  certs:
+    driver: azure_file
+    driver_opts:
+      share_name: https
+      storage_account_name: gamezonetech

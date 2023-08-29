@@ -82,3 +82,18 @@ body {
     margin-bottom: 10px;
     /* Outros estilos que você desejar */
 }
+
+.chapeu {
+    font-size: 16px; /* Ou o tamanho desejado */
+    margin-bottom: 5px; /* Espaçamento abaixo do chapéu */
+}
+
+.titulo {
+    font-size: 24px; /* Ou o tamanho desejado para o título */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.AlinhamentoCentralizado {
+    text-align: center;
+    vertical-align: middle;
+}

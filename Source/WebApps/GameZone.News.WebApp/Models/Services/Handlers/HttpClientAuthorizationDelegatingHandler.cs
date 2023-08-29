@@ -13,28 +13,41 @@ namespace GameZone.News.WebApp.Models.Services.Handlers
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var authorizationHeader = _httpContextAccesor.HttpContext
-                .Request.Headers["Authorization"];
-
-            if (!string.IsNullOrEmpty(authorizationHeader))
+            try
             {
-                request.Headers.Add("Authorization", new List<string>() { authorizationHeader });
+                var authorizationHeader = _httpContextAccesor.HttpContext
+                    .Request.Headers["Authorization"];
+
+                if (!string.IsNullOrEmpty(authorizationHeader))
+                {
+                    request.Headers.Add("Authorization", new List<string>() { authorizationHeader });
+                }
+
+                var token = GetToken();
+
+                if (token != null)
+                {
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                return await base.SendAsync(request, cancellationToken);
             }
-
-            var token = GetToken();
-
-            if (token != null)
+            catch (Exception)
             {
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                throw;
             }
-
-            return await base.SendAsync(request, cancellationToken);
         }
 
         private string GetToken()
         {
-            return _httpContextAccesor.HttpContext.User.Claims
-                .FirstOrDefault(c => c.Type == "JWT")?.Value;
+            try
+            {
+                return _httpContextAccesor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "JWT")?.Value;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

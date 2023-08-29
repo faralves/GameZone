@@ -12,7 +12,8 @@
     var localExecution = ViewBag.LocalExecution as bool?;
 }
 
-<h2>@Model.Titulo</h2>
+<p class="chapeu">@Model.Chapeu</p>
+<h2 class="titulo">@Model.Titulo</h2>
 @if (localExecution.HasValue && localExecution.Value)
 {
     <img src="data:image/png;base64,@Model.Database64Content" alt="@Model.Titulo" class="card-img-top  image-noticia-id" />
@@ -21,8 +22,6 @@ else
 {
     <img src="@Model.UrlImagem" class="card-img-top  image-noticia-id" alt="@Model.Titulo">
 }
-
-<p><b>@Model.Chapeu</b></p>
 <p>@Model.Conteudo</p>
 <p><b>Autor:</b> @Model.Autor</p>
 @if (Model.DataAtualizacao.HasValue)

@@ -23,10 +23,20 @@ namespace GameZone.News.WebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var news = await _newsService.GetAllNewsAsync();
-            ViewBag.LocalExecution = _local_execution;
+            try
+            {
+                // Simulando um erro de programação
+                //throw new System.Exception("Esta é uma simulação de erro.");
 
-            return View(news);
+                var news = await _newsService.GetAllNewsAsync();
+                ViewBag.LocalExecution = _local_execution;
+
+                return View(news);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public IActionResult Privacy()
@@ -51,6 +61,12 @@ namespace GameZone.News.WebApp.Controllers
         public IActionResult Error(int id)
         {
             var modelErro = new ErrorViewModel();
+
+            var exceptionDetails = HttpContext.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>();
+
+            ViewBag.ErrorMessage = exceptionDetails?.Error?.Message;
+            ViewBag.ErrorPath = exceptionDetails?.Path;
+            ViewBag.ErrorStackTrace = exceptionDetails?.Error?.StackTrace;
 
             if (id == 500)
             {

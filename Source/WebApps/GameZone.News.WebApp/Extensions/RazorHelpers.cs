@@ -11,7 +11,14 @@ namespace GameZone.News.WebApp.Extensions
 
         private static string FormatoMoeda(decimal valor)
         {
-            return string.Format(Thread.CurrentThread.CurrentCulture, "{0:C}", valor);
+            try
+            {
+                return string.Format(Thread.CurrentThread.CurrentCulture, "{0:C}", valor);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vulnerabilityAssessments_Default_storageContainerPath": {
+            "value": null
+        },
+        "servers_gamezoneserver_name": {
+            "value": null
+        },
+        "sites_gamezone_news_webapp_name": {
+            "value": null
+        },
+        "serverfarms_ASP_rgGameZone_ab82_name": {
+            "value": null
+        },
+        "storageAccounts_gamezonetech_name": {
+            "value": null
+        },
+        "registries_gamezoneacr_name": {
+            "value": null
+        },
+        "components_gamezone_news_webapp_name": {
+            "value": null
+        },
+        "containerGroups_gamezone_blog_api_name": {
+            "value": null
+        },
+        "containerGroups_gamezone_identidade_api_name": {
+            "value": null
+        },
+        "actionGroups_Application_Insights_Smart_Detection_name": {
+            "value": null
+        },
+        "smartdetectoralertrules_failure_anomalies___gamezone_news_webapp_name": {
+            "value": null
+        },
+        "workspaces_DefaultWorkspace_1fb41156_2ec9_455e_b554_4d344b87759f_EUS_externalid": {
+            "value": null
+        }
+    }
+}

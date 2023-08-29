@@ -7,13 +7,21 @@
 }
 
 @{
-    if (!AppUser.EstaAutenticado())
-        Layout = null;
+    //if (!AppUser.EstaAutenticado())
+    //    Layout = null;
 
     if (Model == null)
     {
         <div>
             <h2>Ooops! Ocorreu um erro, mas não se preocupe. Nosso time será avisado e iremos corrigir em breve!</h2>
+
+            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+            {
+                <h2>Detalhes do Erro:</h2>
+                <p><strong>Mensagem:</strong> @ViewBag.ErrorMessage</p>
+                <p><strong>Caminho do Erro:</strong> @ViewBag.ErrorPath</p>
+                <p><strong>Stack Trace:</strong> @ViewBag.ErrorStackTrace</p>
+            }
         </div>
     }
     else
@@ -22,6 +30,14 @@
 
         <div>
             <h2>@Html.Raw(Model.Mensagem)</h2>
+
+            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+            {
+                <h2>Detalhes do Erro:</h2>
+                <p><strong>Mensagem:</strong> @ViewBag.ErrorMessage</p>
+                <p><strong>Caminho do Erro:</strong> @ViewBag.ErrorPath</p>
+                <p><strong>Stack Trace:</strong> @ViewBag.ErrorStackTrace</p>
+            }
         </div>
 
     }

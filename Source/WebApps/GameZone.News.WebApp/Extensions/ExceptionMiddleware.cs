@@ -43,23 +43,30 @@ namespace GameZone.News.WebApp.Extensions
 
         private static void HandleRequestExceptionAsync(HttpContext context, HttpStatusCode statusCode)
         {
-            if (statusCode == HttpStatusCode.Unauthorized)
+            try
             {
-                if (_autenticacaoService.TokenExpirado())
+                if (statusCode == HttpStatusCode.Unauthorized)
                 {
-                    if (_autenticacaoService.RefreshTokenValido().Result)
+                    if (_autenticacaoService.TokenExpirado())
                     {
-                        context.Response.Redirect(context.Request.Path);
-                        return;
+                        if (_autenticacaoService.RefreshTokenValido().Result)
+                        {
+                            context.Response.Redirect(context.Request.Path);
+                            return;
+                        }
                     }
+
+                    _autenticacaoService.Logout();
+                    context.Response.Redirect($"/login?ReturnUrl={context.Request.Path}");
+                    return;
                 }
 
-                _autenticacaoService.Logout();
-                context.Response.Redirect($"/login?ReturnUrl={context.Request.Path}");
-                return;
+                context.Response.StatusCode = (int)statusCode;
             }
-
-            context.Response.StatusCode = (int)statusCode;
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private static void HandleCircuitBreakerExceptionAsync(HttpContext context)

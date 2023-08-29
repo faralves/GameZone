@@ -18,162 +18,233 @@ namespace GameZone.News.WebApp.Models.Services
         private readonly IAuthenticationService _authenticationService;
         private readonly IAspNetUser _user;
 
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
         private readonly IConfiguration _configuration;
 
-        private string _url_address = string.Empty;
         private string _url_login_address = string.Empty;
         private string _url_usuario_address = string.Empty;
         private string _url_refresh_token_address = string.Empty;
 
-        public AutenticacaoService(IAuthenticationService authenticationService, IConfiguration configuration, IAspNetUser user, HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+        public AutenticacaoService(IAuthenticationService authenticationService, IConfiguration configuration, IAspNetUser user, HttpClient httpClient)
         {
-            _authenticationService = authenticationService;
+            try
+            {
+                _authenticationService = authenticationService;
 
-            _configuration = configuration;
+                _configuration = configuration;
 
-            _url_address = _configuration.GetSection("AutenticacaoUrl").Value;
-            httpClient.BaseAddress = new Uri(_url_address);
-            _httpClient = httpClient;
+                _httpClient = httpClient;
+                string urlAddress = _configuration.GetSection("AutenticacaoUrl").Value;
+                httpClient.BaseAddress = new Uri(urlAddress);
 
-            _url_login_address = _url_address + "/Usuario/login";
-            _url_refresh_token_address = _url_address + "/Usuario/refresh-token";
-            _url_usuario_address += "/Usuario";
+                _url_login_address = $"{urlAddress}/Usuario/login";
+                _url_refresh_token_address = $"{urlAddress}/Usuario/refresh-token";
+                _url_usuario_address += $"{urlAddress}/Usuario";
 
-            _user = user;
-
-            _httpContextAccessor = httpContextAccessor;
+                _user = user;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task Logout()
         {
-            await _authenticationService.SignOutAsync(
-                _user.ObterHttpContext(),
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                null);
+            try
+            {
+                await _authenticationService.SignOutAsync(_user.ObterHttpContext(), CookieAuthenticationDefaults.AuthenticationScheme, null);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<UsuarioLoginDTO> Logar(DTO.Request.LoginDTO loginDto)
         {
-            var loginContent = ObterConteudo(loginDto);
-            string endpoint = $"{_url_login_address}";
+            try
+            {
+                UsuarioLoginDTO usuarioLoginDTO = null;
+                
+                var loginContent = ObterConteudo(loginDto);
 
-            var response = await _httpClient.PostAsync(endpoint, loginContent);
-            if (response.IsSuccessStatusCode)
-                return await response.Content.ReadFromJsonAsync<DTO.Response.UsuarioLoginDTO>();
+                using (var response = await _httpClient.PostAsync(_url_login_address, loginContent))
+                {
+                    if (response.IsSuccessStatusCode)
+                        usuarioLoginDTO = await response.Content.ReadFromJsonAsync<DTO.Response.UsuarioLoginDTO>();
+                }
 
-            UsuarioLoginDTO usuarioLoginDTO = null;
-            return usuarioLoginDTO;
+                return usuarioLoginDTO;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task RealizarLogin(UsuarioLoginDTO resposta)
         {
-            var token = ObterTokenFormatado(resposta.AccessToken);
-
-            var claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.Name, resposta.UsuarioToken.Email));
-            claims.Add(new Claim("JWT", resposta.AccessToken));
-            claims.Add(new Claim("RefreshToken", resposta.RefreshToken));
-            claims.AddRange(token.Claims);
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var authProperties = new AuthenticationProperties
+            try
             {
-                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8),
-                IsPersistent = true,
-                AllowRefresh = true
-            };
+                var token = ObterTokenFormatado(resposta.AccessToken);
 
-            var httpContext = _user.ObterHttpContext();
+                var claims = new List<Claim>();
+                claims.Add(new Claim(ClaimTypes.Name, resposta.UsuarioToken.Email));
+                claims.Add(new Claim("JWT", resposta.AccessToken));
+                claims.Add(new Claim("RefreshToken", resposta.RefreshToken));
+                claims.AddRange(token.Claims);
 
-            var principal = new ClaimsPrincipal(claimsIdentity);
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-            await _authenticationService.SignInAsync(
-                httpContext,
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                principal,
-                authProperties);
+                var authProperties = new AuthenticationProperties
+                {
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8),
+                    IsPersistent = true,
+                    AllowRefresh = true
+                };
+
+                var httpContext = _user.ObterHttpContext();
+
+                var principal = new ClaimsPrincipal(claimsIdentity);
+
+                await _authenticationService.SignInAsync(
+                    httpContext,
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    principal,
+                    authProperties);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private static JwtSecurityToken ObterTokenFormatado(string jwtToken)
         {
-            return new JwtSecurityTokenHandler().ReadToken(jwtToken) as JwtSecurityToken;
+            try
+            {
+                return new JwtSecurityTokenHandler().ReadToken(jwtToken) as JwtSecurityToken;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<UsuarioLoginDTO> CadastrarUsuario(CreateUserDTO createUserDto)
         {
-            var userContent = ObterConteudo(createUserDto);
-            string endpoint = $"{_url_usuario_address}/cadastrar";
-
-            var response = await _httpClient.PostAsync(endpoint, userContent);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var loginDto = new DTO.Request.LoginDTO() { Email = createUserDto.Email, Password = createUserDto.Password };
-                return await Logar(loginDto);
+                UsuarioLoginDTO usuarioLoginDto = null;
+
+                var userContent = ObterConteudo(createUserDto);
+                string endpoint = $"{_url_usuario_address}/cadastrar";
+
+                using (var response = await _httpClient.PostAsync(endpoint, userContent))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var loginDto = new DTO.Request.LoginDTO() { Email = createUserDto.Email, Password = createUserDto.Password };
+                        usuarioLoginDto = await Logar(loginDto);
+                    }
+                }
+
+                return usuarioLoginDto;
             }
-            UsuarioLoginDTO usuarioLoginDto = null;
-            return usuarioLoginDto;
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public bool TokenExpirado()
         {
-            var jwt = _user.ObterUserToken();
-            if (jwt is null) return false;
+            try
+            {
+                var jwt = _user.ObterUserToken();
+                if (jwt is null) return false;
 
-            var token = ObterTokenFormatado(jwt);
-            return token.ValidTo.ToLocalTime() < DateTime.Now;
+                var token = ObterTokenFormatado(jwt);
+                return token.ValidTo.ToLocalTime() < DateTime.Now;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<bool> RefreshTokenValido()
         {
-            var resposta = await UtilizarRefreshToken(_user.ObterUserRefreshToken());
-
-            if (resposta.AccessToken != null && resposta.ResponseResult == null)
+            try
             {
-                await RealizarLogin(resposta);
-                return true;
-            }
+                var resposta = await UtilizarRefreshToken(_user.ObterUserRefreshToken());
 
-            return false;
+                if (resposta.AccessToken != null && resposta.ResponseResult == null)
+                {
+                    await RealizarLogin(resposta);
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<UsuarioLoginDTO> UtilizarRefreshToken(string refreshToken)
         {
-            var refreshTokenContent = ObterConteudo(refreshToken);
-            string endpoint = $"{_url_refresh_token_address}";
-
-            var response = await _httpClient.PostAsync(endpoint, refreshTokenContent);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return await DeserializarObjetoResponse<UsuarioLoginDTO>(response);
-            }
-            else
-            {
-                return new UsuarioLoginDTO
+                UsuarioLoginDTO usuarioLoginDTO = null;
+                var refreshTokenContent = ObterConteudo(refreshToken);
+
+                using (var response = await _httpClient.PostAsync(_url_refresh_token_address, refreshTokenContent))
                 {
-                    ResponseResult = await DeserializarObjetoResponse<ResponseResult>(response)
-                };
+                    if (response.IsSuccessStatusCode)
+                    {
+                        usuarioLoginDTO = await DeserializarObjetoResponse<UsuarioLoginDTO>(response);
+                    }
+                    else
+                    {
+                        usuarioLoginDTO = new UsuarioLoginDTO()
+                        {
+                            ResponseResult = await DeserializarObjetoResponse<ResponseResult>(response)
+                        };
+                    }
+                }
+
+                return usuarioLoginDTO;
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
         public async Task<UsuarioDto> GetUserDto(Guid idUsuario)
         {
-            string endpoint = $"{_url_usuario_address}/{idUsuario.ToString()}";
-            var response = await _httpClient.GetAsync(endpoint);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var usuarioJson = await response.Content.ReadAsStringAsync();
-                var usuario = JsonConvert.DeserializeObject<UsuarioDto>(usuarioJson);
-                return usuario;
-            }
-            else
-            {
-                return new UsuarioDto();
-            }
+                UsuarioDto usuarioDto = new UsuarioDto(); 
+                string endpoint = $"{_url_usuario_address}/{idUsuario.ToString()}";
 
+                using (var response = await _httpClient.GetAsync(endpoint))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var usuarioJson = await response.Content.ReadAsStringAsync();
+                        usuarioDto = JsonConvert.DeserializeObject<UsuarioDto>(usuarioJson);
+                    }
+                }
+
+                return usuarioDto;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

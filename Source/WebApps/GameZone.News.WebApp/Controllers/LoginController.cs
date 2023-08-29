@@ -20,57 +20,85 @@ namespace GameZone.News.WebApp.Controllers
         [Route("Logar")]
         public IActionResult Logar(string returnUrl = null)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            if (_appUser.EstaAutenticado())
+            try
             {
-                if (string.IsNullOrEmpty(returnUrl))
-                    return RedirectToAction("Index", "Home");
+                ViewData["ReturnUrl"] = returnUrl;
+                if (_appUser.EstaAutenticado())
+                {
+                    if (string.IsNullOrEmpty(returnUrl))
+                        return RedirectToAction("Index", "Home");
 
-                return LocalRedirect(returnUrl);
+                    return LocalRedirect(returnUrl);
+                }
+
+                return View();
             }
-
-            return View();
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
         [Route("Logar")]
         public async Task<IActionResult> Logar(LoginDTO loginDTO, string returnUrl = null)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            if (!ModelState.IsValid)
-                return View(loginDTO);
-
-            var resposta = await _autenticacaoService.Logar(loginDTO);
-
-            if (resposta != null)
-                await _autenticacaoService.RealizarLogin(resposta);
-            else
+            try
             {
-                ModelState.AddModelError("Login", "As Credenciais não conferem ou não existem.");
-                return View(loginDTO);
+                ViewData["ReturnUrl"] = returnUrl;
+                if (!ModelState.IsValid)
+                    return View(loginDTO);
+
+                var resposta = await _autenticacaoService.Logar(loginDTO);
+
+                if (resposta != null)
+                    await _autenticacaoService.RealizarLogin(resposta);
+                else
+                {
+                    ModelState.AddModelError("Login", "As Credenciais não conferem ou não existem.");
+                    return View(loginDTO);
+                }
+
+                if (string.IsNullOrEmpty(returnUrl))
+                    return RedirectToAction("Index", "Home");
+
+                return LocalRedirect(returnUrl);
             }
-
-            if (string.IsNullOrEmpty(returnUrl))
-                return RedirectToAction("Index", "Home");
-
-            return LocalRedirect(returnUrl);
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpGet]
         [Route("Logout")]
         public async Task<IActionResult> Logout()
         {
-            await _autenticacaoService.Logout();
-            return RedirectToAction("Index", "Home");
+            try
+            {
+                await _autenticacaoService.Logout();
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpGet]
         [Route("CadastrarUsuario")]
         public IActionResult CadastrarUsuario(string returnUrl = null)
         {
-            ViewData["ReturnUrl"] = returnUrl;
+            try
+            {
+                ViewData["ReturnUrl"] = returnUrl;
 
-            return View();
+                return View();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
 
@@ -78,21 +106,28 @@ namespace GameZone.News.WebApp.Controllers
         [Route("CadastrarUsuario")]
         public async Task<IActionResult> CadastrarUsuario(CreateUserDTO createUserDto, string returnUrl = null)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            if (!ModelState.IsValid)
-                return View(createUserDto);
+            try
+            {
+                ViewData["ReturnUrl"] = returnUrl;
+                if (!ModelState.IsValid)
+                    return View(createUserDto);
 
-            if(User.Identity.IsAuthenticated)
-                createUserDto.IdUsuarioInclusao = User.GetUserId();
+                if (User.Identity.IsAuthenticated)
+                    createUserDto.IdUsuarioInclusao = User.GetUserId();
 
-            var resposta = await _autenticacaoService.CadastrarUsuario(createUserDto);
+                var resposta = await _autenticacaoService.CadastrarUsuario(createUserDto);
 
-            if (resposta != null)
-                await _autenticacaoService.RealizarLogin(resposta);
+                if (resposta != null)
+                    await _autenticacaoService.RealizarLogin(resposta);
 
-            if (string.IsNullOrEmpty(returnUrl))
-                return RedirectToAction("Index", "Home");
-            return LocalRedirect(returnUrl);
+                if (string.IsNullOrEmpty(returnUrl))
+                    return RedirectToAction("Index", "Home");
+                return LocalRedirect(returnUrl);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

@@ -15,7 +15,7 @@ services:
     #    networks:
     #        - gamezone
 
-    gamezone.news.webapp:
+    gamezone-news-webapp:
         image: techchallengefiapgroup31/gamezone-news-webapp:development-v2
         build:
             context: .
@@ -31,10 +31,10 @@ services:
         networks:
             - gamezone
         depends_on:
-            - gamezone.identidade.api
-            - gamezone.blog.api
+            - gamezone-identidade-api
+            - gamezone-blog-api
 
-    gamezone.identidade.api:
+    gamezone-identidade-api:
         image: techchallengefiapgroup31/gamezone-api-identidade:development-v2
         container_name: gamezone-api-identidade    
         build: 
@@ -55,7 +55,7 @@ services:
         #depends_on:
         #    - gamezone.sqlserver
 
-    gamezone.blog.api:
+    gamezone-blog-api:
         image:  techchallengefiapgroup31/gamezone-api-blog:development-v2
         container_name: gamezone-api-blog    
         build: 
@@ -74,10 +74,10 @@ services:
         networks:
             - gamezone
         depends_on:
-            - gamezone.identidade.api
+            - gamezone-identidade-api
             #- gamezone.sqlserver
 
-    gamezone.gamezoneserver:
+    gamezone-gamezoneserver:
         image:  techchallengefiapgroup31/gamezone-server:development-v2
         container_name: gamezone-server    
         build: 
@@ -90,7 +90,7 @@ services:
         networks:
             - gamezone
         depends_on:
-            - gamezone.news.webapp
+            - gamezone-news-webapp
 
 networks:
     gamezone:
