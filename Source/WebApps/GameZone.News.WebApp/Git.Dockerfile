@@ -31,9 +31,6 @@ WORKDIR "WebApps/GameZone.News.WebApp"
 RUN dotnet build "GameZone.News.WebApp.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "GameZone.Core.csproj" -c Release -o /app/publish /p:UseAppHost=false
-
-FROM build AS publish
 RUN dotnet publish "GameZone.WebAPI.Core.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM build AS publish
@@ -42,6 +39,5 @@ RUN dotnet publish "GameZone.News.WebApp.csproj" -c Release -o /app/publish /p:U
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "GameZone.Core.dll"]
 ENTRYPOINT ["dotnet", "GameZone.WebAPI.Core.dll"]
 ENTRYPOINT ["dotnet", "GameZone.News.WebApp.dll"]
