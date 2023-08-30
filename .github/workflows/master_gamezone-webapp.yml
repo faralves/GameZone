@@ -31,13 +31,13 @@ jobs:
       with:
         push: true
         tags: gamezoneacr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1a07b17dde80472bb461c5876d2efc64 }}/gamezone-news-webapp:${{ github.sha }}
-        file: ./Dockerfile
+        file: ./Source/WebApps/GameZone.News.WebApp/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'production'
+      name: 'Development'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
@@ -46,6 +46,6 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'gamezone-webapp'
-        slot-name: 'production'
+        slot-name: 'Development'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_2045d12b5e4244a594e686210bf1164a }}
         images: 'gamezoneacr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1a07b17dde80472bb461c5876d2efc64 }}/gamezone-news-webapp:${{ github.sha }}'
