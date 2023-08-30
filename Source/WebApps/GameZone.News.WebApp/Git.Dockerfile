@@ -9,7 +9,7 @@ EXPOSE 443
 FROM base AS debug
 RUN tdnf install procps-ng -y
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /.
 COPY ["./Source/00-Building Blocks/Core/GameZone.Core/GameZone.Core.csproj", "00-Building Blocks/Core/GameZone.Core/"]
 COPY ["./Source/00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/GameZone.WebAPI.Core.csproj", "00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/"]
