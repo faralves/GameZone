@@ -34,7 +34,6 @@ jobs:
     - name: Build and push container image to registry
       uses: docker/build-push-action@v4.1.1
       with:
-        context: ./Source
         file: ./Source/WebApps/GameZone.News.WebApp/Git.Dockerfile
         push: true
         tags: gamezoneacr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_ddbf8620490d4e9081994265ae7cf49d }}/gamezone-news-webapp:${{ github.sha }}
