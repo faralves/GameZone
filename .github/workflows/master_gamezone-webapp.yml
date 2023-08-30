@@ -20,11 +20,6 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x  # Use the desired .NET 6 version
-        
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: 6.0.x  # Use the desired .NET 6 version
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
@@ -35,6 +30,7 @@ jobs:
         registry: https://gamezoneacr.azurecr.io/
         username: ${{ secrets.AzureAppService_ContainerUsername_1a07b17dde80472bb461c5876d2efc64 }}
         password: ${{ secrets.AzureAppService_ContainerPassword_e45e0de6f7cc49b2b7c0d13adfbf9db9 }}
+
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
