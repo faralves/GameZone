@@ -42,4 +42,4 @@ jobs:
         app-name: 'gamezone-webapp'
         slot-name: 'Development'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_2045d12b5e4244a594e686210bf1164a }}
-        images: 'gamezoneacr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1a07b17dde80472bb461c5876d2efc64 }}/gamezone-news-webapp:${{ github.sha }}
+        images: 'gamezoneacr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1a07b17dde80472bb461c5876d2efc64 }}/gamezone-news-webapp:${{ github.sha }}'
