@@ -12,17 +12,13 @@ RUN tdnf install procps-ng -y
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /.
 COPY ["./Source/00-Building Blocks/Core/GameZone.Core/GameZone.Core.csproj", "00-Building Blocks/Core/GameZone.Core/"]
-RUN ls -R
 COPY ["./Source/00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/GameZone.WebAPI.Core.csproj", "00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/"]
-RUN ls -R
 COPY ["./Source/WebApps/GameZone.News.WebApp/GameZone.News.WebApp.csproj", "WebApps/GameZone.News.WebApp/"]
-RUN ls -R
 
 RUN dotnet restore "WebApps/GameZone.News.WebApp/GameZone.News.WebApp.csproj"
 COPY . .
 WORKDIR "WebApps/GameZone.News.WebApp"
 RUN dotnet build "GameZone.News.WebApp.csproj" -c Release -o /app/build
-RUN ls -R
 
 FROM build AS publish
 RUN dotnet publish "GameZone.News.WebApp.csproj" -c Release -o /app/publish /p:UseAppHost=false
