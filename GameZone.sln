@@ -92,6 +92,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{A7C8C89B-6CD
 		sql\InitialSetup-azure.sql = sql\InitialSetup-azure.sql
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{8B50BD0E-F5DA-41BB-8C77-5331A28CC3DE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{64BB330E-B298-4EEA-8E69-A908513DD5ED}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\master_gamezone-web.yml = .github\workflows\master_gamezone-web.yml
+		.github\workflows\master_gamezone-webapp.yml = .github\workflows\master_gamezone-webapp.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -217,6 +225,7 @@ Global
 		{F1344E60-0941-4F3C-BC48-E6E430C08D98} = {BA32D982-5B5C-421E-A705-0CF28A3B2B2F}
 		{B2A30FBC-7FDB-4834-AD3D-D1DF14F0482F} = {E06BD2DE-F02A-43F6-B441-212B0526ABA2}
 		{33471442-F308-4321-89EA-F937F7FE6CBF} = {B2A30FBC-7FDB-4834-AD3D-D1DF14F0482F}
+		{64BB330E-B298-4EEA-8E69-A908513DD5ED} = {8B50BD0E-F5DA-41BB-8C77-5331A28CC3DE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6615AFBF-AF46-4C2C-BAFC-CB72D4909AB3}
