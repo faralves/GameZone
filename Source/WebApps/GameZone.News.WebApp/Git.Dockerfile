@@ -15,11 +15,6 @@ COPY ["./Source/00-Building Blocks/Core/GameZone.Core/GameZone.Core.csproj", "00
 COPY ["./Source/00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/GameZone.WebAPI.Core.csproj", "00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/"]
 COPY ["./Source/WebApps/GameZone.News.WebApp/GameZone.News.WebApp.csproj", "WebApps/GameZone.News.WebApp/"]
 
-RUN dotnet restore "Source/00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/GameZone.WebAPI.Core.csproj"
-COPY . .
-WORKDIR "00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core"
-RUN dotnet build "GameZone.WebAPI.Core.csproj" -c Release -o /app/build
-
 RUN dotnet restore "Source/WebApps/GameZone.News.WebApp/GameZone.News.WebApp.csproj"
 COPY . .
 WORKDIR "WebApps/GameZone.News.WebApp"
@@ -31,5 +26,4 @@ RUN dotnet publish "GameZone.News.WebApp.csproj" -c Release -o /app/publish /p:U
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "GameZone.WebAPI.Core.dll"]
 ENTRYPOINT ["dotnet", "GameZone.News.WebApp.dll"]
