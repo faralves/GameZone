@@ -34,15 +34,16 @@ jobs:
     - name: Build and push container image to registry
       uses: docker/build-push-action@v4.1.1
       with:
+        context: ./Source
+        file: ./Source/WebApps/GameZone.News.WebApp/Git.Dockerfile
         push: true
         tags: gamezoneacr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_ddbf8620490d4e9081994265ae7cf49d }}/gamezone-news-webapp:${{ github.sha }}
-        file: ./Source/WebApps/GameZone.News.WebApp/Git.Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'production'
+      name: 'Development'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
@@ -51,6 +52,6 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'gamezone-web'
-        slot-name: 'production'
+        slot-name: 'Development'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_8bf0cdf89838402c9624046e0921fff2 }}
         images: 'gamezoneacr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_ddbf8620490d4e9081994265ae7cf49d }}/gamezone-news-webapp:${{ github.sha }}'
