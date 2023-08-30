@@ -31,7 +31,7 @@ jobs:
       with:
         push: true
         tags: gamezoneacr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1a07b17dde80472bb461c5876d2efc64 }}/gamezone-news-webapp:${{ github.sha }}
-        file: ../Source/WebApps/GameZone.News.WebApp/Dockerfile
+        file: ./Source/WebApps/GameZone.News.WebApp/Git.Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
