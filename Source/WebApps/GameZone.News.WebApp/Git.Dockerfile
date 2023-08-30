@@ -11,8 +11,14 @@ RUN tdnf install procps-ng -y
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /.
+COPY ["./Source/00-Building Blocks/Core/GameZone.Core/GameZone.Core.csproj", "00-Building Blocks/Core/GameZone.Core/"]
 COPY ["./Source/00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/GameZone.WebAPI.Core.csproj", "00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/"]
 COPY ["./Source/WebApps/GameZone.News.WebApp/GameZone.News.WebApp.csproj", "WebApps/GameZone.News.WebApp/"]
+
+RUN dotnet restore "Source/00-Building Blocks/Core/GameZone.Core/GameZone.Core.csproj"
+COPY . .
+WORKDIR "00-Building Blocks/Core/GameZone.Core"
+RUN dotnet build "GameZone.Core.csproj" -c Release -o /app/build
 
 RUN dotnet restore "Source/00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/GameZone.WebAPI.Core.csproj"
 COPY . .
@@ -25,9 +31,17 @@ WORKDIR "WebApps/GameZone.News.WebApp"
 RUN dotnet build "GameZone.News.WebApp.csproj" -c Release -o /app/build
 
 FROM build AS publish
+RUN dotnet publish "GameZone.Core.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM build AS publish
+RUN dotnet publish "GameZone.WebAPI.Core.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM build AS publish
 RUN dotnet publish "GameZone.News.WebApp.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "GameZone.Core.dll"]
+ENTRYPOINT ["dotnet", "GameZone.WebAPI.Core.dll"]
 ENTRYPOINT ["dotnet", "GameZone.News.WebApp.dll"]
