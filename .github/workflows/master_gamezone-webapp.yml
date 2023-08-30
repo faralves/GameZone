@@ -20,6 +20,11 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x  # Use the desired .NET 6 version
+        
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x  # Use the desired .NET 6 version
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
