@@ -14,8 +14,10 @@ WORKDIR /.
 COPY ["./Source/00-Building Blocks/Core/GameZone.Core/GameZone.Core.csproj", "WebApps/GameZone.Core/"]
 COPY ["./Source/00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/GameZone.WebAPI.Core.csproj", "WebApps/GameZone.WebAPI.Core/"]
 COPY ["./Source/WebApps/GameZone.News.WebApp/GameZone.News.WebApp.csproj", "WebApps/GameZone.News.WebApp/"]
-RUN dotnet restore
 
+RUN dotnet restore "WebApps/GameZone.Core/GameZone.Core.csproj"
+RUN dotnet restore "WebApps/GameZone.WebAPI.Core/GameZone.WebAPI.Core.csproj"
+RUN dotnet restore "WebApps/GameZone.News.WebApp/GameZone.News.WebApp.csproj"
 COPY . .
 WORKDIR /WebApps
 RUN dotnet publish -c release -o /app --no-restore
