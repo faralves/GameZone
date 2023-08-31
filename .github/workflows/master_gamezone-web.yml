@@ -28,29 +28,29 @@ jobs:
       uses: docker/login-action@v2.2.0
       with:
         registry: https://gamezoneacr.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_ddbf8620490d4e9081994265ae7cf49d }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_b5f1148debbc46808dffbfebfa4c275e }}
+        username: ${{ secrets.AzureAppService_ContainerUsername }}
+        password: ${{ secrets.AzureAppService_ContainerPassword }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v4.1.1
       with:
         push: true
-        tags: gamezoneacr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_ddbf8620490d4e9081994265ae7cf49d }}/gamezone-news-webapp:${{ github.sha }}
+        tags: gamezoneacr.azurecr.io/gamezone-news-webapp:${{ github.sha }}
         file: ./Source/WebApps/GameZone.News.WebApp/Dockerfile
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'Development'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+  #deploy:
+  #  runs-on: ubuntu-latest
+  #  needs: build
+  #  environment:
+  #    name: 'Development'
+  #    url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
-    steps:
-    - name: Deploy to Azure Web App
-      id: deploy-to-webapp
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: 'gamezone-web'
-        slot-name: 'Development'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_8bf0cdf89838402c9624046e0921fff2 }}
-        images: 'gamezoneacr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_ddbf8620490d4e9081994265ae7cf49d }}/gamezone-news-webapp:${{ github.sha }}'
+  #  steps:
+  #  - name: Deploy to Azure Web App
+  #    id: deploy-to-webapp
+  #    uses: azure/webapps-deploy@v2
+  #    with:
+  #      app-name: 'gamezone-web'
+  #      slot-name: 'Development'
+  #      publish-profile: ${{ secrets.AzureAppService_PublishProfile_8bf0cdf89838402c9624046e0921fff2 }}
+  #      images: 'gamezoneacr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_ddbf8620490d4e9081994265ae7cf49d }}/gamezone-news-webapp:${{ github.sha }}'
