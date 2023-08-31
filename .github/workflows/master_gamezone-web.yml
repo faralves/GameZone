@@ -31,12 +31,26 @@ jobs:
         username: ${{ secrets.AzureAppService_ContainerUsername }}
         password: ${{ secrets.AzureAppService_ContainerPassword }}
 
-    - name: Build and push container image to registry
+    - name: Build and push gamezone-news-webapp container image to registry
       uses: docker/build-push-action@v4.1.1
       with:
         push: true
-        tags: gamezoneacr.azurecr.io/gamezone-news-webapp:${{ github.sha }}
+        tags: gamezoneacr.azurecr.io/gamezone-news-webapp:${{ github.run_number }}
         file: ./Source/WebApps/GameZone.News.WebApp/Dockerfile
+
+    - name: Build and push gamezone-api-identidade container image to registry
+      uses: docker/build-push-action@v4.1.1
+      with:
+        push: true
+        tags: gamezoneacr.azurecr.io/gamezone-api-identidade:${{ github.run_number }}
+        file: ./Source/Identidade/0-Presentation/API/gamezone.Identidade.API/Dockerfile
+
+    - name: Build and push gamezone-api-blog container image to registry
+      uses: docker/build-push-action@v4.1.1
+      with:
+        push: true
+        tags: gamezoneacr.azurecr.io/gamezone-api-blog:${{ github.run_number }}
+        file: ./Source/Blog/0-Presentation/API/gamezone.Blog.API/Dockerfile
 
   #deploy:
   #  runs-on: ubuntu-latest
