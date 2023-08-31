@@ -20,8 +20,8 @@ namespace GameZone.News.WebApp.Controllers
         [Route("Logar")]
         public IActionResult Logar(string returnUrl = null)
         {
-            try
-            {
+            //try
+            //{
                 ViewData["ReturnUrl"] = returnUrl;
                 if (_appUser.EstaAutenticado())
                 {
@@ -32,19 +32,19 @@ namespace GameZone.News.WebApp.Controllers
                 }
 
                 return View();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         [HttpPost]
         [Route("Logar")]
         public async Task<IActionResult> Logar(LoginDTO loginDTO, string returnUrl = null)
         {
-            try
-            {
+            //try
+            //{
                 ViewData["ReturnUrl"] = returnUrl;
                 if (!ModelState.IsValid)
                     return View(loginDTO);
@@ -63,11 +63,11 @@ namespace GameZone.News.WebApp.Controllers
                     return RedirectToAction("Index", "Home");
 
                 return LocalRedirect(returnUrl);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         [HttpGet]

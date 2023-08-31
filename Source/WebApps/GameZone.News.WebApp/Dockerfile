@@ -33,6 +33,7 @@ COPY --from=build /Source/WebApps/GameZone.News.WebApp/bin/Release/net6.0/publis
 
 EXPOSE 80
 EXPOSE 443
+EXPOSE 7043
 
 ENV ASPNETCORE_ENVIRONMENT Development
 ENV ASPNETCORE_URLS http://*:7043

@@ -19,8 +19,8 @@ namespace GameZone.News.WebApp.Models.Services
 
         public NewsService(IConfiguration configuration, HttpClient httpClient, IAutenticacaoService autenticacaoService)
         {
-            try
-            {
+            //try
+            //{
                 _configuration = configuration;
 
                 _httpClient = httpClient;
@@ -34,32 +34,39 @@ namespace GameZone.News.WebApp.Models.Services
 
                 _local_execution = Boolean.Parse(configuration.GetSection("EnableLocalExecution").Value);
                 _local_path_file_images = configuration.GetSection("LocalPathImages").Value;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
 
         public async Task<IEnumerable<DTO.Response.CreateNewsDTO>> GetAllNewsAsync()
         {
-            var news = new List<DTO.Response.CreateNewsDTO>();
-            using (var response = await _httpClient.GetAsync(_endPointNoticia))
-            {
-                if (response.IsSuccessStatusCode)
+            //try
+            //{
+                var news = new List<DTO.Response.CreateNewsDTO>();
+                using (var response = await _httpClient.GetAsync(_endPointNoticia))
                 {
-                    var newsJson = await response.Content.ReadAsStringAsync();
-                    news = JsonConvert.DeserializeObject<List<DTO.Response.CreateNewsDTO>>(newsJson);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var newsJson = await response.Content.ReadAsStringAsync();
+                        news = JsonConvert.DeserializeObject<List<DTO.Response.CreateNewsDTO>>(newsJson);
+                    }
                 }
-            }
-            return news;
+                return news;
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public async Task CreateNewsAsync(DTO.Request.CreateNewsDTO createNewsDto)
         {
-            try
-            {
+            //try
+            //{
                 createNewsDto.UrlImagem = GetUrlImagemServidor(createNewsDto.Arquivo);
 
                 var newsContent = ObterConteudo(createNewsDto);
@@ -68,19 +75,19 @@ namespace GameZone.News.WebApp.Models.Services
                 {
                     response.EnsureSuccessStatusCode();
                 }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
 
         private string GetUrlImagemServidor(IFormFile? arquivo)
         {
             string urlImagem = string.Empty;
-            try
-            {
+            //try
+            //{
                 string path = Path.Combine(Directory.GetCurrentDirectory(), "ArquivosRecebidos");
 
                 if (arquivo != null)
@@ -108,19 +115,19 @@ namespace GameZone.News.WebApp.Models.Services
 
                     urlImagem = fileNameWithPath;
                 }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
 
             return urlImagem;
         }
 
         public async Task<DTO.Request.UpdateNewsDTO?> GetNewsByIdAsync(int id)
         {
-            try
-            {
+            //try
+            //{
                 DTO.Request.UpdateNewsDTO consulta = null;
 
                 string endpoint = $"{_endPointNoticia}/{id}";
@@ -133,17 +140,17 @@ namespace GameZone.News.WebApp.Models.Services
                     }
                 }
                 return consulta;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public async Task UpdateNewsAsync(DTO.Request.UpdateNewsDTO updateNewsDto)
         {
-            try
-            {
+            //try
+            //{
                 string urlImagem = GetUrlImagemServidor(updateNewsDto.Arquivo);
                 if (!string.IsNullOrEmpty(urlImagem))
                     updateNewsDto.UrlImagem = urlImagem;
@@ -158,33 +165,33 @@ namespace GameZone.News.WebApp.Models.Services
                 {
                     response.EnsureSuccessStatusCode();
                 }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public async Task DeleteNewsAsync(int id)
         {
-            try
-            {
+            //try
+            //{
                 string endpoint = $"{_endPointNoticia}/{id}";
                 using (var response = await _httpClient.DeleteAsync(endpoint)) 
                 { 
                     response.EnsureSuccessStatusCode(); 
                 }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public async Task<DTO.Response.NewsDto> GetById(int id)
         {
-            try
-            {
+            //try
+            //{
                 DTO.Response.NewsDto consulta = null;
 
                 string endpoint = $"{_endPointNoticia}/{id}";
@@ -214,16 +221,16 @@ namespace GameZone.News.WebApp.Models.Services
                     }
                 }
                 return consulta;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
         public async Task<ICollection<CommentDTO>> GetCommentByNoticiaId(int id)
         {
-            try
-            {
+            //try
+            //{
                 ICollection<CommentDTO> listComment = null;
 
                 string endpoint = $"{_endPointComentario}/GetByNoticiaId/{id}";
@@ -237,28 +244,28 @@ namespace GameZone.News.WebApp.Models.Services
                 }
 
                 return listComment;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public async Task CreateCommentAsync(DTO.Request.CreateCommentDTO createCommentDto)
         {
-            try
-            {
+            //try
+            //{
                 var newsContent = ObterConteudo(createCommentDto);
 
                 using (var response = await _httpClient.PostAsync(_endPointComentario, newsContent))
                 {
                     response.EnsureSuccessStatusCode();
                 }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
     }
 }

@@ -26,8 +26,8 @@ namespace GameZone.News.WebApp.Models.Services
 
         public AutenticacaoService(IAuthenticationService authenticationService, IConfiguration configuration, IAspNetUser user, HttpClient httpClient)
         {
-            try
-            {
+            //try
+            //{
                 _authenticationService = authenticationService;
 
                 _configuration = configuration;
@@ -41,29 +41,29 @@ namespace GameZone.News.WebApp.Models.Services
                 _url_usuario_address += $"{urlAddress}/Usuario";
 
                 _user = user;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public async Task Logout()
         {
-            try
-            {
+            //try
+            //{
                 await _authenticationService.SignOutAsync(_user.ObterHttpContext(), CookieAuthenticationDefaults.AuthenticationScheme, null);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public async Task<UsuarioLoginDTO> Logar(DTO.Request.LoginDTO loginDto)
         {
-            try
-            {
+            //try
+            //{
                 UsuarioLoginDTO usuarioLoginDTO = null;
                 
                 var loginContent = ObterConteudo(loginDto);
@@ -75,17 +75,17 @@ namespace GameZone.News.WebApp.Models.Services
                 }
 
                 return usuarioLoginDTO;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public async Task RealizarLogin(UsuarioLoginDTO resposta)
         {
-            try
-            {
+            //try
+            //{
                 var token = ObterTokenFormatado(resposta.AccessToken);
 
                 var claims = new List<Claim>();
@@ -112,29 +112,29 @@ namespace GameZone.News.WebApp.Models.Services
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     principal,
                     authProperties);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         private static JwtSecurityToken ObterTokenFormatado(string jwtToken)
         {
-            try
-            {
+            //try
+            //{
                 return new JwtSecurityTokenHandler().ReadToken(jwtToken) as JwtSecurityToken;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public async Task<UsuarioLoginDTO> CadastrarUsuario(CreateUserDTO createUserDto)
         {
-            try
-            {
+            //try
+            //{
                 UsuarioLoginDTO usuarioLoginDto = null;
 
                 var userContent = ObterConteudo(createUserDto);
@@ -150,33 +150,33 @@ namespace GameZone.News.WebApp.Models.Services
                 }
 
                 return usuarioLoginDto;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public bool TokenExpirado()
         {
-            try
-            {
+            //try
+            //{
                 var jwt = _user.ObterUserToken();
                 if (jwt is null) return false;
 
                 var token = ObterTokenFormatado(jwt);
                 return token.ValidTo.ToLocalTime() < DateTime.Now;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public async Task<bool> RefreshTokenValido()
         {
-            try
-            {
+            //try
+            //{
                 var resposta = await UtilizarRefreshToken(_user.ObterUserRefreshToken());
 
                 if (resposta.AccessToken != null && resposta.ResponseResult == null)
@@ -186,17 +186,17 @@ namespace GameZone.News.WebApp.Models.Services
                 }
 
                 return false;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public async Task<UsuarioLoginDTO> UtilizarRefreshToken(string refreshToken)
         {
-            try
-            {
+            //try
+            //{
                 UsuarioLoginDTO usuarioLoginDTO = null;
                 var refreshTokenContent = ObterConteudo(refreshToken);
 
@@ -216,11 +216,11 @@ namespace GameZone.News.WebApp.Models.Services
                 }
 
                 return usuarioLoginDTO;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public async Task<UsuarioDto> GetUserDto(Guid idUsuario)

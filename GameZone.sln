@@ -97,7 +97,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{64BB330E-B298-4EEA-8E69-A908513DD5ED}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\master_gamezone-web.yml = .github\workflows\master_gamezone-web.yml
-		.github\workflows\master_gamezone-webapp.yml = .github\workflows\master_gamezone-webapp.yml
 	EndProjectSection
 EndProject
 Global

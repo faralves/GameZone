@@ -26,8 +26,8 @@ namespace GameZone.News.WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int? page)
         {
-            try
-            {
+            //try
+            //{
                 int pageSize = 10;
                 int pageNumber = page ?? 1;
 
@@ -44,18 +44,18 @@ namespace GameZone.News.WebApp.Controllers
                 var pagedNews = news.ToPagedList(pageNumber, pageSize);
 
                 return View(pagedNews);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            try
-            {
+            //try
+            //{
                 var noticia = await _newsService.GetById(id);
                 if (noticia == null)
                 {
@@ -65,31 +65,31 @@ namespace GameZone.News.WebApp.Controllers
                 ViewBag.LocalExecution = _local_execution;
 
                 return View(noticia);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
 
         public IActionResult Create()
         {
-            try
-            {
+            //try
+            //{
                 return View();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateNewsDTO newsDto)
         {
-            try
-            {
+            //try
+            //{
                 if (!ModelState.IsValid)
                 {
                     return View(newsDto);
@@ -97,17 +97,17 @@ namespace GameZone.News.WebApp.Controllers
 
                 await _newsService.CreateNewsAsync(newsDto);
                 return RedirectToAction("Index");
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-            try
-            {
+            //try
+            //{
                 var news = await _newsService.GetNewsByIdAsync(id);
                 if (news == null)
                 {
@@ -115,18 +115,18 @@ namespace GameZone.News.WebApp.Controllers
                 }
 
                 return View(news);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(int id, Models.DTO.Request.UpdateNewsDTO? updateNewsDto)
         {
-            try
-            {
+            //try
+            //{
                 if (updateNewsDto == null || id != updateNewsDto.Id)
                 {
                     return BadRequest();
@@ -147,31 +147,31 @@ namespace GameZone.News.WebApp.Controllers
 
                 await _newsService.UpdateNewsAsync(updateNewsDto);
                 return RedirectToAction("Index");
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
+            //try
+            //{
                 await _newsService.DeleteNewsAsync(id);
                 return RedirectToAction("Index");
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         [HttpPost("CreateComment")]
         public async Task<IActionResult> CreateComment(CreateCommentDTO createCommentDto)
         {
-            try
-            {
+            //try
+            //{
                 if (!ModelState.IsValid)
                 {
                     if (createCommentDto?.NoticiaId != 0)
@@ -182,11 +182,11 @@ namespace GameZone.News.WebApp.Controllers
 
                 await _newsService.CreateCommentAsync(createCommentDto);
                 return RedirectToAction("GetById", new { id = createCommentDto.NoticiaId });
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
     }
 }
