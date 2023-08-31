@@ -29,7 +29,7 @@ RUN dotnet publish --no-restore --configuration Release
 # =======================================================
 
 # Base image is .NET Core runtime only (Linux)
-FROM mcr.microsoft.com/dotnet/aspnet:
+FROM mcr.microsoft.com/dotnet/aspnet:$IMAGE_BASE
 
 # Seems as good a place as any
 WORKDIR /app
