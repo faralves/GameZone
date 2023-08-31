@@ -35,22 +35,22 @@ jobs:
       uses: docker/build-push-action@v4.1.1
       with:
         push: true
-        tags: gamezoneacr.azurecr.io/gamezone-news-webapp:${{ github.run_number }}
+        tags: gamezoneacr.azurecr.io/gamezone-news-webapp:development-v${{ github.run_number }}
         file: ./Source/WebApps/GameZone.News.WebApp/Dockerfile
 
     - name: Build and push gamezone-api-identidade container image to registry
       uses: docker/build-push-action@v4.1.1
       with:
         push: true
-        tags: gamezoneacr.azurecr.io/gamezone-api-identidade:${{ github.run_number }}
-        file: ./Source/Identidade/0-Presentation/API/gamezone.Identidade.API/Dockerfile
+        tags: gamezoneacr.azurecr.io/gamezone-api-identidade:development-v${{ github.run_number }}
+        file: ./Source/Identidade/0-Presentation/API/GameZone.Identidade.API/Dockerfile
 
     - name: Build and push gamezone-api-blog container image to registry
       uses: docker/build-push-action@v4.1.1
       with:
         push: true
-        tags: gamezoneacr.azurecr.io/gamezone-api-blog:${{ github.run_number }}
-        file: ./Source/Blog/0-Presentation/API/gamezone.Blog.API/Dockerfile
+        tags: gamezoneacr.azurecr.io/gamezone-api-blog:development-v${{ github.run_number }}
+        file: ./Source/Blog/0-Presentation/API/GameZone.Blog.API/Dockerfile
 
   #deploy:
   #  runs-on: ubuntu-latest
