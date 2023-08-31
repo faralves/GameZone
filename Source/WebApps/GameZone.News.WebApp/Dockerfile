@@ -16,8 +16,7 @@ COPY ["/00-Building Blocks/WebAPI.Core/GameZone.WebAPI.Core/GameZone.WebAPI.Core
 COPY ["/WebApps/GameZone.News.WebApp/GameZone.News.WebApp.csproj", "WebApps/GameZone.News.WebApp/"]
 RUN dotnet restore
 
-# copy everything else and build app
-COPY WebApps/. ./WebApps/
+COPY . .
 WORKDIR /Source/WebApps
 RUN dotnet publish -c release -o /app --no-restore
 
