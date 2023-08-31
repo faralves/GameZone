@@ -19,7 +19,7 @@ RUN dotnet restore "WebApps/GameZone.Core/GameZone.Core.csproj"
 RUN dotnet restore "WebApps/GameZone.WebAPI.Core/GameZone.WebAPI.Core.csproj"
 RUN dotnet restore "WebApps/GameZone.News.WebApp/GameZone.News.WebApp.csproj"
 COPY . .
-WORKDIR /WebApps
+WORKDIR /WebApps/GameZone.News.WebApp
 RUN dotnet publish "GameZone.News.WebApp.csproj" -c release -o /app --no-restore
 
 # final stage/image
