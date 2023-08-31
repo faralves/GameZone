@@ -6,12 +6,6 @@
 
 ARG IMAGE_BASE=6.0-alpine
 
-#FROM mcr.microsoft.com/dotnet/aspnet:$IMAGE_BASE AS base
-#WORKDIR /app
-#RUN sed -i 's/TLSv1.2/TLSv1.0/g' /etc/ssl/openssl.cnf
-#EXPOSE 80
-#EXPOSE 443
-
 # Build image has SDK and tools (Linux)
 FROM mcr.microsoft.com/dotnet/sdk:$IMAGE_BASE AS build
 WORKDIR /.
@@ -47,6 +41,13 @@ ENV ASPNETCORE_Kestrel__Certificates__Default__Path /https/gamezone-certificate.
 
 # Run the ASP.NET Core app
 ENTRYPOINT dotnet GameZone.News.WebApp.dll
+
+
+#FROM mcr.microsoft.com/dotnet/aspnet:$IMAGE_BASE AS base
+#WORKDIR /app
+#RUN sed -i 's/TLSv1.2/TLSv1.0/g' /etc/ssl/openssl.cnf
+#EXPOSE 80
+#EXPOSE 443
 
 #FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 #WORKDIR /.
