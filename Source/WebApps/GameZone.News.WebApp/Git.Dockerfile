@@ -21,7 +21,7 @@ WORKDIR "WebApps/GameZone.News.WebApp"
 RUN dotnet build "GameZone.News.WebApp.csproj" -c Release -o /app/build 
 
 FROM build AS publish
-RUN dotnet publish "GameZone.News.WebApp.csproj" -c Release -o /app/publish /p:UseAppHost=false -r linux-x64
+RUN dotnet publish "GameZone.News.WebApp.csproj" -c Release -o /app/publish /p:UseAppHost=false 
 
 FROM base AS final
 WORKDIR /app
