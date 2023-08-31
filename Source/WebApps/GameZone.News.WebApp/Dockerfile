@@ -35,7 +35,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:$IMAGE_BASE
 WORKDIR /app
 
 # Copy already published binaries (from build stage image)
-COPY --from=build /build/src/bin/Release/net6.0/publish/ .
+COPY --from=build /app/publish .
 
 EXPOSE 80
 EXPOSE 443
