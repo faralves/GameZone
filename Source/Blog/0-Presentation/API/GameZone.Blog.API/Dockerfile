@@ -9,6 +9,9 @@ ARG IMAGE_BASE=6.0-alpine
 # Build image has SDK and tools (Linux)
 FROM mcr.microsoft.com/dotnet/sdk:$IMAGE_BASE AS build
 WORKDIR /.
+RUN sed -i 's/TLSv1.2/TLSv1.0/g' /etc/ssl/openssl.cnf
+EXPOSE 80
+EXPOSE 443
 
 # Copy project source files
 COPY ./Source ./Source
@@ -30,15 +33,6 @@ WORKDIR /app
 
 # Copy already published binaries (from build stage image)
 COPY --from=build /Source/Blog/0-Presentation/API/GameZone.Blog.API/bin/Release/net6.0/publish/ .
-
-EXPOSE 80
-EXPOSE 443
-EXPOSE 5401
-
-ENV ASPNETCORE_ENVIRONMENT Development
-ENV ASPNETCORE_URLS https://+:5401;http://+5402
-ENV ASPNETCORE_Kestrel__Certificates__Default__Password 123@Fiap
-ENV ASPNETCORE_Kestrel__Certificates__Default__Path /https/gamezone-certificate.pfx
 
 # Run the ASP.NET Core app
 ENTRYPOINT dotnet GameZone.Blog.API.dll
