@@ -203,11 +203,12 @@ jobs:
     #           }
     #       ]
 
-    - name: 'Deploy to Azure Web App for Container'
-      uses: azure/webapps-deploy@v2
-      with: 
-        app-name: gamezone-web 
-        images: gamezoneacr.azurecr.io/gamezone-news-webapp:development-v${{ github.run_number }}
+    #- name: 'Deploy to Azure Web App for Container'
+    #  uses: azure/webapps-deploy@v2
+    #  with: 
+    #    app-name: gamezone-web 
+    #    images: gamezoneacr.azurecr.io/gamezone-news-webapp:development-v${{ github.run_number }}
+
 
     - name: Deploy gamezone-web to ACI
       uses: azure/aci-deploy@v1
