@@ -79,8 +79,8 @@ jobs:
         azure-file-volume-account-key: ${{ secrets.AZURE_FILE_VOLUME_KEY }}
         azure-file-volume-share-name: https
         azure-file-volume-mount-path: /https
-        environment-variables: ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=https://+:5501;http://+5502 ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-identidade-certificate.pfx
-        secure-environment-variables: ASPNETCORE_Kestrel__Certificates__Default__Password=${{ secrets.ASPNETCORE_Kestrel__Certificates__Default__Password }} 
+        environment-variables: ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=https://+:5501;http://+5502 ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-identidade-certificate.pfx ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
+        #secure-environment-variables: ASPNETCORE_Kestrel__Certificates__Default__Password=${{ secrets.ASPNETCORE_Kestrel__Certificates__Default__Password }} 
         ports: 5501
 
 
@@ -101,8 +101,8 @@ jobs:
         azure-file-volume-account-key: ${{ secrets.AZURE_FILE_VOLUME_KEY }}
         azure-file-volume-share-name: https
         azure-file-volume-mount-path: /https
-        environment-variables: ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=https://+:5401;http://+5402 ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-certificate.pfx
-        secure-environment-variables: ASPNETCORE_Kestrel__Certificates__Default__Password=${{ secrets.ASPNETCORE_Kestrel__Certificates__Default__Password }} 
+        environment-variables: ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=https://+:5401;http://+5402 ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-certificate.pfx ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
+        #secure-environment-variables: ASPNETCORE_Kestrel__Certificates__Default__Password=${{ secrets.ASPNETCORE_Kestrel__Certificates__Default__Password }} 
         ports: 5401
 
     - name: Deploy gamezone-web to ACI
@@ -123,8 +123,8 @@ jobs:
         azure-file-volume-account-key: ${{ secrets.AZURE_FILE_VOLUME_KEY }}
         azure-file-volume-share-name: https
         azure-file-volume-mount-path: /https
-        environment-variables: ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://*:7043 ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-certificate.pfx
-        secure-environment-variables: ASPNETCORE_Kestrel__Certificates__Default__Password=${{ secrets.ASPNETCORE_Kestrel__Certificates__Default__Password }} 
+        environment-variables: ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://*:7043 ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-certificate.pfx ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
+        #secure-environment-variables: ASPNETCORE_Kestrel__Certificates__Default__Password=${{ secrets.ASPNETCORE_Kestrel__Certificates__Default__Password }} 
         ports: 80 443 7043
 
 
