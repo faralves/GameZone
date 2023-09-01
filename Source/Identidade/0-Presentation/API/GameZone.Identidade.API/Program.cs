@@ -21,7 +21,13 @@ var app = builder.Build();
 // Create database
 using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
 var db = scope.ServiceProvider.GetRequiredService<UsuarioDbContext>();
-await db.Database.MigrateAsync();
+try
+{
+    await db.Database.MigrateAsync();
+}
+catch (Exception)
+{
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

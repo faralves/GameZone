@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
     #gamezone.sqlserver:
-    #    image: techchallengefiapgroup31/gamezone-sql-server:development-v1
+    #    image: gamezoneacr.azurecr.io/gamezone-sql-server:development-v1
     #    container_name: gamezone-sql-server
     #    build: 
     #        context: ./sql
@@ -16,7 +16,7 @@ services:
     #        - gamezone
 
     gamezone-news-webapp:
-        image: techchallengefiapgroup31/gamezone-news-webapp:development-v2
+        image: gamezoneacr.azurecr.io/gamezone-news-webapp:development-v2
         build:
             context: .
             dockerfile: Source/WebApps/GameZone.News.WebApp/Dockerfile
@@ -35,7 +35,7 @@ services:
             - gamezone-blog-api
 
     gamezone-identidade-api:
-        image: techchallengefiapgroup31/gamezone-api-identidade:development-v2
+        image: gamezoneacr.azurecr.io/gamezone-api-identidade:development-v2
         container_name: gamezone-api-identidade    
         build: 
             context: .
@@ -56,7 +56,7 @@ services:
         #    - gamezone.sqlserver
 
     gamezone-blog-api:
-        image:  techchallengefiapgroup31/gamezone-api-blog:development-v2
+        image:  gamezoneacr.azurecr.io/gamezone-api-blog:development-v2
         container_name: gamezone-api-blog    
         build: 
             context: .
@@ -78,7 +78,7 @@ services:
             #- gamezone.sqlserver
 
     gamezone-gamezoneserver:
-        image:  techchallengefiapgroup31/gamezone-server:development-v2
+        image:  gamezoneacr.azurecr.io/gamezone-server:development-v2
         container_name: gamezone-server    
         build: 
             context: ./docker
