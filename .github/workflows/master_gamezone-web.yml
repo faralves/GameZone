@@ -105,17 +105,17 @@ jobs:
         secure-environment-variables: ASPNETCORE_Kestrel__Certificates__Default__Password=${{ secrets.ASPNETCORE_Kestrel__Certificates__Default__Password }} 
         ports: 5401
 
-    - name: Deploy gamezone-webapp to ACI
+    - name: Deploy gamezone-web to ACI
       uses: azure/aci-deploy@v1
       with:
         resource-group: rg-GameZone
-        dns-name-label: gamezone-webapp'
+        dns-name-label: gamezone-web
         image: 'gamezoneacr.azurecr.io/gamezone-news-webapp:development-v${{ github.run_number }}'
         registry-login-server: 'gamezoneacr.azurecr.io'
         registry-username: ${{ secrets.AzureAppService_ContainerUsername }}
         registry-password: ${{ secrets.AzureAppService_ContainerPassword }}
-        container-name: gamezone-webapp
-        name: gamezone-webapp
+        container-name: gamezone-web
+        name: gamezone-web
         cpu: 0.5   #Optional
         memory: 1.5   #Optional
         location: 'west us'
