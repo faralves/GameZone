@@ -114,8 +114,8 @@ jobs:
         registry-login-server: 'gamezoneacr.azurecr.io'
         registry-username: ${{ secrets.AzureAppService_ContainerUsername }}
         registry-password: ${{ secrets.AzureAppService_ContainerPassword }}
-        container-name: gamezone-news-container
-        name: gamezone-news-container
+        container-name: gamezone-webapp
+        name: gamezone-webapp
         cpu: 0.5   #Optional
         memory: 1.5   #Optional
         location: 'west us'
