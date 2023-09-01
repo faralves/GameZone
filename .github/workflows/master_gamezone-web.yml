@@ -82,7 +82,6 @@ jobs:
         ports: 5501
         environment-variables: |
           ConnectionStrings__ConnectionLocal=""
-          ConnectionStrings__Connection=""
           ASPNETCORE_ENVIRONMENT=Development
           ASPNETCORE_URLS="https://+:5501;http://+5502"
           ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-identidade-certificate.pfx
@@ -120,8 +119,6 @@ jobs:
         ports: 5401
         environment-variables: |
           ConnectionStrings__ConnectionLocal=""
-          ConnectionStrings__Connection=""
-          ConfigsAzure__ConnectionStorageAccount=""
           ASPNETCORE_ENVIRONMENT=Development
           ASPNETCORE_URLS="https://+:5401;http://+5402"
           ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-certificate.pfx
