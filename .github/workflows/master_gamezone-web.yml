@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy container app to Azure Web App - gamezone-web
+name: Build and deploy container - gamezone
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build_and_push_acr:
     runs-on: 'ubuntu-latest'
 
     steps:
@@ -51,6 +51,79 @@ jobs:
         push: true
         tags: gamezoneacr.azurecr.io/gamezone-api-blog:development-v${{ github.run_number }}
         file: ./Source/Blog/0-Presentation/API/GameZone.Blog.API/Dockerfile
+
+  deploy_to_aci_gamezone_news_webapp:
+    needs: build_and_push_acr  # Aguarda a conclusão do job de build
+    runs-on: 'ubuntu-latest'
+
+    steps:
+    - name: Deploy to Azure Container Instances gamezone-identidade-api to ACI
+      uses: Azure/aci-deploy@v1
+      with:
+        resource-group: rg-GameZone
+        name: gamezone-identidade-api
+        dns-name-label: gamezone-identidade-api
+        image: 'gamezoneacr.azurecr.io/gamezone-api-identidade:development-v${{ github.run_number }}'
+        cpu: 0.5   #Optional
+        memory: 1.5   #Optional
+        registry-username: ${{ secrets.AzureAppService_ContainerUsername }}
+        registry-password: ${{ secrets.AzureAppService_ContainerPassword }}
+        container-name: gamezone-identidade-api
+        location: 'west us'
+        azure-file-volume-account-name: gamezonetech
+        azure-file-volume-account-key: ${{ secrets.AZURE_FILE_VOLUME_KEY }}
+        azure-file-volume-share-name: https
+        azure-file-volume-mount-path: /https
+        command-line: /bin/bash a.sh
+        environment-variables: ASPNETCORE_ENVIRONMENT=value1 ASPNETCORE_URLS=value2 ASPNETCORE_Kestrel__Certificates__Default__Password=value3 ASPNETCORE_Kestrel__Certificates__Default__Path=value4
+        secure-environment-variables: ASPNETCORE_ENVIRONMENT=${{ secrets.ASPNETCORE_ENVIRONMENT }} ASPNETCORE_URLS=${{ secrets.ASPNETCORE_URLS_IDENTIDADE }} ASPNETCORE_Kestrel__Certificates__Default__Password=${{ secrets.ASPNETCORE_Kestrel__Certificates__Default__Password }} ASPNETCORE_Kestrel__Certificates__Default__Path=${{ secrets.ASPNETCORE_Kestrel__Certificates__Default__Path__Identidade }}
+        ports: 5501
+
+    - name: Deploy to Azure Container Instances gamezone-blog-api to ACI
+      uses: Azure/aci-deploy@v1
+      with:
+        resource-group: rg-GameZone
+        name: gamezone-blog-api
+        dns-name-label: gamezone-blog-api
+        image: 'gamezoneacr.azurecr.io/gamezone-api-blog:development-v${{ github.run_number }}'
+        cpu: 0.5   #Optional
+        memory: 1.5   #Optional
+        registry-username: ${{ secrets.AzureAppService_ContainerUsername }}
+        registry-password: ${{ secrets.AzureAppService_ContainerPassword }}
+        container-name: gamezone-blog-api
+        location: 'west us'
+        azure-file-volume-account-name: gamezonetech
+        azure-file-volume-account-key: ${{ secrets.AZURE_FILE_VOLUME_KEY }}
+        azure-file-volume-share-name: https
+        azure-file-volume-mount-path: /https
+        command-line: /bin/bash a.sh
+        environment-variables: ASPNETCORE_ENVIRONMENT=value1 ASPNETCORE_URLS=value2 ASPNETCORE_Kestrel__Certificates__Default__Password=value3 ASPNETCORE_Kestrel__Certificates__Default__Path=value4
+        secure-environment-variables: ASPNETCORE_ENVIRONMENT=${{ secrets.ASPNETCORE_ENVIRONMENT }} ASPNETCORE_URLS=${{ secrets.ASPNETCORE_URLS_BLOG }} ASPNETCORE_Kestrel__Certificates__Default__Password=${{ secrets.ASPNETCORE_Kestrel__Certificates__Default__Password }} ASPNETCORE_Kestrel__Certificates__Default__Path=${{ secrets.ASPNETCORE_Kestrel__Certificates__Default__Path }}
+        ports: 5401
+
+    - name: Deploy gamezone-webapp to ACI
+      uses: azure/aci-deploy@v1
+      with:
+        resource-group: rg-GameZone
+        dns-name-label: gamezone-webapp'
+        image: 'gamezoneacr.azurecr.io/gamezone-news-webapp:development-v${{ github.run_number }}'
+        registry-login-server: 'gamezoneacr.azurecr.io'
+        registry-username: ${{ secrets.AzureAppService_ContainerUsername }}
+        registry-password: ${{ secrets.AzureAppService_ContainerPassword }}
+        container-name: gamezone-news-container
+        name: gamezone-news-container
+        cpu: 0.5   #Optional
+        memory: 1.5   #Optional
+        location: 'west us'
+        azure-file-volume-account-name: gamezonetech
+        azure-file-volume-account-key: ${{ secrets.AZURE_FILE_VOLUME_KEY }}
+        azure-file-volume-share-name: https
+        azure-file-volume-mount-path: /https
+        command-line: /bin/bash a.sh
+        environment-variables: ASPNETCORE_ENVIRONMENT=value1 ASPNETCORE_URLS=value2 ASPNETCORE_Kestrel__Certificates__Default__Password=value3 ASPNETCORE_Kestrel__Certificates__Default__Path=value4
+        secure-environment-variables: ASPNETCORE_ENVIRONMENT=${{ secrets.ASPNETCORE_ENVIRONMENT }} ASPNETCORE_URLS=${{ secrets.ASPNETCORE_URLS_WEBAPP }} ASPNETCORE_Kestrel__Certificates__Default__Password=${{ secrets.ASPNETCORE_Kestrel__Certificates__Default__Password }} ASPNETCORE_Kestrel__Certificates__Default__Path=${{ secrets.ASPNETCORE_Kestrel__Certificates__Default__Path }}
+        ports: 80 443 7043
+
 
   #deploy:
   #  runs-on: ubuntu-latest
