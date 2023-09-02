@@ -79,7 +79,7 @@ jobs:
         azure-file-volume-account-key: ${{ secrets.AZURE_FILE_VOLUME_KEY }}
         azure-file-volume-share-name: https
         azure-file-volume-mount-path: /https
-        ports: 443
+        ports: 80 443
         environment-variables: |
           ASPNETCORE_ENVIRONMENT=Production
           ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
@@ -119,7 +119,7 @@ jobs:
         azure-file-volume-account-key: ${{ secrets.AZURE_FILE_VOLUME_KEY }}
         azure-file-volume-share-name: https
         azure-file-volume-mount-path: /https
-        ports: 443
+        ports: 80 443
         environment-variables: |
           ASPNETCORE_ENVIRONMENT=Production
           ASPNETCORE_Kestrel__Certificates__Default__Path="/https/gamezone-certificate.pfx"
