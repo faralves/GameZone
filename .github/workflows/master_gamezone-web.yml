@@ -82,6 +82,7 @@ jobs:
         ports: 80 443
         environment-variables: |
           ASPNETCORE_ENVIRONMENT=Production
+          ASPNETCORE_URLS="https://+:443;http://+80"
           ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
           ASPNETCORE_Kestrel__Certificates__Default__Path="/https/gamezone-identidade-certificate.pfx"
           ConnectionStrings__ConnectionLocal=""
@@ -93,9 +94,6 @@ jobs:
           idadeMinima="16"
           AppTokenSettings__RefreshTokenExpiration=8
           AppSettings__AutenticacaoJwksUrl="https://gamezone-identidade-api.westus.azurecontainer.io/jwks"
-          
-
-          #ASPNETCORE_URLS="https://+:5501;http://+5502"
         #secure-environment-variables: ConnectionStrings__Connection=${{ secrets.CONNECTION_STRING_SQL }}
 
         #environment-variables: ConnectionStrings__Connection=${{ secrets.CONNECTION_STRING_SQL }} ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS="https://+:5501;http://+5502" ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-identidade-certificate.pfx ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap ConnectionStrings__ConnectionLocal="" AllowedHosts="*" EnableLocalExecution=false CultureInfo="pt-BR" SymmetricSecurityKey=9ASHDA98H9ah9ha9H9A89n0faspoikgvnhaiopk idadeMinima=16 AppTokenSettings__RefreshTokenExpiration=8 AppSettings__AutenticacaoJwksUrl="https://gamezone-identidade-api.westus.azurecontainer.io:5501/jwks"
@@ -122,6 +120,7 @@ jobs:
         ports: 80 443
         environment-variables: |
           ASPNETCORE_ENVIRONMENT=Production
+          ASPNETCORE_URLS="https://+:443;http://+80"
           ASPNETCORE_Kestrel__Certificates__Default__Path="/https/gamezone-certificate.pfx"
           ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
           ConnectionStrings__ConnectionLocal=""
@@ -133,9 +132,6 @@ jobs:
           SymmetricSecurityKey="9ASHDA98H9ah9ha9H9A89n0faspoikgvnhaiopk"
           AppSettings__AutenticacaoJwksUrl="https://gamezone-identidade-api.westus.azurecontainer.io/jwks"
           ConfigsAzure__ContainerBlobStorage="images"
-        
-          
-          #ASPNETCORE_URLS="https://+:5401;http://+5402"
         #secure-environment-variables: |
         #  ConnectionStrings__Connection=${{ secrets.CONNECTION_STRING_SQL }}
         #  ConfigsAzure__ConnectionStorageAccount=${{ secrets.CONNECTION_STORAGE_ACCOUNT }}
@@ -214,38 +210,38 @@ jobs:
     #    images: gamezoneacr.azurecr.io/gamezone-news-webapp:development-v${{ github.run_number }}
 
 
-    #- name: Deploy gamezone-web to ACI
-    #  uses: azure/aci-deploy@v1
-    #  with:
-    #    resource-group: rg-GameZone
-    #    dns-name-label: gamezone-web
-    #    image: 'gamezoneacr.azurecr.io/gamezone-news-webapp:development-v${{ github.run_number }}'
-    #    registry-login-server: 'gamezoneacr.azurecr.io'
-    #    registry-username: ${{ secrets.AzureAppService_ContainerUsername }}
-    #    registry-password: ${{ secrets.AzureAppService_ContainerPassword }}
-    #    container-name: gamezone-web
-    #    name: gamezone-web
-    #    cpu: 0.5   #Optional
-    #    memory: 1.5   #Optional
-    #    location: 'west us'
-    #    azure-file-volume-account-name: gamezonetech
-    #    azure-file-volume-account-key: ${{ secrets.AZURE_FILE_VOLUME_KEY }}
-    #    azure-file-volume-share-name: https
-    #    azure-file-volume-mount-path: /https
-    #    ports: 80 443 
-    #    environment-variables: |
-    #        ASPNETCORE_ENVIRONMENT=Production 
-    #        #ASPNETCORE_URLS="http://*:7043" 
-    #        ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-certificate.pfx 
-    #        ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap 
-    #        AllowedHosts="*" 
-    #        EnableLocalExecution=false 
-    #        CultureInfo="pt-BR" 
-    #        SymmetricSecurityKey=9ASHDA98H9ah9ha9H9A89n0faspoikgvnhaiopk 
-    #        AppSettings__AutenticacaoJwksUrl="https://gamezone-identidade-api.westus.azurecontainer.io:5501/jwks" 
-    #        AutenticacaoUrl="https://gamezone-identidade-api.westus.azurecontainer.io:5501" 
-    #        BlogUrl="https://gamezone-blog-api.westus.azurecontainer.io:5401" 
-    #        LocalPathImages=""
+    - name: Deploy gamezone-web to ACI
+      uses: azure/aci-deploy@v1
+      with:
+        resource-group: rg-GameZone
+        dns-name-label: gamezone-web
+        image: 'gamezoneacr.azurecr.io/gamezone-news-webapp:development-v${{ github.run_number }}'
+        registry-login-server: 'gamezoneacr.azurecr.io'
+        registry-username: ${{ secrets.AzureAppService_ContainerUsername }}
+        registry-password: ${{ secrets.AzureAppService_ContainerPassword }}
+        container-name: gamezone-web
+        name: gamezone-web
+        cpu: 0.5   #Optional
+        memory: 1.5   #Optional
+        location: 'west us'
+        azure-file-volume-account-name: gamezonetech
+        azure-file-volume-account-key: ${{ secrets.AZURE_FILE_VOLUME_KEY }}
+        azure-file-volume-share-name: https
+        azure-file-volume-mount-path: /https
+        ports: 80 443 7043
+        environment-variables: |
+            ASPNETCORE_ENVIRONMENT=Production 
+            ASPNETCORE_URLS="http://*:7043" 
+            ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-certificate.pfx 
+            ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap 
+            AllowedHosts="*" 
+            EnableLocalExecution=false 
+            CultureInfo="pt-BR" 
+            SymmetricSecurityKey=9ASHDA98H9ah9ha9H9A89n0faspoikgvnhaiopk 
+            AppSettings__AutenticacaoJwksUrl="https://gamezone-identidade-api.westus.azurecontainer.io/jwks" 
+            AutenticacaoUrl="https://gamezone-identidade-api.westus.azurecontainer.io" 
+            BlogUrl="https://gamezone-blog-api.westus.azurecontainer.io" 
+            LocalPathImages=""
 
         #environment-variables: ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://*:7043 ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-certificate.pfx ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap AllowedHosts="*" EnableLocalExecution=false CultureInfo="pt-BR" SymmetricSecurityKey=9ASHDA98H9ah9ha9H9A89n0faspoikgvnhaiopk AppSettings__AutenticacaoJwksUrl="https://gamezone-identidade-api.westus.azurecontainer.io:5501/jwks" AutenticacaoUrl="https://gamezone-identidade-api.westus.azurecontainer.io:5501" BlogUrl="https://gamezone-blog-api.westus.azurecontainer.io:5401" LocalPathImages=""
         #secure-environment-variables: ASPNETCORE_Kestrel__Certificates__Default__Password=${{ secrets.ASPNETCORE_Kestrel__Certificates__Default__Password }} 
