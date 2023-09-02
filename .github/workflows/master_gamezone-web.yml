@@ -79,6 +79,7 @@ jobs:
         azure-file-volume-account-key: ${{ secrets.AZURE_FILE_VOLUME_KEY }}
         azure-file-volume-share-name: https
         azure-file-volume-mount-path: /https
+        ports: 443
         environment-variables: |
           ASPNETCORE_ENVIRONMENT=Production
           ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
@@ -94,7 +95,6 @@ jobs:
           AppSettings__AutenticacaoJwksUrl="https://gamezone-identidade-api.westus.azurecontainer.io/jwks"
           
 
-        #ports: 5501
           #ASPNETCORE_URLS="https://+:5501;http://+5502"
         #secure-environment-variables: ConnectionStrings__Connection=${{ secrets.CONNECTION_STRING_SQL }}
 
@@ -119,6 +119,7 @@ jobs:
         azure-file-volume-account-key: ${{ secrets.AZURE_FILE_VOLUME_KEY }}
         azure-file-volume-share-name: https
         azure-file-volume-mount-path: /https
+        ports: 443
         environment-variables: |
           ASPNETCORE_ENVIRONMENT=Production
           ASPNETCORE_Kestrel__Certificates__Default__Path="/https/gamezone-certificate.pfx"
@@ -134,7 +135,6 @@ jobs:
           ConfigsAzure__ContainerBlobStorage="images"
         
           
-        #ports: 5401
           #ASPNETCORE_URLS="https://+:5401;http://+5402"
         #secure-environment-variables: |
         #  ConnectionStrings__Connection=${{ secrets.CONNECTION_STRING_SQL }}
