@@ -93,7 +93,7 @@ jobs:
           SymmetricSecurityKey="9ASHDA98H9ah9ha9H9A89n0faspoikgvnhaiopk"
           idadeMinima="16"
           AppTokenSettings__RefreshTokenExpiration=8
-          AppSettings__AutenticacaoJwksUrl="https://gamezone-identidade-api.westus.azurecontainer.io:5501/jwks"
+          AppSettings__AutenticacaoJwksUrl="https://gamezone-identidade-api.westus.azurecontainer.io/jwks"
         #secure-environment-variables: ConnectionStrings__Connection=${{ secrets.CONNECTION_STRING_SQL }}
 
         #environment-variables: ConnectionStrings__Connection=${{ secrets.CONNECTION_STRING_SQL }} ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS="https://+:5501;http://+5502" ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-identidade-certificate.pfx ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap ConnectionStrings__ConnectionLocal="" AllowedHosts="*" EnableLocalExecution=false CultureInfo="pt-BR" SymmetricSecurityKey=9ASHDA98H9ah9ha9H9A89n0faspoikgvnhaiopk idadeMinima=16 AppTokenSettings__RefreshTokenExpiration=8 AppSettings__AutenticacaoJwksUrl="https://gamezone-identidade-api.westus.azurecontainer.io:5501/jwks"
@@ -130,7 +130,7 @@ jobs:
           EnableLocalExecution="false"
           CultureInfo="pt-BR"
           SymmetricSecurityKey="9ASHDA98H9ah9ha9H9A89n0faspoikgvnhaiopk"
-          AppSettings__AutenticacaoJwksUrl="https://gamezone-identidade-api.westus.azurecontainer.io:5501/jwks"
+          AppSettings__AutenticacaoJwksUrl="https://gamezone-identidade-api.westus.azurecontainer.io/jwks"
           ConfigsAzure__ContainerBlobStorage="images"
         #secure-environment-variables: |
         #  ConnectionStrings__Connection=${{ secrets.CONNECTION_STRING_SQL }}
