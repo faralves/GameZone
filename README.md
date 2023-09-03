@@ -110,7 +110,7 @@ az acr login --name gamezoneacr.azurecr.io -u <SEU_USUARIO> -p <SUA_SENHA>
 
 az acr login --name gamezoneacr.azurecr.io -u gamezoneacr -p <SUA_SENHA>
 
-## 🛠 DEVOPS
+## 🏗️ DEVOPS
 Para implementação desta solução no que tange ao DEVOPS estamos utilizando o portal do Azure para provisonar os recursos utilizados e integramos o app com a ferramenta de CI/CD [GitHub Actions](https://github.com/faralves/GameZone/actions).
 
 
