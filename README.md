@@ -14,7 +14,7 @@ O projeto está sendo desenvolvido em grupo, com o objetivo de compartilhar conh
 
 ### 📋 Pré-requisitos
 
-- [.NET 7.0](https://dotnet.microsoft.com/download/dotnet/7.0)
+- [.NET 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
 - [Sql Server](https://www.microsoft.com/pt-br/sql-server/sql-server-downloads)
 
 ### 🎲 Banco de dados
@@ -25,7 +25,7 @@ a váriavel `ConnectionLocal` e `Connection` que pode conter o endereço do banc
 ```json
  "ConnectionStrings": {
     "ConnectionLocal": "Server=gamezone.sqlserver;Database=GameZoneDB;User Id=<SEU_USUARIO>;Password=<SUA_SENHA>;MultipleActiveResultSets=true;TrustServerCertificate=true;",
-    "Connection": Server=tcp:GameZoneServer.database.windows.net,1433;Initial Catalog=gamezoneDB;Persist Security Info=False;User ID=<SEU_USUARIO>;Password=<SUA_SENHA>;MultipleActiveResultSets=False;Encrypt=true;TrustServerCertificate=False;Connection Timeout=30;"
+    "Connection": "Server=tcp:GameZoneServer.database.windows.net,1433;Initial Catalog=gamezoneDB;Persist Security Info=False;User ID=<SEU_USUARIO>;Password=<SUA_SENHA>;MultipleActiveResultSets=False;Encrypt=true;TrustServerCertificate=False;Connection Timeout=30;"
   }
 ```
 
