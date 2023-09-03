@@ -14,44 +14,135 @@ jobs:
     runs-on: 'ubuntu-latest'
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3.6.0
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7.0.x  # Use the desired .NET 6 version
+        dotnet-version: 6.0.x  # Use the desired .NET 6 version
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v2.10.0
 
     - name: Log in to registry
       uses: docker/login-action@v2
       with:
         registry: https://gamezoneacr.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_1a07b17dde80472bb461c5876d2efc64 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_e45e0de6f7cc49b2b7c0d13adfbf9db9 }}
+        username: ${{ secrets.AzureAppService_ContainerUsername }}
+        password: ${{ secrets.AzureAppService_ContainerPassword }}
 
 
-    - name: Build and push container image to registry
-      uses: docker/build-push-action@v3
+    - name: Build and push gamezone-news-webapp container image to registry
+      uses: docker/build-push-action@v4.1.1
       with:
         push: true
-        tags: gamezoneacr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1a07b17dde80472bb461c5876d2efc64 }}/gamezone-news-webapp:${{ github.sha }}
-        file: ./Source/WebApps/GameZone.News.WebApp/Git.Dockerfile
+        tags: gamezoneacr.azurecr.io/gamezone-news-webapp:development-v${{ github.run_number }}
+        file: ./Source/WebApps/GameZone.News.WebApp/Dockerfile
 
-  deploy:
+    - name: Build and push gamezone-api-identidade container image to registry
+      uses: docker/build-push-action@v4.1.1
+      with:
+        push: true
+        tags: gamezoneacr.azurecr.io/gamezone-api-identidade:development-v${{ github.run_number }}
+        file: ./Source/Identidade/0-Presentation/API/GameZone.Identidade.API/Dockerfile
+
+    - name: Build and push gamezone-api-blog container image to registry
+      uses: docker/build-push-action@v4.1.1
+      with:
+        push: true
+        tags: gamezoneacr.azurecr.io/gamezone-api-blog:development-v${{ github.run_number }}
+        file: ./Source/Blog/0-Presentation/API/GameZone.Blog.API/Dockerfile
+
+  deploy_to_aci:
+    needs: build_and_push_acr  # Aguarda a conclusão do job de build
     runs-on: ubuntu-latest
-    needs: build
     environment:
-      name: 'production'
+      name: 'Development'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
+    - name: Set up Azure CLI
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Deploy to Azure Container Instances gamezone-identidade-api to ACI
+      uses: Azure/aci-deploy@v1
+      with:
+        resource-group: rg-GameZone
+        name: gamezone-identidade-api
+        dns-name-label: gamezone-identidade-api
+        image: 'gamezoneacr.azurecr.io/gamezone-api-identidade:development-v${{ github.run_number }}'
+        cpu: 0.5   #Optional
+        memory: 1.5   #Optional
+        registry-username: ${{ secrets.AzureAppService_ContainerUsername }}
+        registry-password: ${{ secrets.AzureAppService_ContainerPassword }}
+        container-name: gamezone-identidade-api
+        location: 'west us'
+        azure-file-volume-account-name: gamezonetech
+        azure-file-volume-account-key: ${{ secrets.AZURE_FILE_VOLUME_KEY }}
+        azure-file-volume-share-name: https
+        azure-file-volume-mount-path: /https
+        ports: 5501
+        environment-variables: |
+          ASPNETCORE_ENVIRONMENT=Development
+          ASPNETCORE_URLS="https://+:5501;http://+5502"
+          ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
+          ASPNETCORE_Kestrel__Certificates__Default__Path="/https/gamezone-identidade-certificate.pfx"
+          ConnectionStrings__ConnectionLocal=""
+          ConnectionStrings__Connection="Server=tcp:GameZoneServer.database.windows.net,1433;Initial Catalog=gamezoneDB;Persist Security Info=False;User ID=fernando;Password=123@Mudar;MultipleActiveResultSets=False;Encrypt=true;TrustServerCertificate=False;Connection Timeout=30;"
+          AllowedHosts="*"
+          EnableLocalExecution="false"
+          CultureInfo="pt-BR"
+          SymmetricSecurityKey="9ASHDA98H9ah9ha9H9A89n0faspoikgvnhaiopk"
+          idadeMinima="16"
+          AppTokenSettings__RefreshTokenExpiration=8
+          AppSettings__AutenticacaoJwksUrl="https://gamezone-identidade-api.westus.azurecontainer.io:5501/jwks"
+        #secure-environment-variables: ConnectionStrings__Connection=${{ secrets.CONNECTION_STRING_SQL }}
+
+        #environment-variables: ConnectionStrings__Connection=${{ secrets.CONNECTION_STRING_SQL }} ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS="https://+:5501;http://+5502" ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gamezone-identidade-certificate.pfx ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap ConnectionStrings__ConnectionLocal="" AllowedHosts="*" EnableLocalExecution=false CultureInfo="pt-BR" SymmetricSecurityKey=9ASHDA98H9ah9ha9H9A89n0faspoikgvnhaiopk idadeMinima=16 AppTokenSettings__RefreshTokenExpiration=8 AppSettings__AutenticacaoJwksUrl="https://gamezone-identidade-api.westus.azurecontainer.io:5501/jwks"
+        #secure-environment-variables: ConnectionStrings__Connection=${{ secrets.CONNECTION_STRING_SQL }} 
+
+
+    - name: Deploy to Azure Container Instances gamezone-blog-api to ACI
+      uses: Azure/aci-deploy@v1
+      with:
+        resource-group: rg-GameZone
+        name: gamezone-blog-api
+        dns-name-label: gamezone-blog-api
+        image: 'gamezoneacr.azurecr.io/gamezone-api-blog:development-v${{ github.run_number }}'
+        cpu: 0.5   #Optional
+        memory: 1.5   #Optional
+        registry-username: ${{ secrets.AzureAppService_ContainerUsername }}
+        registry-password: ${{ secrets.AzureAppService_ContainerPassword }}
+        container-name: gamezone-blog-api
+        location: 'west us'
+        azure-file-volume-account-name: gamezonetech
+        azure-file-volume-account-key: ${{ secrets.AZURE_FILE_VOLUME_KEY }}
+        azure-file-volume-share-name: https
+        azure-file-volume-mount-path: /https
+        ports: 5401
+        environment-variables: |
+          ASPNETCORE_ENVIRONMENT=Development
+          ASPNETCORE_URLS="https://+:5401;http://+5402"
+          ASPNETCORE_Kestrel__Certificates__Default__Path="/https/gamezone-certificate.pfx"
+          ASPNETCORE_Kestrel__Certificates__Default__Password=123@Fiap
+          ConnectionStrings__ConnectionLocal=""
+          ConnectionStrings__Connection="Server=tcp:GameZoneServer.database.windows.net,1433;Initial Catalog=gamezoneDB;Persist Security Info=False;User ID=fernando;Password=123@Mudar;MultipleActiveResultSets=False;Encrypt=true;TrustServerCertificate=False;Connection Timeout=30;"
+          ConfigsAzure__ConnectionStorageAccount="DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=gamezonetech;AccountKey=5TJ3lLCg6m9doXpm2VbXw2QGLJ4ItxsbjPkrMA7wRUPMBR7Gt2ybQwmXVugqAvK46vR+qZxf2yZO+AStUALfHQ=="
+          AllowedHosts="*"
+          EnableLocalExecution="false"
+          CultureInfo="pt-BR"
+          SymmetricSecurityKey="9ASHDA98H9ah9ha9H9A89n0faspoikgvnhaiopk"
+          AppSettings__AutenticacaoJwksUrl="https://gamezone-identidade-api.westus.azurecontainer.io:5501/jwks"
+          ConfigsAzure__ContainerBlobStorage="images"
+
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'gamezone-webapp'
-        slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_2045d12b5e4244a594e686210bf1164a }}
-        images: 'gamezoneacr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1a07b17dde80472bb461c5876d2efc64 }}/gamezone-news-webapp:${{ github.sha }}'
+        slot-name: 'Development'
+        images: 'gamezoneacr.azurecr.io/gamezone-news-webapp:development-v${{ github.run_number }}'
+
+        #publish-profile: ${{ secrets.AzureAppService_PublishProfile_2045d12b5e4244a594e686210bf1164a }}

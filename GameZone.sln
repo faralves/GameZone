@@ -99,6 +99,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\master_gamezone-web.yml = .github\workflows\master_gamezone-web.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "certs", "certs", "{5C2E4B9E-5696-4D18-BDFD-2D72F38DD0EC}"
+	ProjectSection(SolutionItems) = preProject
+		certs\gamezone-certificate.pfx = certs\gamezone-certificate.pfx
+		certs\gamezone-identidade-certificate.pfx = certs\gamezone-identidade-certificate.pfx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

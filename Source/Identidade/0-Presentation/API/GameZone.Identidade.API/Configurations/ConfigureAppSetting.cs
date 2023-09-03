@@ -9,10 +9,10 @@
             .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")}.json", optional: true)
             .AddEnvironmentVariables();
 
-            if (builder.Environment.IsDevelopment())
-            {
-                builder.Configuration.AddUserSecrets<Program>();
-            }
+            //if (builder.Environment.IsDevelopment())
+            //{
+            //    builder.Configuration.AddUserSecrets<Program>();
+            //}
         }
     }
 }
