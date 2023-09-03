@@ -29,85 +29,84 @@ a váriavel `ConnectionLocal` e `Connection` que pode conter o endereço do banc
   }
 ```
 
-## 🚀 Como configirar e executar o projeto
+## 🚀 Como configurar e executar o projeto
 Para esta etapad do projeto contamos com um script com a sequencia a ser executada, estamos utilizando o portal do Azure.
 
 
-# efetuando o login
+### Efetuando o login
 az login
 
-# Definindo a subscription
+### Definindo a subscription
 az account set --subscription <insira sua subscription>
 
-# criando um resorce group
+### Criando um resorce group
 az group create --name <rg-GameZone-trocar-o-nome> --location westus
-
 
 az ad sp create-for-rbac --name "GameZone" --role contributor --scopes /subscriptions/<insira sua subscription>/resourceGroups/<rg-GameZone-trocar-o-nome> --sdk-auth
 
-#vai gerar um retorno como esse abaixo, inserir ele nas suas secrets no gitHub
-#Retorno
-#{
-#  "clientId": "",
-#  "clientSecret": "",
-#  "subscriptionId": "",
-#  "tenantId": "",
-#  "activeDirectoryEndpointUrl": "",
-#  "resourceManagerEndpointUrl": "",
-#  "activeDirectoryGraphResourceId": "",
-#  "sqlManagementEndpointUrl": "",
-#  "galleryEndpointUrl": "",
-#  "managementEndpointUrl": ""
-#}
+### Irá gerar um retorno como esse abaixo, inserir ele nas suas secrets no gitHub
+### Retorno
+{
+{  "clientId": "",
+{  "clientSecret": "",
+{  "subscriptionId": "",
+{  "tenantId": "",
+{  "activeDirectoryEndpointUrl": "",
+{  "resourceManagerEndpointUrl": "",
+{  "activeDirectoryGraphResourceId": "",
+{  "sqlManagementEndpointUrl": "",
+{  "galleryEndpointUrl": "",
+{  "managementEndpointUrl": ""
+{
 
-#criando um storage account
+### Criando um storage account
 az storage account create --name <gamezonetech-trocar-o-nome> --resource-group <rg-GameZone-trocar-o-nome> --location westus --sku Standard_LRS 
 
-#criando um container blob
+### Criando um container blob
 az storage container create --account-name <gamezonetech-trocar-o-nome> --name images --public-access blob
 
-#Criando o ACI
-# Create a volume mount for the Azure File Share
+### Criando o ACI
+#### Criando um volume no Azure File Share
 az storage share create --account-name <gamezonetech-trocar-o-nome> --name https
 
-#definir o caminho dos certificados
+### Definir o caminho dos certificados
 cd C:/Projetos/TechChalenge/Fase2/GameZone/certs
 az storage file upload --source ./gamezone-certificate.pfx --share-name https --account-name <gamezonetech-trocar-o-nome>
 az storage file upload --source ./gamezone-identidade-certificate.pfx --share-name https --account-name <gamezonetech-trocar-o-nome>
 
 
-#criando um Server
+### Criando um Server
 az sql server create --name <GameZoneServer-trocar-o-nome> --resource-group <rg-GameZone-trocar-o-nome> --location westus --admin-user <insira seu usuário> --admin-password <insira sua senha>
 
-#criando SQL DataBase
+### Criando SQL DataBase
 az sql db create --resource-group <rg-GameZone-trocar-o-nome> --server <GameZoneServer-trocar-o-nome> --name <gamezoneDB-trocar-o-nome> --backup-storage-redundancy Local --sample-name AdventureWorksLT --edition GeneralPurpose --compute-model Serverless --family Gen5 --capacity 2
 
-#liberando acesso do ip para ao BD para acesso local
+### Liberando acesso do ip para ao BD para acesso local
 az sql server firewall-rule create --resource-group <rg-GameZone-trocar-o-nome> --server <GameZoneServer-trocar-o-nome> -n PermissaoFaixaIpLocal --start-ip-address <SEU_IP> --end-ip-address <SEU_IP>
 
-#liberando acesso do ip para ao BD para acesso da API
+### Liberando acesso do ip para ao BD para acesso da API
 az sql server firewall-rule create --resource-group <rg-GameZone-trocar-o-nome> --server <GameZoneServer-trocar-o-nome> --name AllowAzureServices --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
 
-#obtendo a connection string do blob storage
+### Obtendo a connection string do blob storage
 az storage account show-connection-string --resource-group <rg-GameZone-trocar-o-nome> --name <gamezonetech-trocar-o-nome>
 
-#vai te retornar a connection string do blob storage
-#{
-#  "connectionString": ""
-#}
+#### Irá retornar a connection string do blob storage
+{
+ "connectionString": ""
+}
 
-#obtendo a connection string sql server
+### Oobtendo a connection string sql server
 az sql db show-connection-string --server GameZoneServer --name gamezoneDB --client ado.net
 #"Server=tcp:GameZoneServer.database.windows.net,1433;Initial Catalog=gamezoneDB;Persist Security Info=False;User ID=<username>;Password=<password>;MultipleActiveResultSets=False;Encrypt=true;TrustServerCertificate=False;Connection Timeout=30;"
 
-# criando o Azure Container Registry:
+### Criando o Azure Container Registry:
 az acr create --name <gamezoneacr-trocar-o-nome> --resource-group <rg-GameZone-trocar-o-nome> --location westus --sku Basic --admin-enabled true
 
-# Vai retornar as credenciais do ACR:
+### Retorno das credenciais do ACR:
 az acr credential show --name <gamezoneacr-trocar-o-nome>
 
-#  login no seu ACR
-#az acr login --name gamezoneacr.azurecr.io -u <SEU_USUARIO> -p <SUA_SENHA>
+### Login no seu ACR
+az acr login --name gamezoneacr.azurecr.io -u <SEU_USUARIO> -p <SUA_SENHA>
 
 az acr login --name gamezoneacr.azurecr.io -u gamezoneacr -p <SUA_SENHA>
 
