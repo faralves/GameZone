@@ -1,10 +1,10 @@
 email - techchallengefiapgroup31@gmail.com
-senha - 123@Fiap
+senha - 
 
 
 hub.docker.com
 username: techchallengefiapgroup31
-password: group31@Fiap
+password: 
 
 
 
@@ -51,7 +51,7 @@ docker-compose -f GameZone_Desenvolvimento.yml up
 --------------------------------Enviar Imagens Docker para o Docker-hub---------------------------------------------------
 
 docker login -u techchallengefiapgroup31
-password = group31@Fiap
+password = 
 
 
 docker push techchallengefiapgroup31/gamezone-sql-server:development-v1
