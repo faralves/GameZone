@@ -142,7 +142,6 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'gamezone-webapp'
-        slot-name: 'Development'
         images: 'gamezoneacr.azurecr.io/gamezone-news-webapp:development-v${{ github.run_number }}'
 
         #publish-profile: ${{ secrets.AzureAppService_PublishProfile_2045d12b5e4244a594e686210bf1164a }}
