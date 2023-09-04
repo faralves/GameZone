@@ -95,7 +95,7 @@ az storage account show-connection-string --resource-group <rg-GameZone-trocar-o
  "connectionString": ""
 }
 
-### Oobtendo a connection string sql server
+### Obtendo a connection string sql server
 az sql db show-connection-string --server GameZoneServer --name gamezoneDB --client ado.net
 #"Server=tcp:GameZoneServer.database.windows.net,1433;Initial Catalog=gamezoneDB;Persist Security Info=False;User ID=<username>;Password=<password>;MultipleActiveResultSets=False;Encrypt=true;TrustServerCertificate=False;Connection Timeout=30;"
 
