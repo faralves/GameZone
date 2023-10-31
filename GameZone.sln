@@ -105,6 +105,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "certs", "certs", "{5C2E4B9E
 		certs\gamezone-identidade-certificate.pfx = certs\gamezone-identidade-certificate.pfx
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameZone.Identidade.Tests.Api", "Source\Identidade\5-Tests\GameZone.Identidade.Tests\GameZone.Identidade.Tests.Api.csproj", "{7B530A98-C6D3-4041-8CFC-6261506B1935}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -187,6 +189,10 @@ Global
 		{ACF9C90F-79A6-4364-8DEA-7002358C4340}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACF9C90F-79A6-4364-8DEA-7002358C4340}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACF9C90F-79A6-4364-8DEA-7002358C4340}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B530A98-C6D3-4041-8CFC-6261506B1935}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B530A98-C6D3-4041-8CFC-6261506B1935}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B530A98-C6D3-4041-8CFC-6261506B1935}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B530A98-C6D3-4041-8CFC-6261506B1935}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -231,6 +237,7 @@ Global
 		{B2A30FBC-7FDB-4834-AD3D-D1DF14F0482F} = {E06BD2DE-F02A-43F6-B441-212B0526ABA2}
 		{33471442-F308-4321-89EA-F937F7FE6CBF} = {B2A30FBC-7FDB-4834-AD3D-D1DF14F0482F}
 		{64BB330E-B298-4EEA-8E69-A908513DD5ED} = {8B50BD0E-F5DA-41BB-8C77-5331A28CC3DE}
+		{7B530A98-C6D3-4041-8CFC-6261506B1935} = {A31485FB-09F5-49D7-890D-7EE79BDA6FA4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6615AFBF-AF46-4C2C-BAFC-CB72D4909AB3}

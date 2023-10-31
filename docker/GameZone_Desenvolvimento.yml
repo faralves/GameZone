@@ -1,22 +1,23 @@
 version: "3.4"
 
 services:
-    #gamezone.sqlserver:
-        #image: gamezoneacr.azurecr.io/gamezone-sql-server:development-v1
-        #container_name: gamezone-sql-server
-        #build: 
-            #context: ../sql
-            #dockerfile: ./Dockerfile
-        #ports:
-            #- "1433:1433"
-        #environment:
-            #SA_PASSWORD: "Mudar123intrA"
-            #ACCEPT_EULA: "Y"     
-        #networks:
-          #- gamezone            
+    gamezone.sqlserver:
+        image: fernandoribeiroalves/gamezone-sql-server:development-v1
+        container_name: gamezone-sql-server
+        build: 
+            context: ../sql
+            dockerfile: ./Dockerfile
+        ports:
+            - "1433:1433"
+        environment:
+            SA_PASSWORD: "Mudar123intrA"
+            ACCEPT_EULA: "Y"     
+        networks:
+          - gamezone            
 
     gamezone-news-webapp:
-        image: gamezoneacr.azurecr.io/gamezone-news-webapp:development-v2
+        image: fernandoribeiroalves/gamezone-news-webapp:development-v2
+        # image: gamezoneacr.azurecr.io/gamezone-news-webapp:development-v2
         #container_name: gamezone-news-webapp
         build:
             context: ../Source
@@ -36,7 +37,8 @@ services:
             - gamezone-blog-api
 
     gamezone-identidade-api:
-        image: gamezoneacr.azurecr.io/gamezone-api-identidade:development-v2
+        image: fernandoribeiroalves/gamezone-api-identidade:development-v2
+        # image: gamezoneacr.azurecr.io/gamezone-api-identidade:development-v2
         container_name: gamezone-api-identidade    
         build: 
             context: ../Source
@@ -57,7 +59,8 @@ services:
             #- gamezone.sqlserver
             
     gamezone-blog-api:
-        image: gamezoneacr.azurecr.io/gamezone-api-blog:development-v2
+        image: fernandoribeiroalves/gamezone-api-blog:development-v2
+        # image: gamezoneacr.azurecr.io/gamezone-api-blog:development-v2
         container_name: gamezone-api-blog    
         build: 
             context: ../Source
@@ -80,14 +83,15 @@ services:
 
 
     gamezone-gamezoneserver:
-        image: gamezoneacr.azurecr.io/gamezone-server:development-v2
+        image: fernandoribeiroalves/gamezone-server:development-v2
+        # image: gamezoneacr.azurecr.io/gamezone-server:development-v2
         container_name: gamezone-server    
         build: 
             context: ./
             dockerfile: ./nginx/Dockerfile 
         restart: always 
         ports:
-            - "80:80"
+            - "80:8080"
             - "443:443"
         networks:
           - gamezone

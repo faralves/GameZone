@@ -40,6 +40,8 @@ else
     app.UseHsts();
 }
 
+app.UseCors(); // Aplica a política CORS configurada
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

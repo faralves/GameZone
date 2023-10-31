@@ -1,6 +1,6 @@
 namespace GameZone.Blog.Tests.Api
 {
-    public class UnitTest1
+    public class NoticiasTests
     {
         [Fact]
         public void Test1()

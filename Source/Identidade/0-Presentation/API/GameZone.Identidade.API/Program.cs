@@ -25,8 +25,9 @@ try
 {
     await db.Database.MigrateAsync();
 }
-catch (Exception)
+catch (Exception ex)
 {
+    var message = ex.Message;
 }
 
 // Configure the HTTP request pipeline.
@@ -40,6 +41,8 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+app.UseCors(); // Aplica a política CORS configurada
 
 app.UseHttpsRedirection();
 

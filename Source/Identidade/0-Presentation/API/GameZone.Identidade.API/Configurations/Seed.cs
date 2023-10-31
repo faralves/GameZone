@@ -25,7 +25,7 @@ namespace GameZone.Identidade.API.Configurations
             var adminUser = await _usuarioApplication.ObterUsuarioPorEmail(email);
             if (adminUser == null)
             {
-                CreateUsuarioDto usuarioDto = new CreateUsuarioDto() { Name = "Admin User", CpfCnpj = "12345678901", DataNascimento = DateTime.Now.Date, Email = "admin@gamezone.com.br", IdUsuarioInclusao= "", IsAdministrator = true, Password = "123@Mudar", RePassword = "123@Mudar"};
+                CreateUsuarioDto usuarioDto = new CreateUsuarioDto("Admin User", "12345678901", DateTime.Now.Date, "admin@gamezone.com.br", "123@Mudar", "123@Mudar", true, "" );
                 var resultadoCadastro = _usuarioApplication.CadastrarUsuario(usuarioDto).Result;
                 if(resultadoCadastro.Succeeded)
                     _logger.LogInformation("Usuário: " + usuarioDto.UserName + " cadastrado com sucesso!");
