@@ -78,3 +78,6 @@ az acr credential show --name <gamezoneacr-trocar-o-nome>
 
 az acr login --name gamezoneacr.azurecr.io -u gamezoneacr -p <insira o password>
 
+#Application Insigths
+az monitor app-insigths component create --app appinsigths --resourcegroup <rg-GameZone-trocar-o-nome> -- location --location westus
+
