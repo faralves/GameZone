@@ -388,6 +388,10 @@ namespace GameZone.Identidade.Tests.Api.Services
                 .UseInMemoryDatabase(databaseName: "InMemoryDatabase")
                 .Options;
 
+            var conectionString = _dockerFixture.GetConnectionString();
+
+            services.AddDbContext<UsuarioDbContext>(options => options.UseSqlServer(conectionString, b => b.MigrationsAssembly("GameZone.Identidade.Infra")));
+
             var dbContext = new UsuarioDbContext(options);
 
             services.AddSingleton<UsuarioDbContext>(dbContext);
@@ -409,96 +413,79 @@ namespace GameZone.Identidade.Tests.Api.Services
             _signInManager = _serviceProvider.GetRequiredService<SignInManager<Usuario>>();
         }
 
-        //protected UsuarioDbContext CreateContext()
-        //{
-        //    var serviceProvider = new ServiceCollection()
-        //        .AddEntityFrameworkInMemoryDatabase()
-        //        .BuildServiceProvider();
+        protected UsuarioDbContext CreateContext()
+        {
+            var serviceProvider = new ServiceCollection()
+                .AddEntityFrameworkInMemoryDatabase()
+                .BuildServiceProvider();
 
-        //    var options = new DbContextOptionsBuilder<UsuarioDbContext>()
-        //        .UseInMemoryDatabase(databaseName: "InMemoryDatabase")
-        //        .UseInternalServiceProvider(serviceProvider)
-        //        .Options;
+            var options = new DbContextOptionsBuilder<UsuarioDbContext>()
+                .UseInMemoryDatabase(databaseName: "InMemoryDatabase")
+                .UseInternalServiceProvider(serviceProvider)
+                .Options;
 
-        //    return new UsuarioDbContext(options);
-        //}
+            return new UsuarioDbContext(options);
+        }
 
-        //[Fact]
-        //public async void Should_Insert_Usuario_With_Success()
-        //{
-        //    var _connectionString = _dockerFixture.GetConnectionString();
+        [Fact]
+        public async void Should_Insert_Usuario_With_Success()
+        {
+            var _connectionString = _dockerFixture.GetConnectionString();
 
-        //    var configValues = new Dictionary<string, string>
-        //    {
-        //        { "ConnectionStrings:Connection", _connectionString }
-        //    };
+            var configValues = new Dictionary<string, string>
+            {
+                { "ConnectionStrings:Connection", _connectionString }
+            };
 
-        //    var configuration = new ConfigurationBuilder()
-        //        .AddInMemoryCollection(configValues)
-        //        .Build();
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(configValues)
+                .Build();
 
-        //    // Arrange
-        //    var usuarioDTO = _usuarioTestsFixture.CreateUserPF();
-        //    Usuario usuario = new Usuario()
-        //    {
-        //        CpfCnpj = usuarioDTO.CpfCnpj,
-        //        Email = usuarioDTO.Email,
-        //        DataNascimento = usuarioDTO.DataNascimento,
-        //        EmailConfirmed = true,
-        //        IsAdministrator = _faker.Random.Bool(),
-        //        IdUsuarioInclusao = usuarioDTO.IdUsuarioInclusao,
-        //        Name = usuarioDTO.Name,
-        //        UserName = usuarioDTO.Email                                
-        //    };
-        //    var password = usuarioDTO.Password;
+            // Arrange
+            var usuarioDTO = _usuarioTestsFixture.CreateUserPF();
+            Usuario usuario = new Usuario()
+            {
+                CpfCnpj = usuarioDTO.CpfCnpj,
+                Email = usuarioDTO.Email,
+                DataNascimento = usuarioDTO.DataNascimento,
+                EmailConfirmed = true,
+                IsAdministrator = _faker.Random.Bool(),
+                IdUsuarioInclusao = usuarioDTO.IdUsuarioInclusao,
+                Name = usuarioDTO.Name,
+                UserName = usuarioDTO.Email
+            };
+            var password = usuarioDTO.Password;
 
-        //    var expectedResult = IdentityResult.Success;
+            var expectedResult = IdentityResult.Success;
 
-        //    // Usar o _serviceProvider para obter as dependências necessárias, incluindo o UserManager
-        //    using (var context = CreateContext())
-        //    {
+            // Usar o _serviceProvider para obter as dependências necessárias, incluindo o UserManager
+            using (var context = CreateContext())
+            {
 
-        //        //// Configurar e inicializar o UserManager com a configuração correta
-        //        var dbContextOptions = new DbContextOptionsBuilder<UsuarioDbContext>()
-        //            .UseSqlServer(_dockerFixture.GetConnectionString())
-        //            .Options;
+                //// Configurar e inicializar o UserManager com a configuração correta
+                var dbContextOptions = new DbContextOptionsBuilder<UsuarioDbContext>()
+                    .UseSqlServer(_dockerFixture.GetConnectionString())
+                    .Options;
 
-        //        var userStore = new UserStore<Usuario>(new UsuarioDbContext(dbContextOptions));
-        //        _userManager = new UserManager<Usuario>(userStore, null, null, null, null, null, null, null, null);
+                var userStore = new UserStore<Usuario>(new UsuarioDbContext(dbContextOptions));
+                _userManager = new UserManager<Usuario>(userStore, null, null, null, null, null, null, null, null);
 
-        //        _identidadeRepositoryMock.Setup(r => r.CadastrarUsuario(usuario, password)).ReturnsAsync(expectedResult);
+                _identidadeRepositoryMock.Setup(r => r.CadastrarUsuario(usuario, password)).ReturnsAsync(expectedResult);
 
-        //        var usuarioServices = new IdentidadeRepository(_userManager, _signInManager, _loggerMock.Object, _roleManager);
+                var usuarioServices = new IdentidadeRepository(_userManager, _signInManager, _loggerMock.Object, _roleManager);
 
-        //        // Act
-        //        var result = await usuarioServices.CadastrarUsuario(usuario, password);
+                // Act
+                var result = await usuarioServices.CadastrarUsuario(usuario, password);
 
-        //        // Assert
-        //        Assert.Equal(expectedResult, result);
-        //    }
-        //}
+                // Assert
+                Assert.Equal(expectedResult, result);
+            }
+        }
 
         [Fact]
         public async Task CadastrarUsuario_ShouldSucceed_WhenValidUser()
         {
             // Arrange
-            //var userManager = new Mock<UserManager<Usuario>>(
-            //    new Mock<IUserStore<Usuario>>().Object,
-            //    null, null, null, null, null, null, null, null);
-
-            //userManager.Setup(u => u.CreateAsync(It.IsAny<Usuario>(), It.IsAny<string>()))
-            //    .ReturnsAsync(IdentityResult.Success);
-
-            //var signInManager = new Mock<SignInManager<Usuario>>(
-            //    userManager.Object,
-            //    new Mock<IHttpContextAccessor>().Object,
-            //    new Mock<IUserClaimsPrincipalFactory<Usuario>>().Object,
-            //    null, null, null);
-
-            //signInManager
-            //    .Setup(s => s.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
-            //    .ReturnsAsync(SignInResult.Success);
-
             var userManager = new Mock<UserManager<Usuario>>(
                 new Mock<IUserStore<Usuario>>().Object,
                 new Mock<IOptions<IdentityOptions>>().Object,
