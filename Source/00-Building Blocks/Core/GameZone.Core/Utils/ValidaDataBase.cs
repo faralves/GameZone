@@ -4,19 +4,34 @@ namespace GameZone.Core.Utils
 {
     public static class ValidaDataBase
     {
+        private static int tentativasConexao = 0;
         public static bool CheckIfDatabaseExists(string connectionString, string databaseName)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                connection.Open();
+                tentativasConexao ++;
 
-                string query = $"SELECT COUNT(*) FROM sys.databases WHERE name = '{databaseName}'";
-                using (SqlCommand command = new SqlCommand(query, connection))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    int databaseCount = (int)command.ExecuteScalar();
+                    connection.Open();
 
-                    return databaseCount > 0;
+                    string query = $"SELECT COUNT(*) FROM sys.databases WHERE name = '{databaseName}'";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        int databaseCount = (int)command.ExecuteScalar();
+
+                        return databaseCount > 0;
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                Task.Delay(10000).GetAwaiter().GetResult(); // Aguarde 10 segundos antes de tentar a conexão
+
+                if (tentativasConexao <= 20)
+                    CheckIfDatabaseExists(connectionString, databaseName);
+
+                return false;
             }
         }
     }

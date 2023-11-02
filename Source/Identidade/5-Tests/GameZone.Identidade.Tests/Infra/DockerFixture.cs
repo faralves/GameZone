@@ -6,6 +6,7 @@ using Docker.DotNet.Models;
 using GameZone.Identidade.Infra;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 
 namespace GameZone.Identidade.Tests.Api.Infra
 {
@@ -17,9 +18,15 @@ namespace GameZone.Identidade.Tests.Api.Infra
 
         public DockerFixture()
         {
+            InitializeAsync().Wait();
+        }
+
+        public bool VerificarContainerAtivo()
+        {
+            bool ativo = false;
             _dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
 
-            var containerName = "sql-server-container";
+            var containerName = "sql-server-Tests";
             var sqlServerImage = "mcr.microsoft.com/mssql/server:2019-latest";
 
             var containers = _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true }).GetAwaiter().GetResult();
@@ -34,14 +41,39 @@ namespace GameZone.Identidade.Tests.Api.Infra
                     // O contêiner existe, mas não está em execução; você pode iniciar o contêiner.
                     _dockerClient.Containers.StartContainerAsync(existingContainer.ID, new ContainerStartParameters()).GetAwaiter().GetResult();
                 }
+                else
+                    ativo = true;
+            }
+            return ativo;
+        }
+
+        private async Task InitializeAsync()
+        {
+            _dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
+
+            var containerName = "sql-server-Tests";
+            var sqlServerImage = "mcr.microsoft.com/mssql/server:2019-latest";
+
+            var containers = await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true });
+            bool containerExists = containers.Any(container => container.Names.Contains("/" + containerName));
+
+            if (containerExists)
+            {
+                var existingContainer = containers.FirstOrDefault(container => container.Names.Contains("/" + containerName));
+
+                if (existingContainer.State != "running")
+                {
+                    // O contêiner existe, mas não está em execução; você pode iniciar o contêiner.
+                   await _dockerClient.Containers.StartContainerAsync(existingContainer.ID, new ContainerStartParameters());
+                }
             }
             else
             {
-                var existingImages = _dockerClient.Images.ListImagesAsync(new ImagesListParameters()).GetAwaiter().GetResult();
+                var existingImages = await _dockerClient.Images.ListImagesAsync(new ImagesListParameters());
 
                 if (existingImages.Any(image => image.RepoTags.Contains(sqlServerImage)))
                 {
-                    var createContainerResponse = _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters
+                    var createContainerResponse = await _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters
                     {
                         Name = containerName,
                         Image = sqlServerImage,
@@ -58,11 +90,11 @@ namespace GameZone.Identidade.Tests.Api.Infra
                         },
                             PublishAllPorts = true // Optional: Set this to true if you want to publish all exposed ports
                         }
-                    }).GetAwaiter().GetResult();
+                    });
 
                     _containerId = createContainerResponse.ID;
 
-                    _dockerClient.Containers.StartContainerAsync(_containerId, new ContainerStartParameters()).GetAwaiter().GetResult();
+                    await _dockerClient.Containers.StartContainerAsync(_containerId, new ContainerStartParameters());
                 }
                 else
                     throw new Exception("É necessário baixar a imgem do SQL - 'docker pull mcr.microsoft.com/mssql/server:2019-latest'");
