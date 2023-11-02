@@ -1,10 +1,10 @@
-# <h1 align="center"> Tech Challenge - Grupo 31 - Fase 2</h1>
+# <h1 align="center"> Tech Challenge - Grupo 31 - Fase 3</h1>
 <h3 align="center">Desenvolvimento do projeto GameZone</h3>
 
 ## 📚 Sobre o projeto
 
 O projeto tem como objetivo criar uma solução para gestão de notícias para o portal da GameZone, manipulando informações em uma base de dados SQL Server.
-O projeto está sendo desenvolvido em grupo, com o objetivo de compartilhar conhecimentos e experiências e atender os requisitos avaliativos do Tech Challenge FIAP do curso postech ARQUITETURA DE SISTEMAS .NET COM AZURE na fase 2.
+O projeto está sendo desenvolvido em grupo, com o objetivo de compartilhar conhecimentos e experiências e atender os requisitos avaliativos do Tech Challenge FIAP do curso postech ARQUITETURA DE SISTEMAS .NET COM AZURE na fase 3.
 
 ## 📝 Conteúdo
 
