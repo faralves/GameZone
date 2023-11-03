@@ -401,6 +401,7 @@ namespace GameZone.Identidade.Tests.Api.Services
             // Act
             var result = await _identidadeRepository.CadastrarUsuario(usuario, password);
 
+
             // Assert
             Assert.Equal(expectedResult, result);
         }
