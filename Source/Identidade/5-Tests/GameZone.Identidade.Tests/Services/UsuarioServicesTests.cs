@@ -9,6 +9,7 @@ using GameZone.Identidade.Infra.Interfaces;
 using GameZone.Identidade.Infra.Repository;
 using GameZone.Identidade.Tests.Api.Fixtures;
 using GameZone.Identidade.Tests.Api.Infra;
+using GameZone.WebAPI.Core.Usuario;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -35,7 +36,7 @@ namespace GameZone.Identidade.Tests.Api.Services
         private readonly Faker _faker;
         private readonly DockerFixture _dockerFixture;
         private readonly CreateUsuarioTestsFixture _usuarioTestsFixture;
-        private readonly Mock<IIdentidadeRepository> _identidadeRepositoryMock;
+        private readonly IIdentidadeRepository _identidadeRepository;
         private Mock<ILogger<IdentidadeRepository>> _loggerMock;
         private UserManager<Usuario> _userManager;
         private SignInManager<Usuario> _signInManager;
@@ -353,7 +354,6 @@ namespace GameZone.Identidade.Tests.Api.Services
 
 
             _loggerMock = new Mock<ILogger<IdentidadeRepository>>();
-            _identidadeRepositoryMock = new Mock<IIdentidadeRepository>();
             _faker = new Faker();
             _usuarioTestsFixture = new CreateUsuarioTestsFixture();
 
@@ -406,6 +406,9 @@ namespace GameZone.Identidade.Tests.Api.Services
 
             var loggerProtector = new LoggerFactory().CreateLogger<DataProtectorTokenProvider<Usuario>>();
             services.AddSingleton<ILogger<DataProtectorTokenProvider<Usuario>>>(loggerProtector);
+
+            services.AddScoped<IIdentidadeRepository, IdentidadeRepository>();
+
 
             _serviceProvider = services.BuildServiceProvider();
 
@@ -467,15 +470,14 @@ namespace GameZone.Identidade.Tests.Api.Services
                     .UseSqlServer(_dockerFixture.GetConnectionString())
                     .Options;
 
-                var userStore = new UserStore<Usuario>(new UsuarioDbContext(dbContextOptions));
-                _userManager = new UserManager<Usuario>(userStore, null, null, null, null, null, null, null, null);
+                //_identidadeRepository.Setup(r => r.CadastrarUsuario(usuario, password)).ReturnsAsync(expectedResult);
 
-                _identidadeRepositoryMock.Setup(r => r.CadastrarUsuario(usuario, password)).ReturnsAsync(expectedResult);
+                //var usuarioServices = new IdentidadeRepository(_userManager, _signInManager, _loggerMock.Object, _roleManager);
 
-                var usuarioServices = new IdentidadeRepository(_userManager, _signInManager, _loggerMock.Object, _roleManager);
+
 
                 // Act
-                var result = await usuarioServices.CadastrarUsuario(usuario, password);
+                var result = await _identidadeRepository.CadastrarUsuario(usuario, password);
 
                 // Assert
                 Assert.Equal(expectedResult, result);
