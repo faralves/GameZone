@@ -346,6 +346,49 @@ namespace GameZone.Identidade.Tests.Api.Services
                 }
             }
 
+            using (var connection = new SqlConnection(_dockerFixture.GetConnectionString()))
+            {
+                connection.Open();
+
+                string InsertRoles = @"INSERT INTO AspNetRoles (Id, [Name], NormalizedName)
+                                                VALUES ('1', 'Administrador', 'ADMINISTRADOR'),
+                                                       ('2', 'Usuário', 'USUÁRIO');
+                                                ";
+
+                using (var command = new SqlCommand(InsertRoles, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                string InsertClaims = @"
+                                        INSERT INTO AspNetRoleClaims (RoleId, ClaimType, ClaimValue)
+                                        VALUES ('1', 'PodeInserirUsuario', 'true'),
+                                               ('1', 'PodeEditarUsuario', 'true'),
+                                               ('1', 'PodeExcluirUsuario', 'true'),
+                                               ('1', 'PodeInserirNoticia', 'true'),
+                                               ('1', 'PodeEditarNoticia', 'true'),
+                                               ('1', 'PodeExcluirNoticia', 'true'),
+                                               ('1', 'PodeInserirComentario', 'true'),
+                                               ('1', 'PodeEditarComentario', 'true'),
+                                               ('1', 'PodeExcluirComentario', 'true'),
+                                               ( '2', 'PodeInserirUsuario', 'false'),
+                                               ( '2', 'PodeEditarUsuario', 'false'),
+                                               ( '2', 'PodeExcluirUsuario', 'false'),
+                                               ( '2', 'PodeInserirNoticia', 'false'),
+                                               ( '2', 'PodeEditarNoticia', 'false'),
+                                               ( '2', 'PodeExcluirNoticia', 'false'),
+                                               ( '2', 'PodeInserirComentario', 'true'),
+                                               ( '2', 'PodeEditarComentario', 'true'),
+                                               ( '2', 'PodeExcluirComentario', 'true');
+                                                ";
+
+                using (var command = new SqlCommand(InsertClaims, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
+
+
             _faker = new Faker();
             _usuarioTestsFixture = new CreateUsuarioTestsFixture();
 
@@ -400,7 +443,6 @@ namespace GameZone.Identidade.Tests.Api.Services
 
             // Act
             var result = await _identidadeRepository.CadastrarUsuario(usuario, password);
-
 
             // Assert
             Assert.Equal(expectedResult, result);
