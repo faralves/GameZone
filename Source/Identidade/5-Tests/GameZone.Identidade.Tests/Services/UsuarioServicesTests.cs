@@ -36,12 +36,13 @@ namespace GameZone.Identidade.Tests.Api.Services
         private readonly Faker _faker;
         private readonly DockerFixture _dockerFixture;
         private readonly CreateUsuarioTestsFixture _usuarioTestsFixture;
-        private readonly IIdentidadeRepository _identidadeRepository;
+        private readonly IIdentidadeRepository _identidadeRepository;    
         private Mock<ILogger<IdentidadeRepository>> _loggerMock;
         private UserManager<Usuario> _userManager;
         private SignInManager<Usuario> _signInManager;
         private RoleManager<IdentityRole> _roleManager;
         private readonly IServiceProvider _serviceProvider;
+        private readonly ILogger<IdentidadeRepository> _logger;
 
 
         public UsuarioServicesTests(DockerFixture dockerFixture)
@@ -409,11 +410,14 @@ namespace GameZone.Identidade.Tests.Api.Services
 
             services.AddScoped<IIdentidadeRepository, IdentidadeRepository>();
 
+            var loggerRepo = new LoggerFactory().CreateLogger<IdentidadeRepository>();
+            services.AddSingleton<ILogger<IdentidadeRepository>>(loggerRepo);
 
             _serviceProvider = services.BuildServiceProvider();
 
             _userManager = _serviceProvider.GetRequiredService<UserManager<Usuario>>();
             _signInManager = _serviceProvider.GetRequiredService<SignInManager<Usuario>>();
+            
         }
 
         protected UsuarioDbContext CreateContext()
@@ -433,16 +437,17 @@ namespace GameZone.Identidade.Tests.Api.Services
         [Fact]
         public async void Should_Insert_Usuario_With_Success()
         {
-            var _connectionString = _dockerFixture.GetConnectionString();
+            var repo = _serviceProvider.GetRequiredService<IIdentidadeRepository>();
+            //var _connectionString = _dockerFixture.GetConnectionString();
 
-            var configValues = new Dictionary<string, string>
-            {
-                { "ConnectionStrings:Connection", _connectionString }
-            };
+            //var configValues = new Dictionary<string, string>
+            //{
+            //    { "ConnectionStrings:Connection", _connectionString }
+            //};
 
-            var configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(configValues)
-                .Build();
+            //var configuration = new ConfigurationBuilder()
+            //    .AddInMemoryCollection(configValues)
+            //    .Build();
 
             // Arrange
             var usuarioDTO = _usuarioTestsFixture.CreateUserPF();
@@ -457,7 +462,7 @@ namespace GameZone.Identidade.Tests.Api.Services
                 Name = usuarioDTO.Name,
                 UserName = usuarioDTO.Email
             };
-            var password = usuarioDTO.Password;
+            var password = "Senh@00123";
 
             var expectedResult = IdentityResult.Success;
 
@@ -466,9 +471,9 @@ namespace GameZone.Identidade.Tests.Api.Services
             {
 
                 //// Configurar e inicializar o UserManager com a configuração correta
-                var dbContextOptions = new DbContextOptionsBuilder<UsuarioDbContext>()
-                    .UseSqlServer(_dockerFixture.GetConnectionString())
-                    .Options;
+                //var dbContextOptions = new DbContextOptionsBuilder<UsuarioDbContext>()
+                //    .UseSqlServer(_dockerFixture.GetConnectionString())
+                //    .Options;
 
                 //_identidadeRepository.Setup(r => r.CadastrarUsuario(usuario, password)).ReturnsAsync(expectedResult);
 
@@ -477,7 +482,7 @@ namespace GameZone.Identidade.Tests.Api.Services
 
 
                 // Act
-                var result = await _identidadeRepository.CadastrarUsuario(usuario, password);
+                var result = await repo.CadastrarUsuario(usuario, password);
 
                 // Assert
                 Assert.Equal(expectedResult, result);
