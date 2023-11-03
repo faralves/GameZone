@@ -1,39 +1,24 @@
 ﻿using Bogus;
 using GameZone.Core.Utils;
-using GameZone.Identidade.API.Authorization;
-using GameZone.Identidade.API.Configurations;
-using GameZone.Identidade.API.Configurations.Interfaces;
-using GameZone.Identidade.Application.Interfaces;
-using GameZone.Identidade.Application;
 using GameZone.Identidade.Domain.Entities;
 using GameZone.Identidade.Infra;
 using GameZone.Identidade.Infra.Interfaces;
 using GameZone.Identidade.Infra.Repository;
-using GameZone.Identidade.Services.Interfaces;
-using GameZone.Identidade.Services;
 using GameZone.Identidade.Tests.Api.Fixtures;
 using GameZone.Identidade.Tests.Api.Infra;
-using GameZone.WebAPI.Core.Usuario;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Moq;
 using GameZone.Identidade.API.Extensions;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace GameZone.Identidade.Tests.Api.Services
 {
     public class UsuarioServicesTests : IClassFixture<DockerFixture>
     {
         private readonly Faker _faker;
+        private readonly Faker<Usuario> _fakerUsuario;
         private readonly DockerFixture _dockerFixture;
         private readonly CreateUsuarioTestsFixture _usuarioTestsFixture;
         private readonly IIdentidadeRepository _identidadeRepository;
@@ -350,39 +335,97 @@ namespace GameZone.Identidade.Tests.Api.Services
             {
                 connection.Open();
 
-                string InsertRoles = @"INSERT INTO AspNetRoles (Id, [Name], NormalizedName)
-                                                VALUES ('1', 'Administrador', 'ADMINISTRADOR'),
-                                                       ('2', 'Usuário', 'USUÁRIO');
-                                                ";
+                //string InsertRoles = @"INSERT INTO AspNetRoles (Id, [Name], NormalizedName)
+                //                                VALUES ('1', 'Administrador', 'ADMINISTRADOR'),
+                //                                       ('2', 'Usuário', 'USUÁRIO');
+                //                                ";
+
+                string InsertRoles = @"
+                                    IF NOT EXISTS (SELECT 1 FROM AspNetRoles WHERE Id = '1' AND [Name] = 'Administrador' AND NormalizedName = 'ADMINISTRADOR')    
+                                    INSERT INTO AspNetRoles (Id, [Name], NormalizedName) VALUES ('1', 'Administrador', 'ADMINISTRADOR')
+
+                                    IF NOT EXISTS (SELECT 1 FROM AspNetRoles WHERE Id = '2' AND [Name] = 'Usuário' AND NormalizedName = 'USUÁRIO')
+                                    INSERT INTO AspNetRoles (Id, [Name], NormalizedName) VALUES ('2', 'Usuário', 'USUÁRIO')
+                                ";
 
                 using (var command = new SqlCommand(InsertRoles, connection))
                 {
                     command.ExecuteNonQuery();
                 }
 
+                //string InsertClaims = @"
+                //                        INSERT INTO AspNetRoleClaims (RoleId, ClaimType, ClaimValue)
+                //                        VALUES ('1', 'PodeInserirUsuario', 'true'),
+                //                               ('1', 'PodeEditarUsuario', 'true'),
+                //                               ('1', 'PodeExcluirUsuario', 'true'),
+                //                               ('1', 'PodeInserirNoticia', 'true'),
+                //                               ('1', 'PodeEditarNoticia', 'true'),
+                //                               ('1', 'PodeExcluirNoticia', 'true'),
+                //                               ('1', 'PodeInserirComentario', 'true'),
+                //                               ('1', 'PodeEditarComentario', 'true'),
+                //                               ('1', 'PodeExcluirComentario', 'true'),
+                //                               ( '2', 'PodeInserirUsuario', 'false'),
+                //                               ( '2', 'PodeEditarUsuario', 'false'),
+                //                               ( '2', 'PodeExcluirUsuario', 'false'),
+                //                               ( '2', 'PodeInserirNoticia', 'false'),
+                //                               ( '2', 'PodeEditarNoticia', 'false'),
+                //                               ( '2', 'PodeExcluirNoticia', 'false'),
+                //                               ( '2', 'PodeInserirComentario', 'true'),
+                //                               ( '2', 'PodeEditarComentario', 'true'),
+                //                               ( '2', 'PodeExcluirComentario', 'true');
+                //                                ";
+
+
                 string InsertClaims = @"
-                                        INSERT INTO AspNetRoleClaims (RoleId, ClaimType, ClaimValue)
-                                        VALUES ('1', 'PodeInserirUsuario', 'true'),
-                                               ('1', 'PodeEditarUsuario', 'true'),
-                                               ('1', 'PodeExcluirUsuario', 'true'),
-                                               ('1', 'PodeInserirNoticia', 'true'),
-                                               ('1', 'PodeEditarNoticia', 'true'),
-                                               ('1', 'PodeExcluirNoticia', 'true'),
-                                               ('1', 'PodeInserirComentario', 'true'),
-                                               ('1', 'PodeEditarComentario', 'true'),
-                                               ('1', 'PodeExcluirComentario', 'true'),
-                                               ( '2', 'PodeInserirUsuario', 'false'),
-                                               ( '2', 'PodeEditarUsuario', 'false'),
-                                               ( '2', 'PodeExcluirUsuario', 'false'),
-                                               ( '2', 'PodeInserirNoticia', 'false'),
-                                               ( '2', 'PodeEditarNoticia', 'false'),
-                                               ( '2', 'PodeExcluirNoticia', 'false'),
-                                               ( '2', 'PodeInserirComentario', 'true'),
-                                               ( '2', 'PodeEditarComentario', 'true'),
-                                               ( '2', 'PodeExcluirComentario', 'true');
-                                                ";
+                                IF NOT EXISTS (SELECT 1 FROM AspNetRoleClaims WHERE RoleId = '1' AND ClaimType = 'PodeInserirUsuario' AND ClaimValue = 'true')
+                                    INSERT INTO AspNetRoleClaims (RoleId, ClaimType, ClaimValue) SELECT '1', 'PodeInserirUsuario', 'true'
+
+                                IF NOT EXISTS (SELECT 1 FROM AspNetRoleClaims WHERE RoleId = '1' AND ClaimType = 'PodeEditarUsuario' AND ClaimValue = 'true')
+                                    INSERT INTO AspNetRoleClaims (RoleId, ClaimType, ClaimValue) SELECT '1', 'PodeEditarUsuario', 'true'
+
+                                IF NOT EXISTS (SELECT 1 FROM AspNetRoleClaims WHERE RoleId = '1' AND ClaimType = 'PodeExcluirUsuario' AND ClaimValue = 'true')
+                                    INSERT INTO AspNetRoleClaims (RoleId, ClaimType, ClaimValue) SELECT '1', 'PodeExcluirUsuario', 'true'
+
+    
+                                IF NOT EXISTS (SELECT 1 FROM AspNetRoleClaims WHERE RoleId = '2' AND ClaimType = 'PodeInserirUsuario' AND ClaimValue = 'false')
+                                    INSERT INTO AspNetRoleClaims (RoleId, ClaimType, ClaimValue) SELECT '2', 'PodeInserirUsuario', 'false'
+
+                                IF NOT EXISTS (SELECT 1 FROM AspNetRoleClaims WHERE RoleId = '2' AND ClaimType = 'PodeEditarUsuario' AND ClaimValue = 'false')
+                                    INSERT INTO AspNetRoleClaims (RoleId, ClaimType, ClaimValue) SELECT '2', 'PodeEditarUsuario', 'false'
+
+                                IF NOT EXISTS (SELECT 1 FROM AspNetRoleClaims WHERE RoleId = '2' AND ClaimType = 'PodeExcluirUsuario' AND ClaimValue = 'false')
+                                    INSERT INTO AspNetRoleClaims (RoleId, ClaimType, ClaimValue) SELECT '2', 'PodeExcluirUsuario', 'false'
+                            ";
 
                 using (var command = new SqlCommand(InsertClaims, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                string InsertUserTest = @"
+                                            INSERT INTO AspNetUsers (Id, UserName, NormalizedUserName, Email, NormalizedEmail, EmailConfirmed, PasswordHash, SecurityStamp, ConcurrencyStamp, PhoneNumber, PhoneNumberConfirmed, TwoFactorEnabled, LockoutEnd, LockoutEnabled, AccessFailedCount, Name, CpfCnpj, DataNascimento, IsAdministrator, IdUsuarioInclusao)
+                                            SELECT 
+                                                'ead52cf9-2155-4d47-b2cd-a1968201c19c', 'email@email.teste.com.br', 'EMAIL@EMAIL.TESTE.COM.BR', 'email@email.teste.com.br', 'EMAIL@EMAIL.TESTE.COM.BR', 1, 'AQAAAAEAACcQAAAAEDQdDUPatf69cATUNuYRJ4I3fgQJtlqwhcAHuvDnXNsMtAgSQt8jJmAsdvHRhlhqQw==', 'TCCKNYEVCJ2G6F37B7FMRUCEETTXCGJG', 'aec4a511-964f-43a7-b3aa-0a1df38880a4', NULL, 0, 0, NULL, 1, 0, 'Fulano de Teste', '326.769.068-44', '1988-01-29 14:07:58.2366363', 0, '81e12e21-2052-74eb-126a-c54e375c6be3'
+                                            WHERE NOT EXISTS (SELECT 1 FROM AspNetUsers WHERE Id = 'ead52cf9-2155-4d47-b2cd-a1968201c19c');
+                                        ";
+
+                using (var command = new SqlCommand(InsertUserTest, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                string InsertAspNetUserRoles = @"
+                                                    INSERT INTO AspNetUserRoles (UserId, RoleId)
+                                                    SELECT 'ead52cf9-2155-4d47-b2cd-a1968201c19c', 2
+                                                    WHERE NOT EXISTS (
+                                                        SELECT 1
+                                                        FROM AspNetUserRoles
+                                                        WHERE UserId = 'ead52cf9-2155-4d47-b2cd-a1968201c19c'
+                                                        AND RoleId = 2
+                                                    );
+                                                ";
+
+                using (var command = new SqlCommand(InsertAspNetUserRoles, connection))
                 {
                     command.ExecuteNonQuery();
                 }
@@ -390,6 +433,7 @@ namespace GameZone.Identidade.Tests.Api.Services
 
 
             _faker = new Faker();
+            _fakerUsuario = new Faker<Usuario>();
             _usuarioTestsFixture = new CreateUsuarioTestsFixture();
 
             string connectionString = _dockerFixture.GetConnectionString();
@@ -421,7 +465,8 @@ namespace GameZone.Identidade.Tests.Api.Services
         }
 
 
-        [Fact]
+        [Fact(DisplayName = "Validando se Cadastro de Usuário")]
+        [Trait("Categoria", "Validando Teste Integrado")]
         public async void Should_Insert_Usuario_With_Success()
         {
             // Arrange
@@ -446,6 +491,69 @@ namespace GameZone.Identidade.Tests.Api.Services
 
             // Assert
             Assert.Equal(expectedResult, result);
+        }
+
+        [Fact(DisplayName = "Validando se Autenticação de Login")]
+        [Trait("Categoria", "Validando Teste Integrado")]
+        public async void Should_Auth_Usuario_With_Success()
+        {
+            // Arrange
+            var usuarioDTO = _usuarioTestsFixture.CreateUserPF();
+            LoginUsuario usuario = new LoginUsuario()
+            {
+                Email = "email@email.teste.com.br",
+                Password = "123@Mudar"
+            };
+
+            var expectedResult =  _fakerUsuario.Generate();
+            expectedResult = new Usuario()
+            {
+                Id = "ead52cf9-2155-4d47-b2cd-a1968201c19c",
+                UserName = "email@email.teste.com.br",
+                NormalizedUserName = "EMAIL@EMAIL.TESTE.COM.BR",
+                Email = "email@email.teste.com.br",
+                NormalizedEmail = "EMAIL@EMAIL.TESTE.COM.BR",
+                EmailConfirmed = true,
+                PasswordHash = "AQAAAAEAACcQAAAAEDQdDUPatf69cATUNuYRJ4I3fgQJtlqwhcAHuvDnXNsMtAgSQt8jJmAsdvHRhlhqQw==",
+                SecurityStamp = "TCCKNYEVCJ2G6F37B7FMRUCEETTXCGJG",
+                ConcurrencyStamp = "aec4a511-964f-43a7-b3aa-0a1df38880a4",
+                PhoneNumber = null,
+                PhoneNumberConfirmed = false,
+                TwoFactorEnabled = false,
+                LockoutEnd = null,
+                LockoutEnabled = true,
+                AccessFailedCount = 0,
+                Name = "Fulano de Teste",
+                CpfCnpj = "326.769.068-44",
+                DataNascimento = new DateTime(1988, 01, 29, 14, 7, 58, 236),
+                IsAdministrator = false,
+                IdUsuarioInclusao = "81e12e21-2052-74eb-126a-c54e375c6be3"
+            };
+
+            // Act
+            var result = await _identidadeRepository.ObterUsuarioPorEmail(usuario.Email);
+
+            // Assert
+            Assert.Equal(expectedResult.Id, result.Id);
+            Assert.Equal(expectedResult.UserName, result.UserName);
+            Assert.Equal(expectedResult.NormalizedUserName, result.NormalizedUserName);
+            Assert.Equal(expectedResult.Email, result.Email);
+            Assert.Equal(expectedResult.NormalizedEmail, result.NormalizedEmail);
+            Assert.Equal(expectedResult.EmailConfirmed, result.EmailConfirmed);
+            Assert.Equal(expectedResult.PasswordHash, result.PasswordHash);
+            Assert.Equal(expectedResult.SecurityStamp, result.SecurityStamp);
+            Assert.Equal(expectedResult.ConcurrencyStamp, result.ConcurrencyStamp);
+            Assert.Equal(expectedResult.PhoneNumber, result.PhoneNumber);
+            Assert.Equal(expectedResult.PhoneNumberConfirmed, result.PhoneNumberConfirmed);
+            Assert.Equal(expectedResult.TwoFactorEnabled, result.TwoFactorEnabled);
+            Assert.Equal(expectedResult.LockoutEnd, result.LockoutEnd);
+            Assert.Equal(expectedResult.LockoutEnabled, result.LockoutEnabled);
+            Assert.Equal(expectedResult.AccessFailedCount, result.AccessFailedCount);
+            Assert.Equal(expectedResult.Name, result.Name);
+            Assert.Equal(expectedResult.CpfCnpj, result.CpfCnpj);
+            Assert.Equal(expectedResult.DataNascimento.Date, result.DataNascimento.Date);
+            Assert.Equal(expectedResult.IsAdministrator, result.IsAdministrator);
+            Assert.Equal(expectedResult.IdUsuarioInclusao, result.IdUsuarioInclusao);
         }
     }
 }
