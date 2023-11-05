@@ -40,6 +40,7 @@ jobs:
     - name: Run unit tests and integrated tests
       run: dotnet test ./Source/Identidade/5-Tests/GameZone.Identidade.Tests/GameZone.Identidade.Tests.Api.csproj
 
+
   #   - name: Set up Docker Buildx
   #     uses: docker/setup-buildx-action@v2.10.0
 
