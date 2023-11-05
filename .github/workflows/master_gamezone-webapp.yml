@@ -27,12 +27,12 @@ jobs:
       run: |
         docker pull mcr.microsoft.com/mssql/server:2019-latest
         docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Mudar123intrA" -p 1433:1433 --name sql-server-Tests -d mcr.microsoft.com/mssql/server:2019-latest
-        sleep 30  # Wait for SQL Server to start
+        sleep 60  # Wait for SQL Server to start
 
     - name: Build test and Run unit tests and integrated tests
       run: |
          dotnet build ./Source/Identidade/5-Tests/GameZone.Identidade.Tests/GameZone.Identidade.Tests.Api.csproj
-         dotnet test ./Source/Identidade/5-Tests/GameZone.Identidade.Tests/GameZone.Identidade.Tests.Api.csproj --test-adapter-timeout 600000
+         dotnet test ./Source/Identidade/5-Tests/GameZone.Identidade.Tests/GameZone.Identidade.Tests.Api.csproj
 
   # build_and_push_acr:
   #   needs: Unit_Tests_And_Integrated_Tests  # Aguarda a conclusão do job de testes
