@@ -64,12 +64,12 @@ namespace GameZone.Identidade.Tests.Api.Infra
                 }
                 else
                 {
-                    // O contêiner existe e está em execução.
+                    
                     return true;
                 }
             }
 
-            return false; // O contêiner não existe ou não foi iniciado.
+            return false; 
         }
 
 
