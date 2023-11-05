@@ -15,70 +15,85 @@ namespace GameZone.Identidade.Tests.Api.Infra
         private bool _disposed = false;
         private DockerClient _dockerClient;
         private string _containerId;
-        private string containerName = "sql-server-Tests";
 
         public DockerFixture()
         {
-            _dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
             InitializeAsync().Wait();
         }
 
+        //public bool VerificarContainerAtivo()
+        //{
+        //    bool ativo = false;
+        //    _dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
+
+        //    var containerName = "sql-server-Tests";
+        //    var sqlServerImage = "mcr.microsoft.com/mssql/server:2019-latest";
+
+        //    var containers = _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true }).GetAwaiter().GetResult();
+        //    bool containerExists = containers.Any(container => container.Names.Contains("/" + containerName));
+
+        //    if (containerExists)
+        //    {
+        //        var existingContainer = containers.FirstOrDefault(container => container.Names.Contains("/" + containerName));
+
+        //        if (existingContainer.State != "running")
+        //        {
+        //            // O contêiner existe, mas não está em execução; você pode iniciar o contêiner.
+        //            _dockerClient.Containers.StartContainerAsync(existingContainer.ID, new ContainerStartParameters()).GetAwaiter().GetResult();
+        //        }
+        //        else
+        //            ativo = true;
+        //    }
+        //    return ativo;
+        //}
+
         public bool VerificarContainerAtivo()
         {
-            var container = GetContainerAsync(containerName).GetAwaiter().GetResult();
+            _dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
+            var containerName = "sql-server-Tests";
 
-            if (container != null)
+            var containers = _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true }).GetAwaiter();
+
+            var existingContainer = containers.GetResult().FirstOrDefault(container => container.Names.Contains("/" + containerName));
+
+            if (existingContainer != null)
             {
-                if (!container.State.Running)
+                if (existingContainer.State != "running")
                 {
-                    StartContainerAsync(container.ID).GetAwaiter().GetResult();
+                    _dockerClient.Containers.StartContainerAsync(existingContainer.ID, new ContainerStartParameters());
                 }
-                return true;
-            }
-            return false;
-        }
-
-        public async Task<ContainerInspectResponse?> GetContainerInitializeIfExists()
-        {
-            var container = await GetContainerAsync(containerName);
-
-            if (container != null)
-            {
-                if (!container.State.Running)
+                else
                 {
-                    StartContainerAsync(container.ID).GetAwaiter().GetResult();
+                    
+                    return true;
                 }
             }
 
-            return container;
-        }
-
-        private async Task StartContainerAsync(string containerId)
-        {
-            await _dockerClient.Containers.StartContainerAsync(containerId, new ContainerStartParameters());
-        }
-
-
-        private async Task<ContainerInspectResponse> GetContainerAsync(string containerName)
-        {
-            try
-            {
-                return await _dockerClient.Containers.InspectContainerAsync(containerName);
-            }
-            catch (Docker.DotNet.DockerContainerNotFoundException)
-            {
-                return null;
-            }
+            return false; 
         }
 
 
         private async Task InitializeAsync()
         {
+            _dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
+
+            var containerName = "sql-server-Tests";
             var sqlServerImage = "mcr.microsoft.com/mssql/server:2019-latest";
 
-            ContainerInspectResponse? container = await GetContainerInitializeIfExists();
+            var containers = await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true });
+            bool containerExists = containers.Any(container => container.Names.Contains("/" + containerName));
 
-            if (container == null)
+            if (containerExists)
+            {
+                var existingContainer = containers.FirstOrDefault(container => container.Names.Contains("/" + containerName));
+
+                if (existingContainer.State != "running")
+                {
+                    // O contêiner existe, mas não está em execução; você pode iniciar o contêiner.
+                   await _dockerClient.Containers.StartContainerAsync(existingContainer.ID, new ContainerStartParameters());
+                }
+            }
+            else
             {
                 var existingImages = await _dockerClient.Images.ListImagesAsync(new ImagesListParameters());
 
