@@ -130,7 +130,7 @@ namespace GameZone.Identidade.Tests.Api.Infra
 
         public string GetConnectionString()
         {
-            var _connectionString = $"Server=localhost,1436;Database=GameZoneDB;User Id=SA;Password=Mudar123intrA;MultipleActiveResultSets=true;TrustServerCertificate=true;";
+            var _connectionString = $"Server=localhost,1433;Database=GameZoneDB;User Id=SA;Password=Mudar123intrA;MultipleActiveResultSets=true;TrustServerCertificate=true;";
             return _connectionString;
         }
 
