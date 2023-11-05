@@ -15,82 +15,70 @@ namespace GameZone.Identidade.Tests.Api.Infra
         private bool _disposed = false;
         private DockerClient _dockerClient;
         private string _containerId;
+        private string containerName = "sql-server-Tests";
 
         public DockerFixture()
         {
+            _dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
             InitializeAsync().Wait();
         }
 
         public bool VerificarContainerAtivo()
         {
-            bool ativo = false;
-            _dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
-
-            var containerName = "sql-server-Tests";
-            var sqlServerImage = "mcr.microsoft.com/mssql/server:2019-latest";
-
-            //var containers = _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true }).GetAwaiter().GetResult();
-            //bool containerExists = containers.Any(container => container.Names.Contains("/" + containerName));
-
-            ContainerInspectResponse? container = null;
-            try
-            {
-                container =  _dockerClient.Containers.InspectContainerAsync(containerName).GetAwaiter().GetResult();
-            }
-            catch (Docker.DotNet.DockerContainerNotFoundException)
-            {
-                // O contêiner não existe
-            }
-
-
+            var container = GetContainerAsync(containerName).GetAwaiter().GetResult();
 
             if (container != null)
             {
-                //var existingContainer = container.FirstOrDefault(container => container.Names.Contains("/" + containerName));
-
                 if (!container.State.Running)
                 {
-                    // O contêiner existe, mas não está em execução; você pode iniciar o contêiner.
-                    _dockerClient.Containers.StartContainerAsync(container.ID, new ContainerStartParameters()).GetAwaiter().GetResult();
+                    StartContainerAsync(container.ID).GetAwaiter().GetResult();
                 }
-                else
-                    ativo = true;
+                return true;
             }
-            return ativo;
+            return false;
         }
+
+        public async Task<ContainerInspectResponse?> GetContainerInitializeIfExists()
+        {
+            var container = await GetContainerAsync(containerName);
+
+            if (container != null)
+            {
+                if (!container.State.Running)
+                {
+                    StartContainerAsync(container.ID).GetAwaiter().GetResult();
+                }
+            }
+
+            return container;
+        }
+
+        private async Task StartContainerAsync(string containerId)
+        {
+            await _dockerClient.Containers.StartContainerAsync(containerId, new ContainerStartParameters());
+        }
+
+
+        private async Task<ContainerInspectResponse> GetContainerAsync(string containerName)
+        {
+            try
+            {
+                return await _dockerClient.Containers.InspectContainerAsync(containerName);
+            }
+            catch (Docker.DotNet.DockerContainerNotFoundException)
+            {
+                return null;
+            }
+        }
+
 
         private async Task InitializeAsync()
         {
-            _dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
-
-            var containerName = "sql-server-Tests";
             var sqlServerImage = "mcr.microsoft.com/mssql/server:2019-latest";
 
-            ContainerInspectResponse? container = null;
-            try
-            {
-                container = await _dockerClient.Containers.InspectContainerAsync(containerName);
-                // O contêiner existe, faça o que for necessário
-            }
-            catch (Docker.DotNet.DockerContainerNotFoundException)
-            {
-                // O contêiner não existe
-            }
+            ContainerInspectResponse? container = await GetContainerInitializeIfExists();
 
-            //var containers = _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true }).GetAwaiter().GetResult().FirstOrDefault(container => container.Names.Contains("/" + containerName));
-            //bool containerExists = containers.Any(container => container.Names.Contains("/" + containerName));
-
-            if (container != null)
-            {
-                //var existingContainer = containers.FirstOrDefault(container => container.Names.Contains("/" + containerName));
-
-                if (!container.State.Running)
-                {
-                    // O contêiner existe, mas não está em execução; você pode iniciar o contêiner.
-                   await _dockerClient.Containers.StartContainerAsync(container.ID, new ContainerStartParameters());
-                }
-            }
-            else
+            if (container == null)
             {
                 var existingImages = await _dockerClient.Images.ListImagesAsync(new ImagesListParameters());
 
@@ -109,7 +97,7 @@ namespace GameZone.Identidade.Tests.Api.Infra
                         {
                             PortBindings = new Dictionary<string, IList<PortBinding>>()
                         {
-                            { "1433/tcp", new List<PortBinding> { new PortBinding { HostPort = "1433" } } }
+                            { "1433/tcp", new List<PortBinding> { new PortBinding { HostPort = "1436" } } }
                         },
                             PublishAllPorts = true // Optional: Set this to true if you want to publish all exposed ports
                         }
@@ -127,7 +115,7 @@ namespace GameZone.Identidade.Tests.Api.Infra
 
         public string GetConnectionString()
         {
-            var _connectionString = $"Server=localhost,1433;Database=GameZoneDB;User Id=SA;Password=Mudar123intrA;MultipleActiveResultSets=true;TrustServerCertificate=true;";
+            var _connectionString = $"Server=localhost,1436;Database=GameZoneDB;User Id=SA;Password=Mudar123intrA;MultipleActiveResultSets=true;TrustServerCertificate=true;";
             return _connectionString;
         }
 
