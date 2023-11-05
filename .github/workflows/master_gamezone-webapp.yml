@@ -10,8 +10,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_and_push_acr:
+  Unit_Tests_And_Integrated_Tests:
     runs-on: 'ubuntu-latest'
+
+    timeout-minutes: 20  # Aumente o limite de tempo para 20 minutos
 
     steps:
     - uses: actions/checkout@v3.6.0
@@ -32,6 +34,17 @@ jobs:
          dotnet build ./Source/Identidade/5-Tests/GameZone.Identidade.Tests/GameZone.Identidade.Tests.Api.csproj
          dotnet test ./Source/Identidade/5-Tests/GameZone.Identidade.Tests/GameZone.Identidade.Tests.Api.csproj
 
+  # build_and_push_acr:
+  #   needs: Unit_Tests_And_Integrated_Tests  # Aguarda a conclusão do job de testes
+  #   runs-on: 'ubuntu-latest'
+
+  #   steps:
+  #   - uses: actions/checkout@v3.6.0
+
+  #   - name: Setup .NET
+  #     uses: actions/setup-dotnet@v3
+  #     with:
+  #       dotnet-version: 6.0.x  # Use the desired .NET 6 version
 
   #   - name: Set up Docker Buildx
   #     uses: docker/setup-buildx-action@v2.10.0
