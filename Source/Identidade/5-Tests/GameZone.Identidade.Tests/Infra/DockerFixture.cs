@@ -29,17 +29,29 @@ namespace GameZone.Identidade.Tests.Api.Infra
             var containerName = "sql-server-Tests";
             var sqlServerImage = "mcr.microsoft.com/mssql/server:2019-latest";
 
-            var containers = _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true }).GetAwaiter().GetResult();
-            bool containerExists = containers.Any(container => container.Names.Contains("/" + containerName));
+            //var containers = _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true }).GetAwaiter().GetResult();
+            //bool containerExists = containers.Any(container => container.Names.Contains("/" + containerName));
 
-            if (containerExists)
+            ContainerInspectResponse? container = null;
+            try
             {
-                var existingContainer = containers.FirstOrDefault(container => container.Names.Contains("/" + containerName));
+                container =  _dockerClient.Containers.InspectContainerAsync(containerName).GetAwaiter().GetResult();
+            }
+            catch (Docker.DotNet.DockerContainerNotFoundException)
+            {
+                // O contêiner não existe
+            }
 
-                if (existingContainer.State != "running")
+
+
+            if (container != null)
+            {
+                //var existingContainer = container.FirstOrDefault(container => container.Names.Contains("/" + containerName));
+
+                if (!container.State.Running)
                 {
                     // O contêiner existe, mas não está em execução; você pode iniciar o contêiner.
-                    _dockerClient.Containers.StartContainerAsync(existingContainer.ID, new ContainerStartParameters()).GetAwaiter().GetResult();
+                    _dockerClient.Containers.StartContainerAsync(container.ID, new ContainerStartParameters()).GetAwaiter().GetResult();
                 }
                 else
                     ativo = true;
@@ -54,17 +66,28 @@ namespace GameZone.Identidade.Tests.Api.Infra
             var containerName = "sql-server-Tests";
             var sqlServerImage = "mcr.microsoft.com/mssql/server:2019-latest";
 
-            var containers = await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true });
-            bool containerExists = containers.Any(container => container.Names.Contains("/" + containerName));
-
-            if (containerExists)
+            ContainerInspectResponse? container = null;
+            try
             {
-                var existingContainer = containers.FirstOrDefault(container => container.Names.Contains("/" + containerName));
+                container = await _dockerClient.Containers.InspectContainerAsync(containerName);
+                // O contêiner existe, faça o que for necessário
+            }
+            catch (Docker.DotNet.DockerContainerNotFoundException)
+            {
+                // O contêiner não existe
+            }
 
-                if (existingContainer.State != "running")
+            //var containers = _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true }).GetAwaiter().GetResult().FirstOrDefault(container => container.Names.Contains("/" + containerName));
+            //bool containerExists = containers.Any(container => container.Names.Contains("/" + containerName));
+
+            if (container != null)
+            {
+                //var existingContainer = containers.FirstOrDefault(container => container.Names.Contains("/" + containerName));
+
+                if (!container.State.Running)
                 {
                     // O contêiner existe, mas não está em execução; você pode iniciar o contêiner.
-                   await _dockerClient.Containers.StartContainerAsync(existingContainer.ID, new ContainerStartParameters());
+                   await _dockerClient.Containers.StartContainerAsync(container.ID, new ContainerStartParameters());
                 }
             }
             else
@@ -104,7 +127,7 @@ namespace GameZone.Identidade.Tests.Api.Infra
 
         public string GetConnectionString()
         {
-            var _connectionString = $"Server=localhost,1436;Database=GameZoneDB;User Id=SA;Password=Mudar123intrA;MultipleActiveResultSets=true;TrustServerCertificate=true;";
+            var _connectionString = $"Server=localhost,1433;Database=GameZoneDB;User Id=SA;Password=Mudar123intrA;MultipleActiveResultSets=true;TrustServerCertificate=true;";
             return _connectionString;
         }
 
