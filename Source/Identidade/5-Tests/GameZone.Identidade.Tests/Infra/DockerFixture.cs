@@ -91,7 +91,7 @@ namespace GameZone.Identidade.Tests.Api.Infra
                         {
                             PortBindings = new Dictionary<string, IList<PortBinding>>()
                         {
-                            { "1433/tcp", new List<PortBinding> { new PortBinding { HostPort = "1436" } } }
+                            { "1433/tcp", new List<PortBinding> { new PortBinding { HostPort = "1433" } } }
                         },
                             PublishAllPorts = true // Optional: Set this to true if you want to publish all exposed ports
                         }
@@ -109,7 +109,7 @@ namespace GameZone.Identidade.Tests.Api.Infra
 
         public string GetConnectionString()
         {
-            var _connectionString = $"Server=localhost,1436;Database=GameZoneDB;User Id=SA;Password=Mudar123intrA;MultipleActiveResultSets=true;TrustServerCertificate=true;";
+            var _connectionString = $"Server=localhost,1433;Database=GameZoneDB;User Id=SA;Password=Mudar123intrA;MultipleActiveResultSets=true;TrustServerCertificate=true;";
             return _connectionString;
         }
 
