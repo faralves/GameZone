@@ -19,15 +19,15 @@ namespace GameZone.Identidade.Tests.Api.Domain
         }
 
         [Fact(DisplayName = "Validando se a classe esta correta")]
-        [Trait("Categoria", "Validando Login Usuário")]
+        [Trait("Categoria", "Validando Login Usuario")]
         public void ValidateDomain_Should_LoginUser_Return_Success()
         {
             // Arrange
             var news = _loginUsuarioTestsFixture.LoginUserSuccess();
         }
 
-        [Fact(DisplayName = "Validando se email do usuário para cadastro esta vazio")]
-        [Trait("Categoria", "Validando Login Usuário")]
+        [Fact(DisplayName = "Validando se email do usuario para cadastro esta vazio")]
+        [Trait("Categoria", "Validando Login Usuario")]
         public void ValidateDomain_ShouldThrowException_WhenEmailIsEmpty()
         {
             // Arrange
@@ -41,11 +41,11 @@ namespace GameZone.Identidade.Tests.Api.Domain
             // Assert
             Assert.False(isValid);
             Assert.Single(validationResults);
-            Assert.Equal("O Campo 'Email' é Obrigatório.", validationResults[0].ErrorMessage);
+            Assert.Equal("O Campo 'Email' e Obrigatorio.", validationResults[0].ErrorMessage);
         }
     
-        [Fact(DisplayName = "Validando se email do usuário para cadastro ultrapasssou o limite de caracteres")]
-        [Trait("Categoria", "Validando Login Usuário")]
+        [Fact(DisplayName = "Validando se email do usuario para cadastro ultrapasssou o limite de caracteres")]
+        [Trait("Categoria", "Validando Login Usuario")]
         public void ValidateDomain_ShouldThrowException_WhenEmailMaxLength()
         {
             // Arrange
@@ -56,11 +56,11 @@ namespace GameZone.Identidade.Tests.Api.Domain
 
             // Assert
             Assert.NotEmpty(validationErrors);
-            Assert.Contains("256 é o tamanho máximo para o campo 'Email'", validationErrors);
+            Assert.Contains("256 e o tamanho maximo para o campo 'Email'", validationErrors);
         }
 
-        [Fact(DisplayName = "Validando se email do usuário para cadastro não é valido")]
-        [Trait("Categoria", "Validando Login Usuário")]
+        [Fact(DisplayName = "Validando se email do usuario para cadastro nao e valido")]
+        [Trait("Categoria", "Validando Login Usuario")]
         public void ValidateDomain_ShouldThrowException_WhenEmailIsNotValid()
         {
             // Arrange
@@ -71,11 +71,11 @@ namespace GameZone.Identidade.Tests.Api.Domain
 
             // Assert
             Assert.NotEmpty(validationErrors);
-            Assert.Contains("O campo 'Email' não contém um endereço de email válido.", validationErrors);
+            Assert.Contains("O campo 'Email' nao contem um endereço de email valido.", validationErrors);
         }
 
-        [Fact(DisplayName = "Validando se Password do usuário para cadastro esta vazio")]
-        [Trait("Categoria", "Validando Login Usuário")]
+        [Fact(DisplayName = "Validando se Password do usuario para cadastro esta vazio")]
+        [Trait("Categoria", "Validando Login Usuario")]
         public void ValidateDomain_ShouldThrowException_WhenPasswordIsEmpty()
         {
             // Arrange
@@ -89,11 +89,11 @@ namespace GameZone.Identidade.Tests.Api.Domain
             // Assert
             Assert.False(isValid);
             Assert.Single(validationResults);
-            Assert.Equal("O Campo 'Password' é Obrigatório.", validationResults[0].ErrorMessage);
+            Assert.Equal("O Campo 'Password' e Obrigatorio.", validationResults[0].ErrorMessage);
         }
 
-        [Fact(DisplayName = "Validando se Password do usuário para cadastro ultrapasssou o limite de caracteres")]
-        [Trait("Categoria", "Validando Login Usuário")]
+        [Fact(DisplayName = "Validando se Password do usuario para cadastro ultrapasssou o limite de caracteres")]
+        [Trait("Categoria", "Validando Login Usuario")]
         public void ValidateDomain_ShouldThrowException_WhenPasswordMaxLength()
         {
             // Arrange
@@ -104,7 +104,7 @@ namespace GameZone.Identidade.Tests.Api.Domain
 
             // Assert
             Assert.NotEmpty(validationErrors);
-            Assert.Contains("20 é o tamanho máximo para o campo 'Password'", validationErrors);
+            Assert.Contains("20 e o tamanho maximo para o campo 'Password'", validationErrors);
         }
     }
 }
