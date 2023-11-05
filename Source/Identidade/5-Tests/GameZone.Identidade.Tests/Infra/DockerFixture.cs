@@ -73,10 +73,10 @@ namespace GameZone.Identidade.Tests.Api.Infra
 
             //if (container == null)
             //{
-                var existingImages = await _dockerClient.Images.ListImagesAsync(new ImagesListParameters());
+                //var existingImages = await _dockerClient.Images.ListImagesAsync(new ImagesListParameters());
 
-                if (existingImages.Any(image => image.RepoTags.Contains(sqlServerImage)))
-                {
+                //if (existingImages.Any(image => image.RepoTags.Contains(sqlServerImage)))
+                //{
                     var createContainerResponse = await _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters
                     {
                         Name = containerName,
@@ -99,9 +99,9 @@ namespace GameZone.Identidade.Tests.Api.Infra
                     _containerId = createContainerResponse.ID;
 
                     await _dockerClient.Containers.StartContainerAsync(_containerId, new ContainerStartParameters());
-                }
-                else
-                    throw new Exception("É necessário baixar a imgem do SQL - 'docker pull mcr.microsoft.com/mssql/server:2019-latest'");
+                //}
+                //else
+                //    throw new Exception("É necessário baixar a imgem do SQL - 'docker pull mcr.microsoft.com/mssql/server:2019-latest'");
 
             //}
         }
