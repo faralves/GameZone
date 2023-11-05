@@ -21,24 +21,16 @@ jobs:
       with:
         dotnet-version: 6.0.x  # Use the desired .NET 6 version
 
-    - name: Checkout code for testing
-      uses: actions/checkout@v2
-      with:
-        ref: 'master'  # Assuming you want to test the code from the master branch
-
-    - name: Set up Docker for testing
-      uses: docker/setup-action@v1
-
-    - name: Build test projects
-      run: dotnet build ./Source/Identidade/5-Tests/GameZone.Identidade.Tests/GameZone.Identidade.Tests.Api.csproj
-
     - name: Start SQL Server 2019 container for testing
       run: |
+        docker pull mcr.microsoft.com/mssql/server:2019-latest
         docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Mudar123intrA" -p 1433:1433 --name sql_server -d mcr.microsoft.com/mssql/server:2019-latest
         sleep 30  # Wait for SQL Server to start
 
-    - name: Run unit tests and integrated tests
-      run: dotnet test ./Source/Identidade/5-Tests/GameZone.Identidade.Tests/GameZone.Identidade.Tests.Api.csproj
+    - name: Build test and Run unit tests and integrated tests
+      run: |
+         dotnet build ./Source/Identidade/5-Tests/GameZone.Identidade.Tests/GameZone.Identidade.Tests.Api.csproj
+         dotnet test ./Source/Identidade/5-Tests/GameZone.Identidade.Tests/GameZone.Identidade.Tests.Api.csproj
 
 
   #   - name: Set up Docker Buildx
