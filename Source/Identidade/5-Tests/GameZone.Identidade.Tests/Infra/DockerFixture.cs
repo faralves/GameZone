@@ -86,7 +86,7 @@ namespace GameZone.Identidade.Tests.Api.Infra
                         {
                             PortBindings = new Dictionary<string, IList<PortBinding>>()
                         {
-                            { "1433/tcp", new List<PortBinding> { new PortBinding { HostPort = "1436" } } }
+                            { "1433/tcp", new List<PortBinding> { new PortBinding { HostPort = "1433" } } }
                         },
                             PublishAllPorts = true // Optional: Set this to true if you want to publish all exposed ports
                         }

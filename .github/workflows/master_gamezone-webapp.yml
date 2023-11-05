@@ -24,8 +24,8 @@ jobs:
     - name: Start SQL Server 2019 container for testing
       run: |
         docker pull mcr.microsoft.com/mssql/server:2019-latest
-        docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Mudar123intrA" -p 1433:1433 --name sql_server -d mcr.microsoft.com/mssql/server:2019-latest
         sleep 30  # Wait for SQL Server to start
+        # docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Mudar123intrA" -p 1433:1433 --name sql_server -d mcr.microsoft.com/mssql/server:2019-latest
 
     - name: Build test and Run unit tests and integrated tests
       run: |
