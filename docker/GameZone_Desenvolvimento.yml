@@ -1,19 +1,19 @@
 version: "3.4"
 
 services:
-    #gamezone.sqlserver:
-        #image: gamezoneacr.azurecr.io/gamezone-sql-server:development-v1
-        #container_name: gamezone-sql-server
-        #build: 
-            #context: ../sql
-            #dockerfile: ./Dockerfile
-        #ports:
-            #- "1433:1433"
-        #environment:
-            #SA_PASSWORD: "Mudar123intrA"
-            #ACCEPT_EULA: "Y"     
-        #networks:
-          #- gamezone            
+    # gamezone.sqlserver:
+        # image: gamezoneacr.azurecr.io/gamezone-sql-server:development-v1
+        # container_name: gamezone-sql-server
+        # build: 
+            # context: ../sql
+            # dockerfile: ./Dockerfile
+        # ports:
+            # - "1433:1433"
+        # environment:
+            # SA_PASSWORD: "Mudar123intrA"
+            # ACCEPT_EULA: "Y"     
+        # networks:
+          # - gamezone            
 
     gamezone-news-webapp:
         image: gamezoneacr.azurecr.io/gamezone-news-webapp:development-v2
