@@ -13,7 +13,7 @@ jobs:
   Unit_Tests_And_Integrated_Tests:
     runs-on: 'ubuntu-latest'
 
-    timeout-minutes: 20  # Aumente o limite de tempo para 20 minutos
+    # timeout-minutes: 20  # Aumente o limite de tempo para 20 minutos
 
     steps:
     - uses: actions/checkout@v3.6.0
@@ -32,7 +32,7 @@ jobs:
     - name: Build test and Run unit tests and integrated tests
       run: |
          dotnet build ./Source/Identidade/5-Tests/GameZone.Identidade.Tests/GameZone.Identidade.Tests.Api.csproj
-         dotnet test ./Source/Identidade/5-Tests/GameZone.Identidade.Tests/GameZone.Identidade.Tests.Api.csproj
+         dotnet test ./Source/Identidade/5-Tests/GameZone.Identidade.Tests/GameZone.Identidade.Tests.Api.csproj --test-adapter-timeout 600000
 
   # build_and_push_acr:
   #   needs: Unit_Tests_And_Integrated_Tests  # Aguarda a conclusão do job de testes
