@@ -13,6 +13,7 @@ namespace GameZone.Identidade.Tests.Api.Infra
         public DockerFixture()
         {
             _dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
+            _dockerClient.DefaultTimeout = new TimeSpan(0,10,0);
             InitializeAsync().Wait();
         }
 
