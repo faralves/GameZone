@@ -13,6 +13,17 @@ namespace GameZone.Blog.API.Configurations
         {
             ConfigureAppSetting.ConfigureUseAppSetting(builder);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder
+                        .AllowAnyOrigin()  // Permite qualquer origem
+                        .AllowAnyMethod()  // Permite qualquer método HTTP (GET, POST, etc.)
+                        .AllowAnyHeader(); // Permite qualquer cabeçalho HTTP
+                });
+            });
+
             configParameters = new ConfigParameters(builder.Configuration);
 
             configParameters.SetGeneralConfig();

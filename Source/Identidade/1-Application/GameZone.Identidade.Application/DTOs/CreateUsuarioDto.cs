@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GameZone.Core.DomainObjects;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace GameZone.Identidade.Application.DTOs
@@ -44,6 +45,50 @@ namespace GameZone.Identidade.Application.DTOs
         public string UserName
         {
             get { return Email; }
+        }
+
+        public CreateUsuarioDto()
+        {
+                
+        }
+
+        public CreateUsuarioDto(string name, string cpfCnpj, DateTime dataNascimento, string email, string password, string rePassword, bool isAdministrator, string? idUsuarioInclusao)
+        {
+            Name = name;
+            CpfCnpj = cpfCnpj;
+            DataNascimento = dataNascimento;
+            Email = email;
+            Password = password;
+            RePassword = rePassword;
+            IsAdministrator = isAdministrator;
+            IdUsuarioInclusao = idUsuarioInclusao;
+
+            ValidateDTO();
+        }
+
+        private void ValidateDTO()
+        {
+            ValidarErrosTestes.AssertArgumentNotEmpty(Name, "O Campo 'Name' é Obrigatório.");
+            ValidarErrosTestes.AssertArgumentLength(Name, 256, "256 é o tamanho máximo para o campo 'Name'");
+
+            ValidarErrosTestes.AssertArgumentNotEmpty(CpfCnpj, "O Campo 'CpfCnpj' é Obrigatório.");
+            ValidarErrosTestes.AssertArgumentLength(CpfCnpj, 11, 15, "O campo 'CpfCnpj' precisa estar entre 11 e 15 caracteres");
+            
+            ValidarErrosTestes.AssertArgumentNotNull(DataNascimento, "O Campo 'DataNascimento' é Obrigatório.");
+            ValidarErrosTestes.AssertArgumentDateTimeMinValue(DataNascimento, "A 'DataNascimento' não pode ser a menor data do .Net!");
+            ValidarErrosTestes.AssertArgumentDateTimeMaxValue(DataNascimento, "A 'DataNascimento' não pode ser a maior data do .Net!");
+
+            ValidarErrosTestes.AssertArgumentNotEmpty(Email, "O Campo 'Email' é Obrigatório.");
+            ValidarErrosTestes.AssertArgumentLength(Email, 256, "256 é o tamanho máximo para o campo 'Email'");
+            ValidarErrosTestes.AssertArgumentValidEmail(Email, "O Campo 'Email' não é válido.");
+
+            ValidarErrosTestes.AssertArgumentNotEmpty(Password, "O Campo 'Password' é Obrigatório.");
+            ValidarErrosTestes.AssertArgumentLength(Password, 20, "20 é o tamanho máximo para o campo 'Password'");
+
+            ValidarErrosTestes.AssertArgumentNotEmpty(RePassword, "O Campo 'RePassword' é Obrigatório.");
+            ValidarErrosTestes.AssertArgumentPasswordsMatch(Password, RePassword, "As senhas não conferem!");
+
+            ValidarErrosTestes.AssertArgumentLength(IdUsuarioInclusao, 450, "450 é o tamanho máximo para o campo 'IdUsuarioInclusao'");
         }
     }
 }

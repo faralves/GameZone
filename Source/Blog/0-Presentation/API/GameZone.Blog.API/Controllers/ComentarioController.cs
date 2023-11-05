@@ -102,7 +102,7 @@ namespace GameZone.Blog.API.Controllers
                 var comentarioAtualizado = await _comentarioApplication.Update(comentario, comentario.AspNetUsersId.ToString());
                 return NoContent();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Lidar com erros de atualização
                 return StatusCode(500, "Ocorreu um erro enquanto atualizava o comentário.");

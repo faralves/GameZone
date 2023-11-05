@@ -1,6 +1,7 @@
 using GameZone.News.WebApp.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddApplicationInsightsTelemetry();
 
 // Add services to the container.
 ConfigureServices.Configure(builder);

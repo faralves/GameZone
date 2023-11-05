@@ -1142,6 +1142,23 @@ namespace GameZone.Core.Utils
             return valor.ToString("N2").Replace(",", "").Replace(".", "");
         }
 
+        public static bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return false;
+            }
 
+            try
+            {
+                // Use a expressão regular para verificar se o email é válido.
+                var emailRegex = new Regex(@"^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$");
+                return emailRegex.IsMatch(email);
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return false;
+            }
+        }
     }
 }

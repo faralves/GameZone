@@ -36,7 +36,7 @@ namespace GameZone.Identidade.Infra.Repository
                     //await _userManager.AddClaimAsync(usuario, new Claim("ClaimAdministrator", usuario.IsAdministrator.ToString()));
 
                     // Adiciona roles ao usuário
-                    if(usuario.IsAdministrator)
+                    if (usuario.IsAdministrator)
                         await _userManager.AddToRoleAsync(usuario, "Administrador");
                     else
                         await _userManager.AddToRoleAsync(usuario, "Usuário");
