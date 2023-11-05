@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Docker.DotNet;
+﻿using Docker.DotNet;
 using Docker.DotNet.Models;
-using GameZone.Identidade.Infra;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 
 namespace GameZone.Identidade.Tests.Api.Infra
 {
@@ -15,85 +8,70 @@ namespace GameZone.Identidade.Tests.Api.Infra
         private bool _disposed = false;
         private DockerClient _dockerClient;
         private string _containerId;
+        private string containerName = "sql-server-Tests";
 
         public DockerFixture()
         {
+            _dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
             InitializeAsync().Wait();
         }
 
-        //public bool VerificarContainerAtivo()
-        //{
-        //    bool ativo = false;
-        //    _dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
-
-        //    var containerName = "sql-server-Tests";
-        //    var sqlServerImage = "mcr.microsoft.com/mssql/server:2019-latest";
-
-        //    var containers = _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true }).GetAwaiter().GetResult();
-        //    bool containerExists = containers.Any(container => container.Names.Contains("/" + containerName));
-
-        //    if (containerExists)
-        //    {
-        //        var existingContainer = containers.FirstOrDefault(container => container.Names.Contains("/" + containerName));
-
-        //        if (existingContainer.State != "running")
-        //        {
-        //            // O contêiner existe, mas não está em execução; você pode iniciar o contêiner.
-        //            _dockerClient.Containers.StartContainerAsync(existingContainer.ID, new ContainerStartParameters()).GetAwaiter().GetResult();
-        //        }
-        //        else
-        //            ativo = true;
-        //    }
-        //    return ativo;
-        //}
-
         public bool VerificarContainerAtivo()
         {
-            _dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
-            var containerName = "sql-server-Tests";
+            var container = GetContainerAsync(containerName).GetAwaiter().GetResult();
 
-            var containers = _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true }).GetAwaiter();
-
-            var existingContainer = containers.GetResult().FirstOrDefault(container => container.Names.Contains("/" + containerName));
-
-            if (existingContainer != null)
+            if (container != null)
             {
-                if (existingContainer.State != "running")
+                if (!container.State.Running)
                 {
-                    _dockerClient.Containers.StartContainerAsync(existingContainer.ID, new ContainerStartParameters());
+                    StartContainerAsync(container.ID).GetAwaiter().GetResult();
                 }
-                else
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<ContainerInspectResponse?> GetContainerInitializeIfExists()
+        {
+            var container = await GetContainerAsync(containerName);
+
+            if (container != null)
+            {
+                if (!container.State.Running)
                 {
-                    
-                    return true;
+                    StartContainerAsync(container.ID).GetAwaiter().GetResult();
                 }
             }
 
-            return false; 
+            return container;
+        }
+
+        private async Task StartContainerAsync(string containerId)
+        {
+            await _dockerClient.Containers.StartContainerAsync(containerId, new ContainerStartParameters());
+        }
+
+
+        private async Task<ContainerInspectResponse> GetContainerAsync(string containerName)
+        {
+            try
+            {
+                return await _dockerClient.Containers.InspectContainerAsync(containerName);
+            }
+            catch (Docker.DotNet.DockerContainerNotFoundException)
+            {
+                return null;
+            }
         }
 
 
         private async Task InitializeAsync()
         {
-            _dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
-
-            var containerName = "sql-server-Tests";
             var sqlServerImage = "mcr.microsoft.com/mssql/server:2019-latest";
 
-            var containers = await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true });
-            bool containerExists = containers.Any(container => container.Names.Contains("/" + containerName));
+            ContainerInspectResponse? container = await GetContainerInitializeIfExists();
 
-            if (containerExists)
-            {
-                var existingContainer = containers.FirstOrDefault(container => container.Names.Contains("/" + containerName));
-
-                if (existingContainer.State != "running")
-                {
-                    // O contêiner existe, mas não está em execução; você pode iniciar o contêiner.
-                   await _dockerClient.Containers.StartContainerAsync(existingContainer.ID, new ContainerStartParameters());
-                }
-            }
-            else
+            if (container == null)
             {
                 var existingImages = await _dockerClient.Images.ListImagesAsync(new ImagesListParameters());
 
@@ -112,7 +90,7 @@ namespace GameZone.Identidade.Tests.Api.Infra
                         {
                             PortBindings = new Dictionary<string, IList<PortBinding>>()
                         {
-                            { "1433/tcp", new List<PortBinding> { new PortBinding { HostPort = "1433" } } }
+                            { "1433/tcp", new List<PortBinding> { new PortBinding { HostPort = "1436" } } }
                         },
                             PublishAllPorts = true // Optional: Set this to true if you want to publish all exposed ports
                         }
@@ -130,7 +108,7 @@ namespace GameZone.Identidade.Tests.Api.Infra
 
         public string GetConnectionString()
         {
-            var _connectionString = $"Server=localhost,1433;Database=GameZoneDB;User Id=SA;Password=Mudar123intrA;MultipleActiveResultSets=true;TrustServerCertificate=true;";
+            var _connectionString = $"Server=localhost,1436;Database=GameZoneDB;User Id=SA;Password=Mudar123intrA;MultipleActiveResultSets=true;TrustServerCertificate=true;";
             return _connectionString;
         }
 
