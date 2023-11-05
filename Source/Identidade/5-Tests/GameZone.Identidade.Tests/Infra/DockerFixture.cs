@@ -12,11 +12,8 @@ namespace GameZone.Identidade.Tests.Api.Infra
 
         public DockerFixture()
         {
-            //_dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
             _dockerClient = new DockerClientConfiguration().CreateClient();
             _dockerClient.DefaultTimeout = new TimeSpan(0,10,0);
-
-            //InitializeAsync().Wait();
 
             var createContainerResponse = _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters
             {
@@ -41,96 +38,6 @@ namespace GameZone.Identidade.Tests.Api.Infra
 
             _dockerClient.Containers.StartContainerAsync(_containerId, new ContainerStartParameters()).GetAwaiter().GetResult();
 
-        }
-
-        public bool VerificarContainerAtivo()
-        {
-            var container = GetContainerAsync(containerName).GetAwaiter().GetResult();
-
-            if (container != null)
-            {
-                if (!container.State.Running)
-                {
-                    StartContainerAsync(container.ID).GetAwaiter().GetResult();
-                }
-                return true;
-            }
-            return false;
-        }
-
-        public async Task<ContainerInspectResponse?> GetContainerInitializeIfExists()
-        {
-            var container = await GetContainerAsync(containerName);
-
-            if (container != null)
-            {
-                if (!container.State.Running)
-                {
-                    StartContainerAsync(container.ID).GetAwaiter().GetResult();
-                }
-            }
-
-            return container;
-        }
-
-        private async Task StartContainerAsync(string containerId)
-        {
-            await _dockerClient.Containers.StartContainerAsync(containerId, new ContainerStartParameters());
-        }
-
-
-        private async Task<ContainerInspectResponse> GetContainerAsync(string containerName)
-        {
-            try
-            {
-                return await _dockerClient.Containers.InspectContainerAsync(containerName);
-            }
-            catch (Docker.DotNet.DockerContainerNotFoundException)
-            {
-                return null;
-            }
-        }
-
-
-        private async Task InitializeAsync()
-        {
-            var sqlServerImage = "mcr.microsoft.com/mssql/server:2019-latest";
-
-            //ContainerInspectResponse? container = await GetContainerInitializeIfExists();
-
-            //if (container == null)
-            //{
-                //var existingImages = await _dockerClient.Images.ListImagesAsync(new ImagesListParameters());
-
-                //if (existingImages.Any(image => image.RepoTags.Contains(sqlServerImage)))
-                //{
-                    var createContainerResponse = await _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters
-                    {
-                        Name = containerName,
-                        Image = sqlServerImage,
-                        Env = new List<string>
-                    {
-                        "ACCEPT_EULA=Y",
-                        "SA_PASSWORD=Mudar123intrA"
-                    },
-                        HostConfig = new HostConfig
-                        {
-                            PortBindings = new Dictionary<string, IList<PortBinding>>()
-                        {
-                            { "1433/tcp", new List<PortBinding> { new PortBinding { HostPort = "1433" } } }
-                        },
-                            PublishAllPorts = true // Optional: Set this to true if you want to publish all exposed ports
-                        }
-                    });
-
-                    _containerId = createContainerResponse.ID;
-
-                    await _dockerClient.Containers.StartContainerAsync(_containerId, new ContainerStartParameters());
-                //}
-                //else
-                //    throw new Exception("É necessário baixar a imgem do SQL - 'docker pull mcr.microsoft.com/mssql/server:2019-latest'");
-
-            //}
         }
 
         public string GetConnectionString()

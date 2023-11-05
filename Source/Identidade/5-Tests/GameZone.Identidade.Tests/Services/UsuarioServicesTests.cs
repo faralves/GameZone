@@ -27,8 +27,6 @@ namespace GameZone.Identidade.Tests.Api.Services
         {
             _dockerFixture = dockerFixture;
 
-            //while (!_dockerFixture.VerificarContainerAtivo()) ;
-
             if (!ValidaDataBase.CheckIfDatabaseExists(_dockerFixture.GetConnectionString().Replace("GameZoneDB", "Master"), "GameZoneDB"))
             {
                 using (var connection = new SqlConnection(_dockerFixture.GetConnectionString().Replace("GameZoneDB", "Master")))
