@@ -12,8 +12,7 @@ on:
 jobs:
   Unit_Tests_And_Integrated_Tests:
     runs-on: 'ubuntu-latest'
-
-    # timeout-minutes: 20  # Aumente o limite de tempo para 20 minutos
+    timeout-minutes: 30 # Aumente o limite de tempo para 30 minutos
 
     steps:
     - uses: actions/checkout@v3.6.0
