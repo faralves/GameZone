@@ -69,10 +69,10 @@ namespace GameZone.Identidade.Tests.Api.Infra
         {
             var sqlServerImage = "mcr.microsoft.com/mssql/server:2019-latest";
 
-            ContainerInspectResponse? container = await GetContainerInitializeIfExists();
+            //ContainerInspectResponse? container = await GetContainerInitializeIfExists();
 
-            if (container == null)
-            {
+            //if (container == null)
+            //{
                 var existingImages = await _dockerClient.Images.ListImagesAsync(new ImagesListParameters());
 
                 if (existingImages.Any(image => image.RepoTags.Contains(sqlServerImage)))
@@ -103,7 +103,7 @@ namespace GameZone.Identidade.Tests.Api.Infra
                 else
                     throw new Exception("É necessário baixar a imgem do SQL - 'docker pull mcr.microsoft.com/mssql/server:2019-latest'");
 
-            }
+            //}
         }
 
         public string GetConnectionString()
