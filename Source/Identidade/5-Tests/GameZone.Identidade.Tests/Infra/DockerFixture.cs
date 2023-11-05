@@ -12,9 +12,35 @@ namespace GameZone.Identidade.Tests.Api.Infra
 
         public DockerFixture()
         {
-            _dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
+            //_dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
+            _dockerClient = new DockerClientConfiguration().CreateClient();
             _dockerClient.DefaultTimeout = new TimeSpan(0,10,0);
-            InitializeAsync().Wait();
+
+            //InitializeAsync().Wait();
+
+            var createContainerResponse = _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters
+            {
+                Name = containerName,
+                Image = "mcr.microsoft.com/mssql/server:2019-latest",
+                Env = new List<string>
+                    {
+                        "ACCEPT_EULA=Y",
+                        "SA_PASSWORD=Mudar123intrA"
+                    },
+                HostConfig = new HostConfig
+                {
+                    PortBindings = new Dictionary<string, IList<PortBinding>>()
+                        {
+                            { "1433/tcp", new List<PortBinding> { new PortBinding { HostPort = "1433" } } }
+                        },
+                    PublishAllPorts = true // Optional: Set this to true if you want to publish all exposed ports
+                }
+            }).GetAwaiter().GetResult();
+
+            _containerId = createContainerResponse.ID;
+
+            _dockerClient.Containers.StartContainerAsync(_containerId, new ContainerStartParameters()).GetAwaiter().GetResult();
+
         }
 
         public bool VerificarContainerAtivo()
