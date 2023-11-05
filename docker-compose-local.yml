@@ -1,19 +1,19 @@
 version: '3.4'
 
 services:
-    # gamezone.sqlserver:
-    #    image: gamezoneacr.azurecr.io/gamezone-sql-server:development-v1
-    #    container_name: gamezone-sql-server
-    #    build: 
-    #        context: ./sql
-    #        dockerfile: Dockerfile
-    #    ports:
-    #        - "1435:1433"
-    #    environment:
-    #        SA_PASSWORD: "Mudar123intrA"
-    #        ACCEPT_EULA: "Y"
-    #    networks:
-    #        - gamezone
+    gamezone.sqlserver:
+       image: gamezoneacr.azurecr.io/gamezone-sql-server:development-v1
+       container_name: gamezone-sql-server
+       build: 
+           context: ./sql
+           dockerfile: Dockerfile
+       ports:
+           - "1435:1433"
+       environment:
+           SA_PASSWORD: "Mudar123intrA"
+           ACCEPT_EULA: "Y"
+       networks:
+           - gamezone
 
     gamezone-news-webapp:
         image: gamezoneacr.azurecr.io/gamezone-news-webapp:development-v2
@@ -52,8 +52,8 @@ services:
             - ./certs:/https:ro
         networks:
             - gamezone
-        # depends_on:
-        #     - gamezone.sqlserver
+        depends_on:
+            - gamezone.sqlserver
 
     gamezone-blog-api:
         image:  gamezoneacr.azurecr.io/gamezone-api-blog:development-v2
@@ -75,7 +75,7 @@ services:
             - gamezone
         depends_on:
             - gamezone-identidade-api
-            # - gamezone.sqlserver
+            - gamezone.sqlserver
 
     gamezone-gamezoneserver:
         image:  gamezoneacr.azurecr.io/gamezone-server:development-v2
@@ -85,7 +85,7 @@ services:
             dockerfile: nginx/Dockerfile
         restart: always 
         ports:
-            - "80:80"
+            - "8080:80"
             - "443:443"
         networks:
             - gamezone
