@@ -13,6 +13,7 @@ namespace GameZone.Identidade.API.Controllers
         public IActionResult Get()
         {
             return Ok("Acesso permitido!");
+
         }
     }
 }
