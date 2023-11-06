@@ -15,6 +15,7 @@ namespace GameZone.Identidade.Services
         private IAuthenticationRepository _authenticationRepository;
 
 
+
         public UsuarioService(ILogger<UsuarioService> logger,  IIdentidadeRepository identidadeRepository, IAuthenticationRepository authenticationRepository)
         {
             _logger = logger;
