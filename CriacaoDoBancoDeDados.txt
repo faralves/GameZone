@@ -1,0 +1,20 @@
+
+1. Criacao do Banco de dados
+
+CREATE DATABASE [gamestoredb]
+GO
+
+2. Criacao da Tabela de Jogos
+
+CREATE TABLE [dbo].[jogos2](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[nome] [varchar](100) NULL,
+	[genero] [varchar](50) NULL,
+	[precoUnitario] [decimal](12, 3) NULL,
+	[console] [varchar](50) NULL,
+ CONSTRAINT [PK_jogos] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)) ON [PRIMARY]
+GO
+

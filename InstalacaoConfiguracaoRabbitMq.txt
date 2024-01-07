@@ -1,0 +1,69 @@
+Procedimento para Instalação do RabbitMq
+
+1. Acessar a pagina do Rabbit e escolher a opção de instalação para o SO desejado
+
+https://www.rabbitmq.com/download.html
+
+Exemplo para windows ele baixará o arquivo:
+ - rabbitmq-server-3.12.11.exe
+ links: 
+ https://www.rabbitmq.com/install-windows.html
+ https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.12.11/rabbitmq-server-3.12.11.exe
+
+ obs: a versão poderá estar diferente da do exemplo
+ Ainda não instale o rabbitmq porque ele tem uma dependência, sendo necessário instalar antes o erlang
+
+2. Instalação do Erlang
+
+ Acessando o link abaixo sobre o erlang será possivel baixar uma das muitas versoes disponiveis do erlang
+
+ https://www.rabbitmq.com/which-erlang.html
+ https://erlang.org/download/otp_versions_tree.html
+
+ Para baixar por exemplo a versão 26.2.1 (Win 64) clique no link que ele realizará o download
+
+ https://github.com/erlang/otp/releases/download/OTP-26.2.1/otp_win64_26.2.1.exe
+
+ Instale o erlang e depois realizar a configuração da variavel de ambiente dele
+ 
+3. Configuração da variavel de ambiente do Erlang
+
+Em variáveis do ambiente, edite a variáevl path e inclua o local de instalação do erlang
+Exemplo: C:\Program Files\Erlang OTP
+obs2: Não inclua a psta bin
+
+4. Instalação do RabbitMQ
+
+Após instalar o erlang e configurar a variável de ambiente, realize a instalação do rabbitMq
+É um, procedimento simples de next, next, finish
+
+5. Verificando ser o serviço está em execução
+
+Na instalação para windows, é possível abrir o gerenciador de serviços e verificar ser o servico "RabbitMQ" está em execução
+Para isso, basta digitar "serviços"" na barra de pesquisar do windows dentro da barra de tarefas ou então
+digitar na janela de executar (windows + r) "services.msc"
+
+6. Habilitar Interface Web (Gráfica)
+
+Acessar via prompt de comando o diretorio onde o rabbit foi instalado, e acessar o diretorio sbin, nele existem alguns arequivos .bat
+
+Exemplo de caminho de instalação:
+C:\Program Files\RabbitMQ Server\rabbitmq_server-3.10.6\sbin
+
+Estando no prompt de comando, acesse o diretorio sbin do rabbitmq
+cd "C:\Program Files\RabbitMQ Server\rabbitmq_server-3.10.6\sbin"
+
+Agora execute o comando abaixo para habilitar a interface web da app
+
+rabbitmq-plugins.bat enable rabbitmq_management
+
+Dando tudo certo, ele apresentará uma mensagem de que o plugin foi configurado com sucesso \o/
+
+7. Usuário e Portas Padrão
+
+A porta padrão para se comunicar no serviço do RabbitMQ é a 5672
+Para acessar a app web do rabbitmq a porta padrão é a 15672
+E você consegue acessar a console (web) do rabbitmq através do localhost usando a porta da app web 
+http://localhost:15672/
+
+O usuário e senha padrão do rabbitMq é "guest"
