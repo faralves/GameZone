@@ -72,12 +72,12 @@ public static class Startup
                 }
             });
 
-            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            if (AppContext.BaseDirectory.Contains("GameStoreFase4.Api"))
-                xmlFile = xmlFile.Replace("IoC", "Api");
+            //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            //if (AppContext.BaseDirectory.Contains("GameStoreFase4.Api"))
+            //    xmlFile = xmlFile.Replace("IoC", "Api");
 
-            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            c.IncludeXmlComments(xmlPath);
+            //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            //c.IncludeXmlComments(xmlPath);
         });
     }
 
