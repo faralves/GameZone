@@ -1,17 +1,24 @@
-namespace GameStoreFase4.ConsumerDlq
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            IHost host = Host.CreateDefaultBuilder(args)
-                .ConfigureServices(services =>
-                {
-                    services.AddHostedService<Worker>();
-                })
-                .Build();
+using GameStoreFase4.IoC;
 
-            host.Run();
-        }
+namespace GameStoreFase4.ConsumerDlq;
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+              .SetBasePath(Directory.GetCurrentDirectory())
+              .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+              .Build();
+
+        IHost host = Host.CreateDefaultBuilder(args)
+            .ConfigureServices(services =>
+            {
+                services.AddSingleton(configuration);
+                services.AddHostedService<Worker>();
+                Startup.Configure(configuration, services, enableSwagger: false);
+            })
+            .Build();
+
+        host.Run();
     }
 }

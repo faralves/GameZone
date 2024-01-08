@@ -10,4 +10,17 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\GameStoreFase4.Domain\GameStoreFase4.Domain.csproj" />
+    <ProjectReference Include="..\..\Common\GameStoreFase4.Infrastructure\GameStoreFase4.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Common\GameStoreFase4.IoC\GameStoreFase4.IoC.csproj" />
+    <ProjectReference Include="..\..\Common\GameStoreFase4.Services\GameStoreFase4.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
