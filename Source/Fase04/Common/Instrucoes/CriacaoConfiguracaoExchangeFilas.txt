@@ -1,0 +1,62 @@
+Procedimento para criação e configuração do exchange e das filas (queue)
+
+Antes iniciar esse procedimento, é necessário realizar a instalação e configuração do RabbitMq
+Para isso, acesse o arquivo [InstalacaoConfiguracaoRabbitMq.txt] dentro do diretorio de Instrucoes dessa solução
+
+1. Criação do exchange
+
+	Acesse a console do rabbitMq através da url http://localhost:15672/
+	Informe usuário e senha (guest) ou usuário que tenha configurado
+
+	Clique na aba "Exchanges", e abaixo da tabela que lista os exchanges criados, expanda a opção "Add a new exchange"
+
+	Informe as seguintes configurações para criação do exchange:
+
+	Name = exchange.tech.challenge
+	Type  = "topic" (caixa de seleção [combobox])
+	Durability = Durable
+	Auto delete? = No
+	Internal? = No
+
+	Clique no botão "Add exchange" e o exhcnage será criado
+
+2. Criaçao da Filas (Queues)
+
+	Clique na Aba "Queues", e abaixo da tabela que lista as filas criadas, expanda a opção "Add a new queue"
+	Informe as seguintes configurações para criação a fila:
+
+	Type: Classic 
+	Name: queue.tech.challenge
+	Durability = Durable
+	Auto delete? = No
+
+	Depois de tudo preenchido, clique no bo~tão "Add queue" e  fila será criada
+
+	Repita o processo para criar a fila dlq:
+
+	Type: Classic 
+	Name: queue.tech.challenge.dlq
+	Durability = Durable
+	Auto delete? = No
+
+3. Configuração do Binding
+
+Agora iremos configurar o binding que seria a forma que o exchange irá rotear as mensagens recebidas para as filas
+Para isso, no contexto que estamos trabalhando, confirguramos nosso exchange para trabalhar como topico e rotear as mensagens
+por meio de uma palavra chave (Routing Key)
+
+Acesse a aba "Exchnages", e na tabela logao abaixo da aba, clique no exchange que criamos no passo 1 (exchange.tech.challenge)
+
+Expanda a opção "Bindings" que aparece na tela
+Iremos configurar duas rotas, uma para a fila de mensagens principal "queue.tech.challenge" e outra para a fila dlq "queue.tech.challenge.dlq"
+
+Dentro de Bindings, no sub item "Add binding from this exchange"
+
+Escolha a opção "To queue" (campo de seleção [combobox]), no campo texto a frente informe "queue.tech.challenge"
+E informe "games" para o campo Routing Key, depois clique no botão "Bind"
+
+Repita o procedimento para a fila "queue.tech.challenge.dlq" informando "games.dlq" como Routing Key
+
+
+
+
