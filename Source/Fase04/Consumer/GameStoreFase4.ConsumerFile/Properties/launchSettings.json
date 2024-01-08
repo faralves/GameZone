@@ -1,0 +1,11 @@
+﻿{
+  "profiles": {
+    "GameStoreFase4.ConsumerFile": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
