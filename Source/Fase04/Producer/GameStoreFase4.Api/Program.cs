@@ -1,25 +1,39 @@
-namespace GameStoreFase4.Api
+using GameStoreFase4.IoC;
+
+namespace GameStoreFase4.Api;
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+        var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+        Startup.Configure(builder.Configuration, builder.Services, enableSwagger: true);
 
-            builder.Services.AddControllers();
+        // Add services to the container.
 
-            var app = builder.Build();
+        builder.Services.AddControllers();
 
-            // Configure the HTTP request pipeline.
+        var app = builder.Build();
 
-            app.UseAuthorization();
+        ConfigureSwagger(app);
 
+        // Configure the HTTP request pipeline.
 
-            app.MapControllers();
+        app.UseAuthorization();
 
-            app.Run();
-        }
+        app.MapControllers();
+
+        app.Run();
     }
+
+    private static void ConfigureSwagger(WebApplication app)
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Produtor RabbitMq");
+            // c.RoutePrefix = string.Empty;
+        });
+    }
+
 }
