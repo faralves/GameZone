@@ -2,7 +2,7 @@
 using System.Text;
 
 namespace GameStoreFase4.Services.File;
-public class FileManager : IFileManager
+public class FileManagerService : IFileManagerService
 {
     private readonly IConfiguration _configuration;
 
@@ -10,7 +10,7 @@ public class FileManager : IFileManager
     private static string _filename = null;
     private static string _filenameDB = null;
 
-    public FileManager(IConfiguration configuration)
+    public FileManagerService(IConfiguration configuration)
     {
         _configuration = configuration;
         _filePath = configuration["FileManager:DlqMessageConfig:FilePath"];

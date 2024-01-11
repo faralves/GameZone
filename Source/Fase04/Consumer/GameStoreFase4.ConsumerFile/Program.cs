@@ -16,7 +16,7 @@ namespace GameStoreFase4.ConsumerFile
                 {
                     services.AddSingleton(configuration);
                     services.AddHostedService<Worker>();
-                    Startup.Configure(configuration, services, enableSwagger: false);
+                    Startup.Configure(configuration, services, enableSwagger: false, enableRabbitMq: false);
                 })
                 .Build();
 

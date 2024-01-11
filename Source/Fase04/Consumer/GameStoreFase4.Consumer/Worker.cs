@@ -19,12 +19,16 @@ public class Worker : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             _logger.LogInformation("\nBackground Service em execucao no horario: {time}\n", DateTimeOffset.Now);
-
-            _logger.LogInformation("\nProcessando Consumer");
-            ObjectMessageProcessedInfo result = _consumerRabbitMqService.Consume(consumeDlq: false);
-            _logger.LogInformation("\nConsumer Processado");
-
+            await Process();
             await Task.Delay(50000, stoppingToken);
         }
     }
+
+    private async Task Process()
+    {
+        _logger.LogInformation("\nProcessando Consumer");
+        ObjectMessageProcessedInfo result = _consumerRabbitMqService.Consume(consumeDlq: false);
+        _logger.LogInformation("\nConsumer Processado");
+    }
+
 }

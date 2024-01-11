@@ -1,5 +1,5 @@
 ﻿namespace GameStoreFase4.Services.File;
-public interface IFileManager
+public interface IFileManagerService
 {
     void Save(string message, bool salvoEmBD = false);
     void Save(List<string> message, bool salvoEmBD = false);

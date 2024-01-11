@@ -14,7 +14,7 @@ public class ConsumerRabbitMqService : IConsumerRabbitMqService
     private readonly IModel _channel;
     private readonly IProducerRabbitMqService _producerRabbitMqService;
     private readonly IJogoRepository _jogoRepository;
-    private readonly IFileManager _fileManager;
+    private readonly IFileManagerService _fileManager;
 
     private static string _queuename = null;
     private static string _queueDlqName = null;
@@ -27,7 +27,7 @@ public class ConsumerRabbitMqService : IConsumerRabbitMqService
         IModel channel,
         IProducerRabbitMqService producerRabbitMqService,
         IJogoRepository jogoRepository,
-        IFileManager fileManager)
+        IFileManagerService fileManager)
     {
         _channel = channel;
         _producerRabbitMqService = producerRabbitMqService;

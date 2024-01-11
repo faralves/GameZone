@@ -3,6 +3,7 @@ using GameStoreFase4.Services.File;
 using GameStoreFase4.Services.Generator;
 using GameStoreFase4.Services.Messages.Consumer;
 using GameStoreFase4.Services.Messages.Producer;
+using GameStoreFase4.Services.Parameters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -12,16 +13,37 @@ using System.Reflection;
 namespace GameStoreFase4.IoC;
 public static class Startup
 {
-    public static void Configure(IConfiguration configuration, IServiceCollection services, bool enableSwagger = false)
+    public static void Configure(IConfiguration configuration, IServiceCollection services, bool enableSwagger = false, bool enableRabbitMq = false, string apiSwagger = "")
+    {
+        ConfigureRepositories(services);
+        ConfigureServices(services);
+
+        if (enableRabbitMq)
+            ConfigureRabbitMq(configuration, services);
+        if (enableSwagger)
+            ConfigureSwagger(services, apiSwagger);
+
+        ConfigureMassTransit(configuration, services);
+    }
+    private static void ConfigureRepositories(IServiceCollection services)
     {
         services.AddSingleton<IJogoRepository, JogoRepository>();
-        services.AddSingleton<IFileManager, FileManager>();
+    }
+
+    private static void ConfigureServices(IServiceCollection services)
+    {
+        services.AddSingleton<IFileManagerService, FileManagerService>();
         services.AddSingleton<IGeneratorDataService, GeneratorDataService>();
 
-        ConfigureRabbitMq(configuration, services);
-        if (enableSwagger)
-            ConfigureSwagger(services);
+        services.AddSingleton<IConsumerMassTransitService, ConsumerMassTransitService>();
+        services.AddSingleton<IConsumerAzureServiceBusService, ConsumerAzureServiceBusService>();
+
+        services.AddSingleton<IProducerMassTransitService, ProducerMassTransitService>();
+        services.AddSingleton<IProducerAzureServiceBusService, ProducerAzureServiceBusService>();
+
+        services.AddSingleton<IParameterService, ParameterService>();
     }
+
     private static void ConfigureRabbitMq(IConfiguration configuration, IServiceCollection services)
     {
         string rabbitConnStr = configuration.GetConnectionString("ServerRabbitMQ");
@@ -37,7 +59,7 @@ public static class Startup
         var jogoRepository = new JogoRepository(configuration);
         var producerService = new ProducerRabbitMqService(configuration, rabbitMqChannel);
 
-        IFileManager fileManager = new FileManager(configuration);
+        IFileManagerService fileManager = new FileManagerService(configuration);
 
         services.AddSingleton<IProducerRabbitMqService, ProducerRabbitMqService>(sp =>
         {
@@ -49,15 +71,34 @@ public static class Startup
             return new ConsumerRabbitMqService(configuration, rabbitMqChannel, producerService, jogoRepository, fileManager);
         });
     }
-    private static void ConfigureSwagger(IServiceCollection services)
+    private static void ConfigureSwagger(IServiceCollection services, string apiSwagger = "")
     {
+        string title = "";
+        string description = "";
+
+        if (apiSwagger == "producer")
+        {
+            title = "API Produtor de Mensagens";
+            description = "API Produtor de mensagens para serviço mensageria";
+        }
+        else if (apiSwagger == "parameter")
+        {
+            title = "API Gestão de Serviços Mensageria";
+            description = "API Gestão de Serviços Mensageria";
+        }
+        else
+        {
+            title = "APIde Serviços";
+            description = "API Gestão de Serviços";
+        }
+
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo
             {
                 Version = "v1",
-                Title = "API Produtor RabbitMq",
-                Description = "API Produtor de mensagens para RabbitMQ",
+                Title = title,
+                Description = description,
                 TermsOfService = new Uri("https://example.com/terms"),
                 Contact = new OpenApiContact
                 {
@@ -71,14 +112,11 @@ public static class Startup
                     Url = new Uri("https://example.com/license")
                 }
             });
-
-            //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            //if (AppContext.BaseDirectory.Contains("GameStoreFase4.Api"))
-            //    xmlFile = xmlFile.Replace("IoC", "Api");
-
-            //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            //c.IncludeXmlComments(xmlPath);
         });
+    }
+    private static void ConfigureMassTransit(IConfiguration configuration, IServiceCollection services)
+    {
+
     }
 
 }

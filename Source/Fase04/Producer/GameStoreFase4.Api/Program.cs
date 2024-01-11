@@ -7,7 +7,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        Startup.Configure(builder.Configuration, builder.Services, enableSwagger: true);
+        Startup.Configure(builder.Configuration, builder.Services, enableSwagger: true, enableRabbitMq: true, apiSwagger: "producer");
 
         // Add services to the container.
 

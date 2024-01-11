@@ -7,11 +7,11 @@ namespace GameStoreFase4.ConsumerFile;
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
-    private readonly IFileManager _fileManager;
+    private readonly IFileManagerService _fileManager;
     private readonly IJogoRepository _jogoRepository;
 
     public Worker(ILogger<Worker> logger,
-        IFileManager fileManager,
+        IFileManagerService fileManager,
         IJogoRepository jogoRepository)
     {
         _logger = logger;
