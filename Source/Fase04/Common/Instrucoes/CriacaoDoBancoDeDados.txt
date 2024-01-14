@@ -6,7 +6,7 @@ GO
 
 2. Criacao da Tabela de Jogos
 
-CREATE TABLE [dbo].[jogos2](
+CREATE TABLE [dbo].[jogos](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[nome] [varchar](100) NULL,
 	[genero] [varchar](50) NULL,
